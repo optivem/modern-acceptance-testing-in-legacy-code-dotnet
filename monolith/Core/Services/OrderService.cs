@@ -55,7 +55,7 @@ public class OrderService
         var order = _orderRepository.GetOrder(orderNumber);
         if (order == null)
         {
-            throw new KeyNotFoundException($"Order with order number {orderNumber} not found.");
+            throw new NotExistValidationException($"Order {orderNumber} does not exist.");
         }
 
         var response = new GetOrderResponse
@@ -87,7 +87,7 @@ public class OrderService
         var order = _orderRepository.GetOrder(orderNumber);
         if (order == null)
         {
-            throw new KeyNotFoundException($"Order with order number {orderNumber} not found.");
+            throw new NotExistValidationException($"Order {orderNumber} does not exist.");
         }
 
         order.Status = OrderStatus.Cancelled;

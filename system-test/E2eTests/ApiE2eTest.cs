@@ -72,6 +72,97 @@ public class ApiE2eTest
         Assert.True(getOrderResponse.TotalPrice > 0, "Total price should be positive");
     }
 
+    [Theory]
+    [InlineData(11L, 3)]   // Product 11 with standard quantity
+    [InlineData(12L, 5)]   // Product 12 with medium quantity
+    [InlineData(13L, 1)]   // Product 13 with minimum quantity
+    [InlineData(14L, 10)]  // Product 14 with large quantity
+    public async Task GetOrder_ShouldReturnOrderDetails_WithMultipleProducts(long productId, int quantity)
+    {
+        // Arrange - First place an order
+        var placeOrderRequest = new PlaceOrderRequest
+        {
+            ProductId = productId,
+            Quantity = quantity
+        };
+
+        using var client = new HttpClient();
+        var postResponse = await client.PostAsJsonAsync($"{TestConfiguration.BaseUrl}/api/orders", placeOrderRequest);
+        var postBody = await postResponse.Content.ReadAsStringAsync();
+        var placeOrderResponse = JsonSerializer.Deserialize<PlaceOrderResponse>(postBody, JsonOptions);
+        var orderNumber = placeOrderResponse!.OrderNumber;
+        
+        // Act - Get the order details
+        var getResponse = await client.GetAsync($"{TestConfiguration.BaseUrl}/api/orders/{orderNumber}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+        
+        var getBody = await getResponse.Content.ReadAsStringAsync();
+        var getOrderResponse = JsonSerializer.Deserialize<GetOrderResponse>(getBody, JsonOptions);
+        
+        Assert.NotNull(getOrderResponse);
+        Assert.Equal(orderNumber, getOrderResponse.OrderNumber);
+        Assert.Equal(productId, getOrderResponse.ProductId);
+        Assert.Equal(quantity, getOrderResponse.Quantity);
+        
+        // Price will come from DummyJSON API for product
+        Assert.NotNull(getOrderResponse.UnitPrice);
+        Assert.NotNull(getOrderResponse.TotalPrice);
+    }
+
+    [Theory]
+    [InlineData("10.5")]  // Decimal value
+    [InlineData("xyz")]   // Non-numeric string
+    public async Task PlaceOrder_ShouldRejectNonIntegerProductId(string invalidProductId)
+    {
+        // Arrange
+        var jsonContent = $$"""
+            {
+                "productId": {{invalidProductId}},
+                "quantity": 5
+            }
+            """;
+        
+        using var client = new HttpClient();
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+        
+        // Act
+        var response = await client.PostAsync($"{TestConfiguration.BaseUrl}/api/orders", content);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        
+        var responseBody = await response.Content.ReadAsStringAsync();
+        Assert.Contains("Product ID must be an integer", responseBody);
+    }
+
+    [Theory]
+    [InlineData("3.5")]   // Decimal value
+    [InlineData("lala")]  // Non-numeric string
+    public async Task PlaceOrder_ShouldRejectNonIntegerQuantity(string invalidQuantity)
+    {
+        // Arrange
+        var jsonContent = $$"""
+            {
+                "productId": 10,
+                "quantity": {{invalidQuantity}}
+            }
+            """;
+        
+        using var client = new HttpClient();
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+        
+        // Act
+        var response = await client.PostAsync($"{TestConfiguration.BaseUrl}/api/orders", content);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        
+        var responseBody = await response.Content.ReadAsStringAsync();
+        Assert.Contains("Quantity must be an integer", responseBody);
+    }
+
     [Fact]
     public async Task CancelOrder_ShouldSetStatusToCancelled()
     {

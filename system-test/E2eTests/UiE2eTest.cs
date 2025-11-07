@@ -117,6 +117,109 @@ public class UiE2eTest
     }
 
     [Fact]
+    public async Task ShouldRejectOrderWithNegativeQuantity()
+    {
+        // Arrange
+        using var playwright = await Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        var page = await browser.NewPageAsync();
+        var baseUrl = TestConfiguration.BaseUrl;
+
+        // Act
+        await page.GotoAsync($"{baseUrl}/shop.html");
+
+        var productIdInput = page.Locator("[aria-label='Product ID']");
+        await productIdInput.FillAsync("10");
+
+        var quantityInput = page.Locator("[aria-label='Quantity']");
+        await quantityInput.FillAsync("-5");
+
+        var placeOrderButton = page.Locator("[aria-label='Place Order']");
+        await placeOrderButton.ClickAsync();
+
+        // Wait for error message to appear
+        var errorMessage = page.Locator("#quantityError");
+        await errorMessage.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = TestConfiguration.WaitSeconds * 1000 });
+
+        var errorMessageText = await errorMessage.TextContentAsync();
+
+        // Assert
+        Assert.Contains("Quantity must be positive", errorMessageText);
+
+        await browser.CloseAsync();
+    }
+
+    [Theory]
+    [InlineData("3.5")]   // Decimal value
+    [InlineData("lala")]  // Non-numeric string
+    public async Task ShouldRejectOrderWithNonIntegerQuantity(string invalidQuantity)
+    {
+        // Arrange
+        using var playwright = await Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        var page = await browser.NewPageAsync();
+        var baseUrl = TestConfiguration.BaseUrl;
+
+        // Act
+        await page.GotoAsync($"{baseUrl}/shop.html");
+
+        var productIdInput = page.Locator("[aria-label='Product ID']");
+        await productIdInput.FillAsync("10");
+
+        var quantityInput = page.Locator("[aria-label='Quantity']");
+        await quantityInput.FillAsync(invalidQuantity);
+
+        var placeOrderButton = page.Locator("[aria-label='Place Order']");
+        await placeOrderButton.ClickAsync();
+
+        // Wait for error message to appear
+        var errorMessage = page.Locator("#quantityError");
+        await errorMessage.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = TestConfiguration.WaitSeconds * 1000 });
+
+        var errorMessageText = await errorMessage.TextContentAsync();
+
+        // Assert
+        Assert.Contains("Quantity must be an integer", errorMessageText);
+
+        await browser.CloseAsync();
+    }
+
+    [Theory]
+    [InlineData("10.5")]  // Decimal value
+    [InlineData("xyz")]   // Non-numeric string
+    public async Task ShouldRejectOrderWithNonIntegerProductId(string invalidProductId)
+    {
+        // Arrange
+        using var playwright = await Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        var page = await browser.NewPageAsync();
+        var baseUrl = TestConfiguration.BaseUrl;
+
+        // Act
+        await page.GotoAsync($"{baseUrl}/shop.html");
+
+        var productIdInput = page.Locator("[aria-label='Product ID']");
+        await productIdInput.FillAsync(invalidProductId);
+
+        var quantityInput = page.Locator("[aria-label='Quantity']");
+        await quantityInput.FillAsync("5");
+
+        var placeOrderButton = page.Locator("[aria-label='Place Order']");
+        await placeOrderButton.ClickAsync();
+
+        // Wait for error message to appear
+        var errorMessage = page.Locator("#productIdError");
+        await errorMessage.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = TestConfiguration.WaitSeconds * 1000 });
+
+        var errorMessageText = await errorMessage.TextContentAsync();
+
+        // Assert
+        Assert.Contains("Product ID must be an integer", errorMessageText);
+
+        await browser.CloseAsync();
+    }
+
+    [Fact]
     public async Task ShouldCancelOrder()
     {
         // Arrange - First place an order
