@@ -24,15 +24,9 @@ public class GlobalExceptionHandler : IExceptionHandler
 
         if (exception is ValidationException validationException)
         {
-            var problemDetails = new ProblemDetails
-            {
-                Status = StatusCodes.Status422UnprocessableEntity,
-                Title = "Validation Error",
-                Detail = validationException.Message
-            };
-
+            var errorResponse = new { Message = validationException.Message };
             httpContext.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
-            await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+            await httpContext.Response.WriteAsJsonAsync(errorResponse, cancellationToken);
             return true;
         }
 
@@ -40,36 +34,47 @@ public class GlobalExceptionHandler : IExceptionHandler
         {
             _logger.LogDebug("JsonException: {Message}", jsonException.Message);
 
-            var message = jsonException.Message ?? string.Empty;
-            var lowerMessage = message.ToLower();
-
-            // Check if it's related to the productId or quantity field
-            string errorMessage;
-            if (lowerMessage.Contains("productid") || lowerMessage.Contains("product_id"))
+            var errorResponse = TryParseFieldError(jsonException.Message);
+            if (errorResponse != null)
             {
-                errorMessage = "Product ID must be an integer";
-            }
-            else if (lowerMessage.Contains("quantity"))
-            {
-                errorMessage = "Quantity must be an integer";
-            }
-            else
-            {
-                errorMessage = "Invalid request format";
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await httpContext.Response.WriteAsJsonAsync(errorResponse, cancellationToken);
+                return true;
             }
 
-            var problemDetails = new ProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Bad Request",
-                Detail = errorMessage
-            };
-
+            // Fallback to generic error
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+            await httpContext.Response.WriteAsJsonAsync(new { Message = "Invalid request format" }, cancellationToken);
             return true;
         }
 
         return false;
+    }
+
+    private object? TryParseFieldError(string? message)
+    {
+        if (string.IsNullOrEmpty(message))
+        {
+            return null;
+        }
+
+        var lowerMessage = message.ToLower();
+
+        // Map field names to error messages
+        var fieldErrorMessages = new Dictionary<string, string>
+        {
+            { "productid", "Product ID must be an integer" },
+            { "quantity", "Quantity must be an integer" }
+        };
+
+        foreach (var (fieldName, errorMessage) in fieldErrorMessages)
+        {
+            if (lowerMessage.Contains(fieldName))
+            {
+                return new { Message = errorMessage };
+            }
+        }
+
+        return null;
     }
 }
