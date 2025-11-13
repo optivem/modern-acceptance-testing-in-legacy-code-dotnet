@@ -1,4 +1,4 @@
-# ATDD Accelerator eShop (.NET)
+# Modern Acceptance Testing in Legacy Code (.NET)
 
 [![commit-stage-monolith](https://github.com/optivem/e2e-testing-in-legacy-code-dotnet/actions/workflows/commit-stage-monolith.yml/badge.svg)](https://github.com/optivem/e2e-testing-in-legacy-code-dotnet/actions/workflows/commit-stage-monolith.yml)
 [![acceptance-stage](https://github.com/optivem/e2e-testing-in-legacy-code-dotnet/actions/workflows/acceptance-stage.yml/badge.svg)](https://github.com/optivem/e2e-testing-in-legacy-code-dotnet/actions/workflows/acceptance-stage.yml)
