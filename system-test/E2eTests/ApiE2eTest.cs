@@ -4,217 +4,225 @@ using System.Text.Json;
 
 namespace Optivem.AtddAccelerator.EShop.SystemTest.E2eTests;
 
-public class ApiE2eTest
+public class ApiE2eTest : IDisposable
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
+    private readonly HttpClient _httpClient;
+    private readonly TestConfiguration _config;
 
-    [Fact]
-    public async Task PlaceOrder_ShouldReturnOrderNumber()
+    public ApiE2eTest()
     {
-        // Arrange
-        var request = new PlaceOrderRequest
+        _config = new TestConfiguration();
+        _httpClient = new HttpClient
         {
-            ProductId = 10,
-            Quantity = 5
+            BaseAddress = new Uri(_config.BaseUrl)
         };
-
-        using var client = new HttpClient();
-        
-        // Act
-        var response = await client.PostAsJsonAsync($"{TestConfiguration.BaseUrl}/api/orders", request);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        
-        var responseBody = await response.Content.ReadAsStringAsync();
-        var orderResponse = JsonSerializer.Deserialize<PlaceOrderResponse>(responseBody, JsonOptions);
-        
-        Assert.NotNull(orderResponse);
-        Assert.NotNull(orderResponse.OrderNumber);
-        Assert.True(orderResponse.OrderNumber.StartsWith("ORD-"), "Order number should start with ORD-");
     }
 
     [Fact]
-    public async Task GetOrder_ShouldReturnOrderDetails()
+    public async Task PlaceOrder_WithValidRequest_ShouldReturnCreated()
     {
-        // Arrange - First place an order
-        var placeOrderRequest = new PlaceOrderRequest
+        // Arrange
+        var request = new
         {
-            ProductId = 11,
-            Quantity = 3
+            sku = "WIDGET-001",
+            quantity = 5,
+            country = "US"
         };
 
-        using var client = new HttpClient();
-        var postResponse = await client.PostAsJsonAsync($"{TestConfiguration.BaseUrl}/api/orders", placeOrderRequest);
-        var postBody = await postResponse.Content.ReadAsStringAsync();
-        var placeOrderResponse = JsonSerializer.Deserialize<PlaceOrderResponse>(postBody, JsonOptions);
-        var orderNumber = placeOrderResponse!.OrderNumber;
+        // Act
+        var response = await _httpClient.PostAsJsonAsync("/api/orders", request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         
-        // Act - Get the order details
-        var getResponse = await client.GetAsync($"{TestConfiguration.BaseUrl}/api/orders/{orderNumber}");
+        var responseBody = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var orderNumber = responseBody.GetProperty("orderNumber").GetString();
+        Assert.NotNull(orderNumber);
+        Assert.NotEmpty(orderNumber);
+        
+        var location = response.Headers.Location?.ToString();
+        Assert.NotNull(location);
+        Assert.Contains($"/api/orders/{orderNumber}", location);
+    }
+
+    [Fact]
+    public async Task GetOrder_WithExistingOrder_ShouldReturnOrder()
+    {
+        // Arrange - First place an order
+        var placeRequest = new
+        {
+            sku = "WIDGET-002",
+            quantity = 3,
+            country = "US"
+        };
+        var placeResponse = await _httpClient.PostAsJsonAsync("/api/orders", placeRequest);
+        var placeBody = await placeResponse.Content.ReadFromJsonAsync<JsonElement>();
+        var orderNumber = placeBody.GetProperty("orderNumber").GetString();
+
+        // Act
+        var getResponse = await _httpClient.GetAsync($"/api/orders/{orderNumber}");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
         
-        var getBody = await getResponse.Content.ReadAsStringAsync();
-        var getOrderResponse = JsonSerializer.Deserialize<GetOrderResponse>(getBody, JsonOptions);
+        var order = await getResponse.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(orderNumber, order.GetProperty("orderNumber").GetString());
+        Assert.Equal("WIDGET-002", order.GetProperty("sku").GetString());
+        Assert.Equal(3, order.GetProperty("quantity").GetInt32());
+        Assert.Equal("US", order.GetProperty("country").GetString());
+        Assert.Equal("PLACED", order.GetProperty("status").GetString());
         
-        Assert.NotNull(getOrderResponse);
-        Assert.Equal(orderNumber, getOrderResponse.OrderNumber);
-        Assert.Equal(11L, getOrderResponse.ProductId);
-        Assert.Equal(3, getOrderResponse.Quantity);
-        
-        // Price will come from DummyJSON API for product 11
-        Assert.True(getOrderResponse.UnitPrice > 0, "Unit price should be positive");
-        Assert.True(getOrderResponse.TotalPrice > 0, "Total price should be positive");
+        // Verify price calculations
+        Assert.True(order.GetProperty("unitPrice").GetDecimal() > 0);
+        Assert.True(order.GetProperty("originalPrice").GetDecimal() > 0);
+        Assert.True(order.GetProperty("subtotalPrice").GetDecimal() > 0);
+        Assert.True(order.GetProperty("totalPrice").GetDecimal() > 0);
     }
 
-    [Theory]
-    [InlineData(11L, 3)]   // Product 11 with standard quantity
-    [InlineData(12L, 5)]   // Product 12 with medium quantity
-    [InlineData(13L, 1)]   // Product 13 with minimum quantity
-    [InlineData(14L, 10)]  // Product 14 with large quantity
-    public async Task GetOrder_ShouldReturnOrderDetails_WithMultipleProducts(long productId, int quantity)
-    {
-        // Arrange - First place an order
-        var placeOrderRequest = new PlaceOrderRequest
-        {
-            ProductId = productId,
-            Quantity = quantity
-        };
-
-        using var client = new HttpClient();
-        var postResponse = await client.PostAsJsonAsync($"{TestConfiguration.BaseUrl}/api/orders", placeOrderRequest);
-        var postBody = await postResponse.Content.ReadAsStringAsync();
-        var placeOrderResponse = JsonSerializer.Deserialize<PlaceOrderResponse>(postBody, JsonOptions);
-        var orderNumber = placeOrderResponse!.OrderNumber;
-        
-        // Act - Get the order details
-        var getResponse = await client.GetAsync($"{TestConfiguration.BaseUrl}/api/orders/{orderNumber}");
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
-        
-        var getBody = await getResponse.Content.ReadAsStringAsync();
-        var getOrderResponse = JsonSerializer.Deserialize<GetOrderResponse>(getBody, JsonOptions);
-        
-        Assert.NotNull(getOrderResponse);
-        Assert.Equal(orderNumber, getOrderResponse.OrderNumber);
-        Assert.Equal(productId, getOrderResponse.ProductId);
-        Assert.Equal(quantity, getOrderResponse.Quantity);
-        
-        // Price will come from DummyJSON API for product
-        Assert.NotNull(getOrderResponse.UnitPrice);
-        Assert.NotNull(getOrderResponse.TotalPrice);
-    }
-
-    [Theory]
-    [InlineData("10.5")]  // Decimal value
-    [InlineData("xyz")]   // Non-numeric string
-    public async Task PlaceOrder_ShouldRejectNonIntegerProductId(string invalidProductId)
+    [Fact]
+    public async Task GetOrder_WithNonExistentOrder_ShouldReturnNotFound()
     {
         // Arrange
-        var jsonContent = $$"""
-            {
-                "productId": {{invalidProductId}},
-                "quantity": 5
-            }
-            """;
-        
-        using var client = new HttpClient();
-        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
-        
+        var orderNumber = "NON-EXISTENT-ORDER";
+
         // Act
-        var response = await client.PostAsync($"{TestConfiguration.BaseUrl}/api/orders", content);
+        var response = await _httpClient.GetAsync($"/api/orders/{orderNumber}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CancelOrder_WithExistingPlacedOrder_ShouldReturnNoContent()
+    {
+        // Arrange - First place an order
+        var placeRequest = new
+        {
+            sku = "WIDGET-003",
+            quantity = 2,
+            country = "US"
+        };
+        var placeResponse = await _httpClient.PostAsJsonAsync("/api/orders", placeRequest);
+        var placeBody = await placeResponse.Content.ReadFromJsonAsync<JsonElement>();
+        var orderNumber = placeBody.GetProperty("orderNumber").GetString();
+
+        // Act
+        var cancelResponse = await _httpClient.PostAsync($"/api/orders/{orderNumber}/cancel", null);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NoContent, cancelResponse.StatusCode);
+        
+        // Verify order is cancelled
+        var getResponse = await _httpClient.GetAsync($"/api/orders/{orderNumber}");
+        var order = await getResponse.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal("CANCELLED", order.GetProperty("status").GetString());
+    }
+
+    [Fact]
+    public async Task CancelOrder_WithNonExistentOrder_ShouldReturnNotFound()
+    {
+        // Arrange
+        var orderNumber = "NON-EXISTENT-ORDER";
+
+        // Act
+        var response = await _httpClient.PostAsync($"/api/orders/{orderNumber}/cancel", null);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CancelOrder_WithAlreadyCancelledOrder_ShouldReturnBadRequest()
+    {
+        // Arrange - First place and cancel an order
+        var placeRequest = new
+        {
+            sku = "WIDGET-004",
+            quantity = 1,
+            country = "US"
+        };
+        var placeResponse = await _httpClient.PostAsJsonAsync("/api/orders", placeRequest);
+        var placeBody = await placeResponse.Content.ReadFromJsonAsync<JsonElement>();
+        var orderNumber = placeBody.GetProperty("orderNumber").GetString();
+        
+        await _httpClient.PostAsync($"/api/orders/{orderNumber}/cancel", null);
+
+        // Act - Try to cancel again
+        var response = await _httpClient.PostAsync($"/api/orders/{orderNumber}/cancel", null);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Theory]
+    [InlineData("", 5, "US", "SKU must not be empty")]
+    [InlineData("WIDGET-005", 0, "US", "Quantity must be positive")]
+    [InlineData("WIDGET-006", -1, "US", "Quantity must be positive")]
+    [InlineData("WIDGET-007", 5, "", "Country must not be empty")]
+    public async Task PlaceOrder_WithInvalidRequest_ShouldReturnBadRequest(
+        string sku, int quantity, string country, string expectedError)
+    {
+        // Arrange
+        var request = new Dictionary<string, object?>
+        {
+            ["sku"] = string.IsNullOrEmpty(sku) ? null : sku,
+            ["quantity"] = quantity,
+            ["country"] = string.IsNullOrEmpty(country) ? null : country
+        };
+
+        // Act
+        var response = await _httpClient.PostAsJsonAsync("/api/orders", request);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         
         var responseBody = await response.Content.ReadAsStringAsync();
-        Assert.Contains("Product ID must be an integer", responseBody);
+        Assert.Contains(expectedError, responseBody);
     }
 
     [Theory]
-    [InlineData("3.5")]   // Decimal value
-    [InlineData("lala")]  // Non-numeric string
-    public async Task PlaceOrder_ShouldRejectNonIntegerQuantity(string invalidQuantity)
+    [MemberData(nameof(GetInvalidQuantityTestData))]
+    public async Task PlaceOrder_WithInvalidQuantityType_ShouldReturnBadRequest(
+        object quantity, string expectedError)
     {
         // Arrange
-        var jsonContent = $$"""
-            {
-                "productId": 10,
-                "quantity": {{invalidQuantity}}
-            }
-            """;
-        
-        using var client = new HttpClient();
-        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
-        
+        var request = new Dictionary<string, object?>
+        {
+            ["sku"] = "WIDGET-008",
+            ["quantity"] = quantity,
+            ["country"] = "US"
+        };
+
         // Act
-        var response = await client.PostAsync($"{TestConfiguration.BaseUrl}/api/orders", content);
+        var response = await _httpClient.PostAsJsonAsync("/api/orders", request);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         
         var responseBody = await response.Content.ReadAsStringAsync();
-        Assert.Contains("Quantity must be an integer", responseBody);
+        Assert.Contains(expectedError, responseBody);
+    }
+
+    public static IEnumerable<object[]> GetInvalidQuantityTestData()
+    {
+        yield return new object[] { null!, "Quantity must not be empty" };
     }
 
     [Fact]
-    public async Task CancelOrder_ShouldSetStatusToCancelled()
+    public async Task PlaceOrder_WithMissingFields_ShouldReturnBadRequest()
     {
-        // Arrange - First place an order
-        var placeOrderRequest = new PlaceOrderRequest
-        {
-            ProductId = 12,
-            Quantity = 2
-        };
+        // Arrange
+        var request = new { };
 
-        using var client = new HttpClient();
-        var postResponse = await client.PostAsJsonAsync($"{TestConfiguration.BaseUrl}/api/orders", placeOrderRequest);
-        var postBody = await postResponse.Content.ReadAsStringAsync();
-        var placeOrderResponse = JsonSerializer.Deserialize<PlaceOrderResponse>(postBody, JsonOptions);
-        var orderNumber = placeOrderResponse!.OrderNumber;
-        
-        // Act - Cancel the order
-        var deleteResponse = await client.DeleteAsync($"{TestConfiguration.BaseUrl}/api/orders/{orderNumber}");
+        // Act
+        var response = await _httpClient.PostAsJsonAsync("/api/orders", request);
 
-        // Assert - Verify cancel response
-        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
-        
-        // Verify order status is CANCELLED
-        var getResponse = await client.GetAsync($"{TestConfiguration.BaseUrl}/api/orders/{orderNumber}");
-        Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
-        
-        var getBody = await getResponse.Content.ReadAsStringAsync();
-        var getOrderResponse = JsonSerializer.Deserialize<GetOrderResponse>(getBody, JsonOptions);
-        
-        Assert.NotNull(getOrderResponse);
-        Assert.Equal("Cancelled", getOrderResponse.Status);
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    private class PlaceOrderRequest
+    public void Dispose()
     {
-        public long ProductId { get; set; }
-        public int Quantity { get; set; }
-    }
-    
-    private class PlaceOrderResponse
-    {
-        public string OrderNumber { get; set; } = string.Empty;
-        public decimal TotalPrice { get; set; }
-    }
-    
-    private class GetOrderResponse
-    {
-        public string OrderNumber { get; set; } = string.Empty;
-        public long ProductId { get; set; }
-        public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
-        public decimal TotalPrice { get; set; }
-        public string Status { get; set; } = string.Empty;
+        _httpClient?.Dispose();
     }
 }

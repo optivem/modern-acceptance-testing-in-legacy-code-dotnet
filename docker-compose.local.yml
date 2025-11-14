@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=eshop
+      - POSTGRES_USER=eshop_user
+      - POSTGRES_PASSWORD=eshop_password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eshop_user -d eshop"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  erp-api:
+    image: williamyeh/json-server
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./json-server-db.erp-api.json:/data/db.json
+    command: --watch /data/db.json --host 0.0.0.0
+
+  tax-api:
+    image: williamyeh/json-server
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./json-server-db.tax-api.json:/data/db.json
+    command: --watch /data/db.json --host 0.0.0.0 --port 3001
+
+  monolith:
+    build:
+      context: ./monolith
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=eshop;Username=eshop_user;Password=eshop_password
+      - ExternalApis__ErpApiBaseUrl=http://erp-api:3000
+      - ExternalApis__TaxApiBaseUrl=http://tax-api:3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+      erp-api:
+        condition: service_started
+      tax-api:
+        condition: service_started
+
+volumes:
+  postgres-data:

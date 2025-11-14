@@ -3,12 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Optivem.AtddAccelerator.EShop.Monolith.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 public class EchoController : ControllerBase
 {
-    [HttpGet]
-    public IActionResult Get()
+    [HttpGet("/api/echo")]
+    public IActionResult Echo()
     {
-        return Ok("Hello from API!");
+        return Ok();
     }
 }

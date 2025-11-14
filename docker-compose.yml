@@ -1,0 +1,8 @@
+# Default docker-compose file for developer convenience
+# This uses the local build configuration
+#
+# For CI/CD pipelines, use: docker compose -f docker-compose.pipeline.yml up
+# Or use the run.ps1 script: .\run.ps1 start pipeline
+
+include:
+  - docker-compose.local.yml

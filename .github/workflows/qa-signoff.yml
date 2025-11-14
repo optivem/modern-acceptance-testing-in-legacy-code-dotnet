@@ -1,106 +1,90 @@
-name: qa-signoff
+name: QA Signoff
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version that was tested in QA (e.g., v1.0.4-rc)'
+        description: 'Version to sign off (e.g., 1.2.3-alpha.1)'
         required: true
         type: string
-      result:
-        description: 'QA testing result'
+      status:
+        description: 'QA Status'
         required: true
         type: choice
         options:
           - success
           - failure
-
-concurrency:
-  group: qa-signoff
-  cancel-in-progress: true
+      comments:
+        description: 'QA Comments'
+        required: false
+        type: string
 
 jobs:
-  check-version-exists:
+  qa-signoff:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Check Version Release Exists
-        uses: optivem/check-release-exists-action@v1
-        with:
-          version: ${{ inputs.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  signoff-status-version:
-    needs: check-version-exists
-    if: needs.check-version-exists.result == 'success'
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.generate-version.outputs.version }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Generate Signoff Status Version
-        id: generate-version
-        uses: optivem/generate-status-version-action@v1
-        with:
-          version: ${{ inputs.version }}
-          environment: qa
-          status: ${{ inputs.result }}
+      - name: Check if version exists
+        run: |
+          QA_TAG="qa-${{ inputs.version }}"
+          RELEASE_EXISTS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/$QA_TAG")
+          
+          if [ "$RELEASE_EXISTS" != "200" ]; then
+            echo "Error: QA release $QA_TAG does not exist"
+            exit 1
+          fi
 
-  signoff-release:
-    needs: signoff-status-version
-    if: needs.signoff-status-version.result == 'success'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    outputs:
-      release-url: ${{ steps.create-release.outputs.release-url }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Create Signoff Release
-        id: create-release
-        uses: optivem/create-release-action@v1
-        with:
-          base-version: ${{ inputs.version }}
-          release-version: ${{ needs.signoff-status-version.outputs.version }}
-          environment: qa
-          status: ${{ inputs.result }}
-          is-prerelease: true
+      - name: Create signoff release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          STATUS_EMOJI="${{ inputs.status == 'success' && '✅' || '❌' }}"
+          RELEASE_BODY="QA Signoff: $STATUS_EMOJI ${{ inputs.status }}
+          
+          Version: ${{ inputs.version }}
+          Signed off by: ${{ github.actor }}
+          Date: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          Comments:
+          ${{ inputs.comments || 'No comments provided' }}"
+          
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/releases \
+            -d "{
+              \"tag_name\": \"qa-signoff-${{ inputs.version }}\",
+              \"name\": \"QA Signoff - ${{ inputs.version }} (${{ inputs.status }})\",
+              \"body\": $(echo "$RELEASE_BODY" | jq -Rs .),
+              \"draft\": false,
+              \"prerelease\": true
+            }"
 
-  summary:
-    needs: [check-version-exists, signoff-status-version, signoff-release]
-    if: always() # Run even if previous jobs fail
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-      
-    - name: Determine Stage Result
-      id: determine-result
-      run: |
-        if [[ "${{ needs.signoff-release.result }}" == "success" && "${{ inputs.result }}" == "success" ]]; then
-          echo "stage-result=success" >> $GITHUB_OUTPUT
-          echo "✅ Both workflow execution and QA testing were successful"
-        else
-          echo "stage-result=failure" >> $GITHUB_OUTPUT
-          echo "❌ Either workflow execution failed or QA testing failed"
-          echo "Workflow result: ${{ needs.signoff-release.result }}"
-          echo "QA test result: ${{ inputs.result }}"
-        fi
-      shell: bash
-      
-    - name: Generate QA Signoff Stage Summary
-      uses: optivem/summarize-system-stage-action@v1
-      with:
-        stage-name: 'QA Signoff'
-        environment: qa
-        stage-result: ${{ steps.determine-result.outputs.stage-result }}
-        success-version: ${{ needs.signoff-status-version.outputs.version }}
+      - name: Update QA deployment release
+        if: inputs.status == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          QA_TAG="qa-${{ inputs.version }}"
+          RELEASE_ID=$(curl -s \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/$QA_TAG" | \
+            jq -r '.id')
+          
+          curl -X PATCH \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID" \
+            -d '{
+              "body": "✅ QA Approved\n\nSigned off by: ${{ github.actor }}\nReady for production deployment"
+            }'
+
+      - name: Display signoff info
+        run: |
+          echo "QA Signoff completed"
+          echo "Version: ${{ inputs.version }}"
+          echo "Status: ${{ inputs.status }}"
+          echo "Signed off by: ${{ github.actor }}"

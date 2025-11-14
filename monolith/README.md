@@ -1,43 +1,125 @@
-# Monolith (.NET)
+# Optivem eShop Monolith (.NET)
 
-This is a sample monolithic application written in .NET.
+This is the .NET 8 monolith application for the Optivem eShop, migrated from the Java Spring Boot version.
 
-## Instructions
+## Technology Stack
 
-Open up the 'monolith' folder
+- .NET 8
+- ASP.NET Core Web API
+- Entity Framework Core 8
+- PostgreSQL
+- C# 12
 
-```shell
+## Architecture
+
+The application follows a layered architecture:
+
+- **Controllers** - HTTP endpoints for API and static file serving
+- **Core/Services** - Business logic layer including OrderService
+- **Core/Repositories** - Data access layer with EF Core
+- **Core/DTOs** - Data transfer objects for API contracts
+- **Core/Entities** - Domain entities (Order)
+- **Core/Exceptions** - Custom exception types
+- **Core/Services/External** - HTTP clients for external APIs (ERP, Tax)
+
+## Business Logic
+
+### Order Placement
+- Validates SKU, quantity, and country
+- Fetches product price from ERP API
+- Calculates discount rate (15% after 17:00, otherwise 0%)
+- Fetches tax rate from Tax API
+- Calculates final price with discounts and taxes
+- Generates unique order number (ORD-{GUID})
+
+### Order Retrieval
+- Returns order details by order number
+- Throws 404 if order doesn't exist
+
+### Order Cancellation
+- Changes order status to CANCELLED
+- Blocks cancellation on December 31st between 22:00-23:00
+- Throws 404 if order doesn't exist
+
+## Configuration
+
+Configuration is stored in `appsettings.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=eshop;Username=postgres;Password=postgres"
+  },
+  "ExternalApis": {
+    "ErpApi": {
+      "BaseUrl": "http://localhost:3000"
+    },
+    "TaxApi": {
+      "BaseUrl": "http://localhost:3001"
+    }
+  }
+}
+```
+
+## Running the Application
+
+### Using .NET CLI
+
+```bash
 cd monolith
+dotnet restore
+dotnet run
 ```
 
-Check that you have Powershell 7
+The application will start on `http://localhost:8080`.
 
-```shell
-$PSVersionTable.PSVersion
+### Using Docker
+
+```bash
+docker build -f monolith/Dockerfile -t eshop-monolith .
+docker run -p 8080:8080 eshop-monolith
 ```
 
-Ensure you have .NET 8:
+## API Endpoints
 
-```shell
-dotnet --version
-```
+- `GET /` - Home page
+- `GET /shop.html` - Order creation page
+- `GET /order-history.html` - Order history page
+- `POST /api/orders` - Create new order
+- `GET /api/orders/{orderNumber}` - Get order details
+- `POST /api/orders/{orderNumber}/cancel` - Cancel order
+- `GET /api/echo` - Health check endpoint
 
-To build the project:
+## Database Schema
 
-```shell
-dotnet build
-```
+The `orders` table contains:
+- order_number (PK)
+- order_timestamp
+- country
+- sku
+- quantity
+- unit_price
+- original_price
+- discount_rate
+- discount_amount
+- subtotal_price
+- tax_rate
+- tax_amount
+- total_price
+- status (PLACED/CANCELLED)
 
-To run:
+## Error Handling
 
-```shell
-dotnet run --urls "http://localhost:8080"
-```
+- Returns 422 for validation errors (ValidationException)
+- Returns 404 for non-existent resources (NotExistValidationException)
+- Returns 500 for unhandled exceptions
+- All errors return JSON response with error message
 
-To restart:
-```shell
-dotnet build && dotnet run --urls "http://localhost:8080"
-```
+## Migration from Java
 
-App should now be running on:
-http://localhost:8080/
+This application is a faithful migration from the Java Spring Boot version, preserving:
+- All business logic (discount rates, tax calculations, cancellation rules)
+- API contracts (camelCase JSON, same endpoints)
+- Error handling behavior
+- Database schema
+- Static HTML pages with JavaScript

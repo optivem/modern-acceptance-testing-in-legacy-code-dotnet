@@ -1,40 +1,59 @@
+using Microsoft.EntityFrameworkCore;
 using Optivem.AtddAccelerator.EShop.Monolith.Api.Exceptions;
 using Optivem.AtddAccelerator.EShop.Monolith.Core.Repositories;
 using Optivem.AtddAccelerator.EShop.Monolith.Core.Services;
 using Optivem.AtddAccelerator.EShop.Monolith.Core.Services.External;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
     });
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-// Register application services
-builder.Services.AddSingleton<OrderRepository>();
-builder.Services.AddSingleton<OrderService>();
+// Add DbContext
+builder.Services.AddDbContext<OrderDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.UseNpgsql(connectionString);
+});
+
+// Add services
+builder.Services.AddScoped<OrderRepository>();
+builder.Services.AddScoped<OrderService>();
 builder.Services.AddHttpClient<ErpGateway>();
+builder.Services.AddHttpClient<TaxGateway>();
 
-// Add exception handling
+// Add exception handler
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseExceptionHandler();
-
-// Serve index.html as default file (must be before UseStaticFiles)
-app.UseDefaultFiles();
 app.UseStaticFiles();
-
-app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapControllers();
+
+// Fallback to index.html for root
+app.MapFallbackToFile("index.html");
+
+// Auto-migrate database
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+    dbContext.Database.EnsureCreated();
+}
 
 app.Run();

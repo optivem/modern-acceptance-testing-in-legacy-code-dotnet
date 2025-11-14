@@ -1,144 +1,103 @@
-name: prod-stage
+name: Production Stage
 
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Prerelease version to deploy (e.g., v1.0.4-rc)'
+      prerelease-version:
+        description: 'Prerelease version to promote (e.g., 1.2.3-alpha.1)'
         required: true
         type: string
 
-concurrency:
-  group: prod-stage
-  cancel-in-progress: true
-
 jobs:
-  generate-production-version:
+  promote-to-production:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    outputs:
-      production-version: ${{ steps.generate-version.outputs.version }}
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Generate Production Version
-        id: generate-version
-        uses: optivem/generate-release-version-action@v1
+      - name: Verify QA signoff
+        run: |
+          SIGNOFF_TAG="qa-signoff-${{ inputs.prerelease-version }}"
+          SIGNOFF_EXISTS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/$SIGNOFF_TAG")
+          
+          if [ "$SIGNOFF_EXISTS" != "200" ]; then
+            echo "Error: QA signoff release $SIGNOFF_TAG does not exist"
+            exit 1
+          fi
+          
+          # Check if signoff was successful
+          SIGNOFF_NAME=$(curl -s \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/$SIGNOFF_TAG" | \
+            jq -r '.name')
+          
+          if [[ ! "$SIGNOFF_NAME" =~ "success" ]]; then
+            echo "Error: QA signoff was not successful"
+            exit 1
+          fi
+
+      - name: Generate production version
+        id: prod-version
+        run: |
+          # Remove prerelease suffix (e.g., 1.2.3-alpha.1 -> 1.2.3)
+          PROD_VERSION=$(echo "${{ inputs.prerelease-version }}" | sed 's/-.*$//')
+          echo "version=$PROD_VERSION" >> $GITHUB_OUTPUT
+          echo "Production version: $PROD_VERSION"
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          prerelease-version: ${{ inputs.version }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-  check-release-exists:
-    needs: generate-production-version
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Tag and push production Docker images
+        run: |
+          PROD_VERSION="${{ steps.prod-version.outputs.version }}"
+          PRERELEASE_VERSION="${{ inputs.prerelease-version }}"
+          
+          # Monolith
+          MONOLITH_COMMIT_IMAGE="${{ secrets.DOCKER_ORGANIZATION }}/modern-acceptance-testing-in-legacy-code-dotnet-monolith:commit-$PRERELEASE_VERSION"
+          MONOLITH_PROD_IMAGE="${{ secrets.DOCKER_ORGANIZATION }}/modern-acceptance-testing-in-legacy-code-dotnet-monolith:$PROD_VERSION"
+          MONOLITH_LATEST_IMAGE="${{ secrets.DOCKER_ORGANIZATION }}/modern-acceptance-testing-in-legacy-code-dotnet-monolith:latest"
+          
+          docker pull $MONOLITH_COMMIT_IMAGE
+          docker tag $MONOLITH_COMMIT_IMAGE $MONOLITH_PROD_IMAGE
+          docker tag $MONOLITH_COMMIT_IMAGE $MONOLITH_LATEST_IMAGE
+          docker push $MONOLITH_PROD_IMAGE
+          docker push $MONOLITH_LATEST_IMAGE
 
-      - name: Check Version Release Exists
-        id: check-release
-        uses: optivem/check-release-exists-action@v1
-        with:
-          version: ${{ inputs.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  resolve-docker-images:
-    needs: [generate-production-version, check-release-exists]
-    if: needs.check-release-exists.result == 'success'
-    runs-on: ubuntu-latest
-    outputs:
-      image-urls: ${{ steps.resolve-images.outputs.image-urls }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Resolve Docker Images
-        id: resolve-images
-        uses: optivem/resolve-docker-images-action@v1
-        with:
-          tag: ${{ inputs.version }}
-          base-image-urls: |
-            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/monolith
-
-  tag-docker-images:
-    needs: [generate-production-version, check-release-exists, resolve-docker-images]
-    if: needs.resolve-docker-images.result == 'success'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    outputs:
-      image-urls: ${{ steps.tag-images.outputs.image-urls }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Tag Docker Images for Production
-        id: tag-images
-        uses: optivem/tag-docker-images-action@v1
-        with:
-          image-urls: ${{ needs.resolve-docker-images.outputs.image-urls }}
-          tag: ${{ needs.generate-production-version.outputs.production-version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  deploy-docker-images:
-    needs: [generate-production-version, check-release-exists, tag-docker-images]
-    if: needs.tag-docker-images.result == 'success'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Deploy System
-        id: deploy
+      - name: Deploy to production environment
         uses: ./.github/actions/deploy-docker-images
         with:
-          environment: production
-          version: ${{ needs.generate-production-version.outputs.production-version }}
-          image-urls: ${{ needs.tag-docker-images.outputs.image-urls }}
+          monolith-image: ${{ secrets.DOCKER_ORGANIZATION }}/modern-acceptance-testing-in-legacy-code-dotnet-monolith:${{ steps.prod-version.outputs.version }}
 
-  production-release:
-    needs: [generate-production-version, tag-docker-images, deploy-docker-images]
-    if: needs.deploy-docker-images.result == 'success'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    outputs:
-      release-url: ${{ steps.create-release.outputs.release-url }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Wait for services to be ready
+        run: |
+          echo "Waiting for services to start..."
+          sleep 30
+          curl -f http://localhost:8080/echo || exit 1
 
-      - name: Create Production Release
-        id: create-release
-        uses: optivem/create-release-action@v1
-        with:
-          base-version: ${{ inputs.version }}
-          release-version: ${{ needs.generate-production-version.outputs.production-version }}
-          environment: prod
-          status: deployed
-          artifact-urls: ${{ needs.tag-docker-images.outputs.image-urls }}
-          is-prerelease: false
+      - name: Create production release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PROD_VERSION="${{ steps.prod-version.outputs.version }}"
+          
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/releases \
+            -d "{
+              \"tag_name\": \"v$PROD_VERSION\",
+              \"name\": \"Production Release - $PROD_VERSION\",
+              \"body\": \"🚀 Production Release $PROD_VERSION\n\nPromoted from prerelease: ${{ inputs.prerelease-version }}\n\nDeployed by: ${{ github.actor }}\nDate: $(date -u +\"%Y-%m-%d %H:%M:%S UTC\")\n\nDocker Images:\n- Monolith: ${{ secrets.DOCKER_ORGANIZATION }}/modern-acceptance-testing-in-legacy-code-dotnet-monolith:$PROD_VERSION\",
+              \"draft\": false,
+              \"prerelease\": false
+            }"
 
-  summary:
-    needs: [generate-production-version, check-release-exists, resolve-docker-images, tag-docker-images, deploy-docker-images, production-release]
-    if: always() # Run even if previous jobs fail
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-      
-    - name: Generate Production Stage Summary
-      uses: optivem/summarize-system-stage-action@v1
-      with:
-        stage-name: 'Production Stage'
-        environment: production
-        stage-result: ${{ needs.production-release.result }}
-        success-version: ${{ needs.generate-production-version.outputs.production-version }}
-        success-artifact-ids: ${{ needs.tag-docker-images.outputs.image-urls }}
+      - name: Display deployment info
+        run: |
+          echo "Successfully promoted to production"
+          echo "Production version: ${{ steps.prod-version.outputs.version }}"
+          echo "From prerelease: ${{ inputs.prerelease-version }}"

@@ -1,25 +1,38 @@
-using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Optivem.AtddAccelerator.EShop.Monolith.Core.Services.External;
 
 public class ErpGateway
 {
     private readonly HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
 
-    public ErpGateway(HttpClient httpClient)
+    public ErpGateway(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
+        _configuration = configuration;
     }
 
-    public async Task<decimal> GetUnitPrice(long productId)
+    public async Task<ProductDetails?> GetProductDetailsAsync(string sku)
     {
-        var response = await _httpClient.GetAsync($"https://dummyjson.com/products/{productId}");
-        response.EnsureSuccessStatusCode();
+        var erpApiBaseUrl = _configuration["ExternalApis:ErpApi:BaseUrl"];
+        var response = await _httpClient.GetAsync($"{erpApiBaseUrl}/products?sku={sku}");
 
-        var json = await response.Content.ReadAsStringAsync();
-        var jsonDoc = JsonDocument.Parse(json);
-        var price = jsonDoc.RootElement.GetProperty("price").GetDecimal();
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
 
-        return price;
+        var products = await response.Content.ReadFromJsonAsync<List<ProductDetails>>();
+        return products?.FirstOrDefault();
+    }
+
+    public class ProductDetails
+    {
+        [JsonPropertyName("sku")]
+        public string Sku { get; set; } = default!;
+
+        [JsonPropertyName("price")]
+        public decimal Price { get; set; }
     }
 }

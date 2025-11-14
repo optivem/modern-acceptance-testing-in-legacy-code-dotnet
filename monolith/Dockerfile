@@ -1,19 +1,23 @@
-# Use the official .NET SDK image for build
+# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 
-# Copy csproj and restore as distinct layers
-COPY *.csproj ./
-RUN dotnet restore
+# Copy csproj and restore dependencies
+COPY ["monolith/Optivem.AtddAccelerator.EShop.Monolith.csproj", "monolith/"]
+RUN dotnet restore "monolith/Optivem.AtddAccelerator.EShop.Monolith.csproj"
 
 # Copy everything else and build
-COPY . ./
-RUN dotnet publish Optivem.AtddAccelerator.EShop.Monolith.csproj -c Release -o out
+COPY monolith/ monolith/
+WORKDIR "/src/monolith"
+RUN dotnet build "Optivem.AtddAccelerator.EShop.Monolith.csproj" -c Release -o /app/build
 
-# Use the official ASP.NET runtime image for the app
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Publish stage
+FROM build AS publish
+RUN dotnet publish "Optivem.AtddAccelerator.EShop.Monolith.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=build /app/out ./
-
-# Set the entry point
+EXPOSE 8080
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Optivem.AtddAccelerator.EShop.Monolith.dll"]

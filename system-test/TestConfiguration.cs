@@ -1,10 +1,20 @@
+using Microsoft.Extensions.Configuration;
+
 namespace Optivem.AtddAccelerator.EShop.SystemTest;
 
-public static class TestConfiguration
+public class TestConfiguration
 {
-    public static string BaseUrl => Environment.GetEnvironmentVariable("TEST_BASE_URL") ?? "http://localhost:8080";
+    private readonly IConfiguration _configuration;
+
+    public TestConfiguration()
+    {
+        _configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+    }
+
+    public string BaseUrl => _configuration["BaseUrl"] ?? "http://localhost:8080";
     
-    public static int WaitSeconds => int.TryParse(Environment.GetEnvironmentVariable("TEST_WAIT_SECONDS"), out var seconds) 
-        ? seconds 
-        : 10;
+    public int WaitSeconds => int.Parse(_configuration["WaitSeconds"] ?? "10");
 }

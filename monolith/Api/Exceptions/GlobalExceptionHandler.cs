@@ -14,67 +14,32 @@ public class GlobalExceptionHandler : IExceptionHandler
         _logger = logger;
     }
 
-    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext httpContext,
+        Exception exception,
+        CancellationToken cancellationToken)
     {
-        if (exception is NotExistValidationException)
+        _logger.LogError(exception, "An error occurred: {Message}", exception.Message);
+
+        var (statusCode, response) = exception switch
         {
-            httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            return true;
-        }
-
-        if (exception is ValidationException validationException)
-        {
-            var errorResponse = new { Message = validationException.Message };
-            httpContext.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
-            await httpContext.Response.WriteAsJsonAsync(errorResponse, cancellationToken);
-            return true;
-        }
-
-        if (exception is JsonException jsonException)
-        {
-            _logger.LogDebug("JsonException: {Message}", jsonException.Message);
-
-            var errorResponse = TryParseFieldError(jsonException.Message);
-            if (errorResponse != null)
-            {
-                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await httpContext.Response.WriteAsJsonAsync(errorResponse, cancellationToken);
-                return true;
-            }
-
-            // Fallback to generic error
-            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            await httpContext.Response.WriteAsJsonAsync(new { Message = "Invalid request format" }, cancellationToken);
-            return true;
-        }
-
-        return false;
-    }
-
-    private object? TryParseFieldError(string? message)
-    {
-        if (string.IsNullOrEmpty(message))
-        {
-            return null;
-        }
-
-        var lowerMessage = message.ToLower();
-
-        // Map field names to error messages
-        var fieldErrorMessages = new Dictionary<string, string>
-        {
-            { "productid", "Product ID must be an integer" },
-            { "quantity", "Quantity must be an integer" }
+            NotExistValidationException => (StatusCodes.Status404NotFound, null),
+            ValidationException validationEx => (StatusCodes.Status422UnprocessableEntity, 
+                new ErrorResponse(validationEx.Message)),
+            _ => (StatusCodes.Status500InternalServerError, 
+                new ErrorResponse($"Internal server error: {exception.Message}"))
         };
 
-        foreach (var (fieldName, errorMessage) in fieldErrorMessages)
+        httpContext.Response.StatusCode = statusCode;
+
+        if (response != null)
         {
-            if (lowerMessage.Contains(fieldName))
-            {
-                return new { Message = errorMessage };
-            }
+            httpContext.Response.ContentType = "application/json";
+            await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
         }
 
-        return null;
+        return true;
     }
+
+    public record ErrorResponse(string Message);
 }

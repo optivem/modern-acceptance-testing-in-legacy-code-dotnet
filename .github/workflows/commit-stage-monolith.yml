@@ -1,71 +1,61 @@
-name: commit-stage-monolith
+name: Commit Stage - Monolith
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
     paths:
-        - 'monolith/**'
-        - '.github/workflows/commit-stage-monolith.yml'
+      - 'monolith/**'
+      - '.github/workflows/commit-stage-monolith.yml'
   pull_request:
-    branches: [ "main" ]
     paths:
-        - 'monolith/**'
-        - '.github/workflows/commit-stage-monolith.yml'
-  workflow_dispatch:
+      - 'monolith/**'
+      - '.github/workflows/commit-stage-monolith.yml'
 
-concurrency:
-  group: commit-stage-monolith-${{ github.ref }}
-  cancel-in-progress: true
+env:
+  DOTNET_VERSION: '8.0.x'
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
-
-    outputs:
-      image-latest-url: ${{ steps.publish.outputs.image-latest-url }}
-      image-digest-url: ${{ steps.publish.outputs.image-digest-url }}
-
-    permissions:
-      contents: read
-      packages: write
+    defaults:
+      run:
+        working-directory: ./monolith
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Build .NET Project
-      run: dotnet build Optivem.AtddAccelerator.EShop.Monolith.csproj
-      working-directory: monolith
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Publish Docker Image
-      id: publish
-      uses: optivem/publish-docker-image-action@v1
-      with:
-        working-directory: monolith
-        image-name: monolith
-        registry: ghcr.io
-        registry-username: ${{ github.actor }}
-        image-namespace: ${{ github.repository }}
-        image-latest-tag: latest
-        commit-sha: ${{ github.sha }}
-        dockerfile: Dockerfile
-      env:
-        REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
 
-  summary:
-    needs: build
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+  publish-docker-image:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    if: always()
 
     steps:
-      
-    - name: Commit Stage Summary
-      uses: optivem/summarize-commit-stage-action@v1
-      with:
-        stage-result: ${{ needs.build.result }}
-        success-artifact-url: ${{ needs.build.outputs.image-latest-url }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Publish Docker Image
+        uses: optivem/publish-docker-image-action@v1
+        with:
+          docker-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-password: ${{ secrets.DOCKER_PASSWORD }}
+          docker-organization: ${{ secrets.DOCKER_ORGANIZATION }}
+          docker-repository: modern-acceptance-testing-in-legacy-code-dotnet-monolith
+          dockerfile-path: ./monolith/Dockerfile
+          context-path: ./monolith
+          docker-tag-prefix: commit

@@ -1,7 +1,20 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
 namespace Optivem.AtddAccelerator.EShop.Monolith.Core.DTOs;
 
 public class PlaceOrderRequest
 {
-    public long ProductId { get; set; }
-    public int Quantity { get; set; }
+    [Required(ErrorMessage = "SKU must not be empty")]
+    [JsonPropertyName("sku")]
+    public string? Sku { get; set; }
+
+    [Required(ErrorMessage = "Quantity must not be empty")]
+    [Range(1, int.MaxValue, ErrorMessage = "Quantity must be positive")]
+    [JsonPropertyName("quantity")]
+    public int? Quantity { get; set; }
+
+    [Required(ErrorMessage = "Country must not be empty")]
+    [JsonPropertyName("country")]
+    public string? Country { get; set; }
 }

@@ -1,38 +1,31 @@
+using Microsoft.EntityFrameworkCore;
 using Optivem.AtddAccelerator.EShop.Monolith.Core.Entities;
 
 namespace Optivem.AtddAccelerator.EShop.Monolith.Core.Repositories;
 
 public class OrderRepository
 {
-    private static readonly Dictionary<string, Order> Orders = new();
+    private readonly OrderDbContext _context;
 
-    public void AddOrder(Order order)
+    public OrderRepository(OrderDbContext context)
     {
-        if (Orders.ContainsKey(order.OrderNumber))
-        {
-            throw new ArgumentException($"Order with order number {order.OrderNumber} already exists.");
-        }
-
-        Orders[order.OrderNumber] = order;
+        _context = context;
     }
 
-    public void UpdateOrder(Order order)
+    public async Task SaveAsync(Order order)
     {
-        if (!Orders.ContainsKey(order.OrderNumber))
-        {
-            throw new ArgumentException($"Order with order number {order.OrderNumber} does not exist.");
-        }
-
-        Orders[order.OrderNumber] = order;
+        await _context.Orders.AddAsync(order);
+        await _context.SaveChangesAsync();
     }
 
-    public Order? GetOrder(string orderNumber)
+    public async Task<Order?> FindByIdAsync(string orderNumber)
     {
-        return Orders.GetValueOrDefault(orderNumber);
+        return await _context.Orders.FindAsync(orderNumber);
     }
 
-    public string NextOrderNumber()
+    public async Task UpdateAsync(Order order)
     {
-        return "ORD-" + Guid.NewGuid();
+        _context.Orders.Update(order);
+        await _context.SaveChangesAsync();
     }
 }
