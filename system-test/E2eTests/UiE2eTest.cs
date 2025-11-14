@@ -78,11 +78,11 @@ public class UiE2eTest : IAsyncLifetime
         Assert.NotNull(resultText);
         
         // Extract original price from message like "Order placed successfully! Order Number: ORD-xxx and Original Price $549.75"
-        var match = System.Text.RegularExpressions.Regex.Match(resultText, @"Original Price \$(\d+\.\d+)");
+        var match = System.Text.RegularExpressions.Regex.Match(resultText, @"Original Price \$([0-9]+[.,][0-9]+)");
         Assert.True(match.Success, $"Could not find original price in: {resultText}");
         
         var originalPriceString = match.Groups[1].Value;
-        var originalPrice = decimal.Parse(originalPriceString);
+        var originalPrice = decimal.Parse(originalPriceString, System.Globalization.CultureInfo.InvariantCulture);
         
         var expectedOriginalPrice = 549.75m;
         Assert.Equal(expectedOriginalPrice, originalPrice, 2); // 2 decimal places precision
