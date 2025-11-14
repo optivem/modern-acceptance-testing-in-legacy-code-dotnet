@@ -118,9 +118,9 @@
                         console.log('Total price value:', orderDetails.totalPrice);
 
                         if (orderDetails.originalPrice !== undefined && orderDetails.originalPrice !== null) {
-                            resultDiv.textContent = 'Success! Order has been created with Order Number ' + order.orderNumber + ' and Original Price $' + orderDetails.originalPrice.toFixed(2);
+                            resultDiv.textContent = 'Order placed successfully! Order Number: ' + order.orderNumber + ' and Original Price $' + orderDetails.originalPrice.toFixed(2);
                         } else {
-                            resultDiv.textContent = 'Success! Order has been created with Order Number ' + order.orderNumber;
+                            resultDiv.textContent = 'Order placed successfully! Order Number: ' + order.orderNumber;
                             console.warn('Original price is missing from order details');
                         }
                         resultDiv.classList.add('show');

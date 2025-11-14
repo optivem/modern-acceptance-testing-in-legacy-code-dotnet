@@ -102,6 +102,11 @@ public class OrderService
             throw new NotExistValidationException($"Order {orderNumber} does not exist.");
         }
 
+        if (order.Status == OrderStatus.CANCELLED)
+        {
+            throw new ValidationException($"Order {orderNumber} has already been cancelled.");
+        }
+
         var now = DateTime.Now;
         var currentTime = TimeOnly.FromDateTime(now);
         var isDecember31 = now.Month == 12 && now.Day == 31;

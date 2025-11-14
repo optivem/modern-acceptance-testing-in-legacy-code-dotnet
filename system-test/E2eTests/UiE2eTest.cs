@@ -231,12 +231,13 @@ public class UiE2eTest : IAsyncLifetime
     private static string ExtractOrderNumber(string text)
     {
         // Extract order number from text like "Order placed successfully! Order Number: ORD-123456"
-        var parts = text.Split("Order Number:");
-        if (parts.Length < 2)
+        // Also supports: "Success! Order has been created with Order Number ORD-123456"
+        var match = System.Text.RegularExpressions.Regex.Match(text, @"(ORD-[a-f0-9-]+)");
+        if (!match.Success)
         {
             throw new InvalidOperationException($"Could not extract order number from: {text}");
         }
-        return parts[1].Trim();
+        return match.Value;
     }
 
     public async Task DisposeAsync()
