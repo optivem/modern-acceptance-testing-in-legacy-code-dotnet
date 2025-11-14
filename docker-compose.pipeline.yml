@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:16-alpine
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_DB=eshop
       - POSTGRES_USER=eshop_user
@@ -18,7 +18,7 @@ services:
   erp-api:
     image: williamyeh/json-server
     ports:
-      - "3000:3000"
+      - "3100:3000"
     volumes:
       - ./json-server-db.erp-api.json:/data/db.json
     command: --watch /data/db.json --host 0.0.0.0
@@ -26,7 +26,7 @@ services:
   tax-api:
     image: williamyeh/json-server
     ports:
-      - "3001:3001"
+      - "3101:3001"
     volumes:
       - ./json-server-db.tax-api.json:/data/db.json
     command: --watch /data/db.json --host 0.0.0.0 --port 3001

@@ -18,10 +18,10 @@ function Wait-ForServices {
     $erpApiReady = $false
     $monolithReady = $false
 
-    Write-Host "Waiting for ERP API on port 3000..." -ForegroundColor Yellow
+    Write-Host "Waiting for ERP API on port 3100..." -ForegroundColor Yellow
     while (-not $erpApiReady -and $attempt -lt $maxAttempts) {
         try {
-            $response = Invoke-WebRequest -Uri "http://localhost:3000" -UseBasicParsing -TimeoutSec 2
+            $response = Invoke-WebRequest -Uri "http://localhost:3100" -UseBasicParsing -TimeoutSec 2
             if ($response.StatusCode -eq 200) {
                 $erpApiReady = $true
                 Write-Host "[OK] ERP API is responding!" -ForegroundColor Green
@@ -41,10 +41,10 @@ function Wait-ForServices {
     }
 
     $attempt = 0
-    Write-Host "Waiting for Monolith API on port 8080..." -ForegroundColor Yellow
+    Write-Host "Waiting for Monolith API on port 8081..." -ForegroundColor Yellow
     while (-not $monolithReady -and $attempt -lt $maxAttempts) {
         try {
-            $response = Invoke-WebRequest -Uri "http://localhost:8080" -UseBasicParsing -TimeoutSec 2 -ErrorAction SilentlyContinue
+            $response = Invoke-WebRequest -Uri "http://localhost:8081" -UseBasicParsing -TimeoutSec 2 -ErrorAction SilentlyContinue
             if ($response.StatusCode -eq 200 -or $response.StatusCode -eq 404) {
                 $monolithReady = $true
                 Write-Host "[OK] Monolith API is responding!" -ForegroundColor Green
@@ -95,19 +95,19 @@ function Start-System {
 
     # Force stop any containers that might be using our ports
     Write-Host "Checking for port conflicts..." -ForegroundColor Cyan
-    $containersOnPort3000 = docker ps -q --filter "publish=3000" 2>$null
-    $containersOnPort8080 = docker ps -q --filter "publish=8080" 2>$null
+    $containersOnPort3100 = docker ps -q --filter "publish=3100" 2>$null
+    $containersOnPort8081 = docker ps -q --filter "publish=8081" 2>$null
 
-    if ($containersOnPort3000) {
-        Write-Host "  Stopping containers using port 3000..." -ForegroundColor Yellow
-        docker stop $containersOnPort3000 2>$null
-        docker rm $containersOnPort3000 2>$null
+    if ($containersOnPort3100) {
+        Write-Host "  Stopping containers using port 3100..." -ForegroundColor Yellow
+        docker stop $containersOnPort3100 2>$null
+        docker rm $containersOnPort3100 2>$null
     }
 
-    if ($containersOnPort8080) {
-        Write-Host "  Stopping containers using port 8080..." -ForegroundColor Yellow
-        docker stop $containersOnPort8080 2>$null
-        docker rm $containersOnPort8080 2>$null
+    if ($containersOnPort8081) {
+        Write-Host "  Stopping containers using port 8081..." -ForegroundColor Yellow
+        docker stop $containersOnPort8081 2>$null
+        docker rm $containersOnPort8081 2>$null
     }
 
     # Wait to ensure containers are fully stopped and ports are released
