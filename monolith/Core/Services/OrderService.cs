@@ -1,10 +1,10 @@
-using Optivem.AtddAccelerator.EShop.Monolith.Core.DTOs;
-using Optivem.AtddAccelerator.EShop.Monolith.Core.Entities;
-using Optivem.AtddAccelerator.EShop.Monolith.Core.Exceptions;
-using Optivem.AtddAccelerator.EShop.Monolith.Core.Repositories;
-using Optivem.AtddAccelerator.EShop.Monolith.Core.Services.External;
+using Optivem.EShop.Monolith.Core.DTOs;
+using Optivem.EShop.Monolith.Core.Entities;
+using Optivem.EShop.Monolith.Core.Exceptions;
+using Optivem.EShop.Monolith.Core.Repositories;
+using Optivem.EShop.Monolith.Core.Services.External;
 
-namespace Optivem.AtddAccelerator.EShop.Monolith.Core.Services;
+namespace Optivem.EShop.Monolith.Core.Services;
 
 public class OrderService
 {

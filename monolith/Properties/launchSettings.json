@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Optivem.AtddAccelerator.EShop.Monolith": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:57455;http://localhost:57456"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 18
-VisualStudioVersion = 18.0.11201.2 d18.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36623.8 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "monolith", "monolith", "{568E08D9-C627-9D87-BF1B-5CE72DAF60E7}"
 EndProject
@@ -14,8 +14,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "zzz-other", "zzz-other", "{6530B213-DBC8-4923-9443-189055D992C6}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		docker-compose.local.yml = docker-compose.local.yml
+		docker-compose.pipeline.yml = docker-compose.pipeline.yml
+		docker-compose.yml = docker-compose.yml
+		json-server-db.erp-api.json = json-server-db.erp-api.json
+		json-server-db.tax-api.json = json-server-db.tax-api.json
 		LICENSE = LICENSE
 		README.md = README.md
+		run.ps1 = run.ps1
 	EndProjectSection
 EndProject
 Global

@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Optivem.AtddAccelerator.EShop.Monolith.Api.Exceptions;
-using Optivem.AtddAccelerator.EShop.Monolith.Core.Repositories;
-using Optivem.AtddAccelerator.EShop.Monolith.Core.Services;
-using Optivem.AtddAccelerator.EShop.Monolith.Core.Services.External;
+using Optivem.EShop.Monolith.Api.Exceptions;
+using Optivem.EShop.Monolith.Core.Repositories;
+using Optivem.EShop.Monolith.Core.Services;
+using Optivem.EShop.Monolith.Core.Services.External;
 
 var builder = WebApplication.CreateBuilder(args);
 

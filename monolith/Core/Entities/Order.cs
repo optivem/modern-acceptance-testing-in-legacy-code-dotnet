@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Optivem.AtddAccelerator.EShop.Monolith.Core.Entities;
+namespace Optivem.EShop.Monolith.Core.Entities;
 
 [Table("orders")]
 public class Order

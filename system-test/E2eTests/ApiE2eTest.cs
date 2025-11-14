@@ -1,9 +1,9 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using Optivem.AtddAccelerator.EShop.SystemTest.E2eTests.Helpers;
+using Optivem.EShop.SystemTest.E2eTests.Helpers;
 
-namespace Optivem.AtddAccelerator.EShop.SystemTest.E2eTests;
+namespace Optivem.EShop.SystemTest.E2eTests;
 
 public class ApiE2eTest : IDisposable
 {

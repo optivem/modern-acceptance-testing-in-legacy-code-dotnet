@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using Optivem.AtddAccelerator.EShop.Monolith.Core.Entities;
+using Optivem.EShop.Monolith.Core.Entities;
 
-namespace Optivem.AtddAccelerator.EShop.Monolith.Core.DTOs;
+namespace Optivem.EShop.Monolith.Core.DTOs;
 
 public class GetOrderResponse
 {

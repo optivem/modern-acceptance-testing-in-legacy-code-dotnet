@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Optivem.AtddAccelerator.EShop.Monolith.Core.Entities;
+using Optivem.EShop.Monolith.Core.Entities;
 
-namespace Optivem.AtddAccelerator.EShop.Monolith.Core.Repositories;
+namespace Optivem.EShop.Monolith.Core.Repositories;
 
 public class OrderRepository
 {

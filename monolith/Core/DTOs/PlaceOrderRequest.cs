@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Optivem.AtddAccelerator.EShop.Monolith.Core.DTOs;
+namespace Optivem.EShop.Monolith.Core.DTOs;
 
 public class PlaceOrderRequest
 {

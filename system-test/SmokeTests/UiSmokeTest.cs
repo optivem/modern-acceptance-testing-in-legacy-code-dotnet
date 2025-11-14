@@ -1,6 +1,6 @@
 using Microsoft.Playwright;
 
-namespace Optivem.AtddAccelerator.EShop.SystemTest.SmokeTests;
+namespace Optivem.EShop.SystemTest.SmokeTests;
 
 public class UiSmokeTest : IAsyncLifetime
 {

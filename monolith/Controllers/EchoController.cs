@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Optivem.AtddAccelerator.EShop.Monolith.Controllers;
+namespace Optivem.EShop.Monolith.Controllers;
 
 [ApiController]
 public class EchoController : ControllerBase

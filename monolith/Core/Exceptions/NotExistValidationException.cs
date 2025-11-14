@@ -1,4 +1,4 @@
-namespace Optivem.AtddAccelerator.EShop.Monolith.Core.Exceptions;
+namespace Optivem.EShop.Monolith.Core.Exceptions;
 
 public class NotExistValidationException : ValidationException
 {

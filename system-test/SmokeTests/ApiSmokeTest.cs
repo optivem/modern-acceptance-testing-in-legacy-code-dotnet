@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Optivem.AtddAccelerator.EShop.SystemTest.SmokeTests;
+namespace Optivem.EShop.SystemTest.SmokeTests;
 
 public class ApiSmokeTest : IDisposable
 {

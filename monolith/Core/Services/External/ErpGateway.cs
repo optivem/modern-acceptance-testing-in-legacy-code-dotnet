@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Optivem.AtddAccelerator.EShop.Monolith.Core.Services.External;
+namespace Optivem.EShop.Monolith.Core.Services.External;
 
 public class ErpGateway
 {

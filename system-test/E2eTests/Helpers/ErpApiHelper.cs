@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 
-namespace Optivem.AtddAccelerator.EShop.SystemTest.E2eTests.Helpers;
+namespace Optivem.EShop.SystemTest.E2eTests.Helpers;
 
 public class ErpApiHelper
 {
