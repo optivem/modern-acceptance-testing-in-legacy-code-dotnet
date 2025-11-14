@@ -26,7 +26,7 @@ public class OrderService
     public async Task<PlaceOrderResponse> PlaceOrderAsync(PlaceOrderRequest request)
     {
         var sku = request.Sku!;
-        var quantity = request.Quantity;
+        var quantity = request.Quantity!.Value;
         var country = request.Country!;
 
         var orderNumber = GenerateOrderNumber();
@@ -88,7 +88,7 @@ public class OrderService
             TaxRate = order.TaxRate,
             TaxAmount = order.TaxAmount,
             TotalPrice = order.TotalPrice,
-            Status = order.Status,
+            Status = order.Status.ToString(),
             Country = order.Country
         };
     }

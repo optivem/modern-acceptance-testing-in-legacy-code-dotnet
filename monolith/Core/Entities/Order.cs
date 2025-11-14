@@ -1,11 +1,44 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Optivem.AtddAccelerator.EShop.Monolith.Core.Entities;
 
 [Table("orders")]
 public class Order
 {
+    public Order(
+        string orderNumber,
+        DateTime orderTimestamp,
+        string country,
+        string sku,
+        int quantity,
+        decimal unitPrice,
+        decimal originalPrice,
+        decimal discountRate,
+        decimal discountAmount,
+        decimal subtotalPrice,
+        decimal taxRate,
+        decimal taxAmount,
+        decimal totalPrice,
+        OrderStatus status)
+    {
+        OrderNumber = orderNumber;
+        OrderTimestamp = orderTimestamp;
+        Country = country;
+        Sku = sku;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+        OriginalPrice = originalPrice;
+        DiscountRate = discountRate;
+        DiscountAmount = discountAmount;
+        SubtotalPrice = subtotalPrice;
+        TaxRate = taxRate;
+        TaxAmount = taxAmount;
+        TotalPrice = totalPrice;
+        Status = status;
+    }
+
     [Key]
     [Column("order_number")]
     [MaxLength(255)]

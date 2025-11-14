@@ -3,12 +3,11 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy csproj and restore dependencies
-COPY ["monolith/Optivem.AtddAccelerator.EShop.Monolith.csproj", "monolith/"]
-RUN dotnet restore "monolith/Optivem.AtddAccelerator.EShop.Monolith.csproj"
+COPY ["Optivem.AtddAccelerator.EShop.Monolith.csproj", "./"]
+RUN dotnet restore "Optivem.AtddAccelerator.EShop.Monolith.csproj"
 
 # Copy everything else and build
-COPY monolith/ monolith/
-WORKDIR "/src/monolith"
+COPY . .
 RUN dotnet build "Optivem.AtddAccelerator.EShop.Monolith.csproj" -c Release -o /app/build
 
 # Publish stage
