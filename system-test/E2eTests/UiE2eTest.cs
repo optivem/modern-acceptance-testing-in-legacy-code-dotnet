@@ -53,16 +53,54 @@ public class UiE2eTest : IAsyncLifetime
     }
 
     [Fact]
+    public async Task PlaceOrder_ShouldCalculateOriginalOrderPrice()
+    {
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-UI-001B";
+        var unitPrice = 109.95m;
+        var quantity = 5;
+        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", unitPrice);
+
+        var page = await _browser!.NewPageAsync();
+        await page.GotoAsync($"{_config.BaseUrl}/shop.html");
+
+        // Act
+        await page.FillAsync("#productId", sku);
+        await page.FillAsync("#quantity", quantity.ToString());
+        await page.FillAsync("#country", "US");
+        await page.ClickAsync("button[type='submit']");
+
+        // Assert
+        var resultDiv = page.Locator("#orderResult");
+        await resultDiv.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
+        
+        var resultText = await resultDiv.TextContentAsync();
+        Assert.NotNull(resultText);
+        
+        // Extract original price from message like "Order placed successfully! Order Number: ORD-xxx and Original Price $549.75"
+        var match = System.Text.RegularExpressions.Regex.Match(resultText, @"Original Price \$(\d+\.\d+)");
+        Assert.True(match.Success, $"Could not find original price in: {resultText}");
+        
+        var originalPriceString = match.Groups[1].Value;
+        var originalPrice = decimal.Parse(originalPriceString);
+        
+        var expectedOriginalPrice = 549.75m;
+        Assert.Equal(expectedOriginalPrice, originalPrice, 2); // 2 decimal places precision
+    }
+
+    [Fact]
     public async Task GetOrder_WithExistingOrder_ShouldDisplayOrderDetails()
     {
         // Arrange - Set up product in ERP first
         var baseSku = "AUTO-UI-002";
-        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", 149.99m);
+        var unitPrice = 499.99m;
+        var quantity = 3;
+        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", unitPrice);
 
         var shopPage = await _browser!.NewPageAsync();
         await shopPage.GotoAsync($"{_config.BaseUrl}/shop.html");
         await shopPage.FillAsync("#productId", sku);
-        await shopPage.FillAsync("#quantity", "3");
+        await shopPage.FillAsync("#quantity", quantity.ToString());
         await shopPage.FillAsync("#country", "US");
         await shopPage.ClickAsync("button[type='submit']");
         
@@ -91,6 +129,12 @@ public class UiE2eTest : IAsyncLifetime
         
         var displayedCountry = await historyPage.InputValueAsync("#displayCountry");
         Assert.Equal("US", displayedCountry);
+        
+        var displayedUnitPrice = await historyPage.InputValueAsync("#displayUnitPrice");
+        Assert.Equal("$499.99", displayedUnitPrice);
+        
+        var displayedOriginalPrice = await historyPage.InputValueAsync("#displayOriginalPrice");
+        Assert.Equal("$1499.97", displayedOriginalPrice);
         
         var displayedStatus = await historyPage.InputValueAsync("#displayStatus");
         Assert.Equal("PLACED", displayedStatus);

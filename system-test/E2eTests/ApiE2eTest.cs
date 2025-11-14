@@ -81,17 +81,19 @@ public class ApiE2eTest : IDisposable
         // Assert
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
         
+        // Assert all fields from GetOrderResponse
         var order = await getResponse.Content.ReadFromJsonAsync<JsonElement>();
         Assert.Equal(orderNumber, order.GetProperty("orderNumber").GetString());
         Assert.Equal(sku, order.GetProperty("sku").GetString());
         Assert.Equal(quantity, order.GetProperty("quantity").GetInt32());
         Assert.Equal(country, order.GetProperty("country").GetString());
-
         Assert.Equal(unitPrice, order.GetProperty("unitPrice").GetDecimal());
 
-        // Verify originalPrice = unitPrice * quantity
-        var expectedOriginalPrice = unitPrice * quantity;
+        var expectedOriginalPrice = 251.00m;
         Assert.Equal(expectedOriginalPrice, order.GetProperty("originalPrice").GetDecimal());
+
+        Assert.NotNull(order.GetProperty("status").GetString());
+        Assert.Equal("PLACED", order.GetProperty("status").GetString());
     }
 
     [Fact]
