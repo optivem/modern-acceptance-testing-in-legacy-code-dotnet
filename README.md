@@ -31,19 +31,27 @@ $PSVersionTable.PSVersion
 ```
 
 This will:
-1. Build the Monolith (.NET)
-2. Start Docker containers (Monolith & Simulated External Systems)
+1. Build the Monolith (compile code and create Docker image)
+2. Start Docker containers (Monolith, PostgreSQL, & Simulated External Systems)
 3. Wait for services to be healthy
 4. Run all System Tests (xUnit + Playwright)
 
 You can open these URLs in your browser:
-- Monolith Application: [http://localhost:8080](http://localhost:8080)
-- ERP API (JSON Server): [http://localhost:3000](http://localhost:3000)
-- Tax API (JSON Server): [http://localhost:3001](http://localhost:3001)
+- Monolith Application: [http://localhost:8081](http://localhost:8081)
+- ERP API (JSON Server): [http://localhost:3100](http://localhost:3100)
+- Tax API (JSON Server): [http://localhost:3101](http://localhost:3101)
+- PostgreSQL: localhost:5433 (username: `eshop_user`, password: `eshop_password`)
 
 ## Separate Commands
 
+### Build
+Compiles the code and creates the Docker image (local mode only):
+```powershell
+.\run.ps1 build
+```
+
 ### Start Services
+Starts the Docker containers:
 ```powershell
 # Local mode (builds from source)
 .\run.ps1 start
@@ -53,9 +61,10 @@ You can open these URLs in your browser:
 ```
 
 You can open these URLs in your browser:
-- Monolith Application: [http://localhost:8080](http://localhost:8080)
-- ERP API (JSON Server): [http://localhost:3000](http://localhost:3000)
-- Tax API (JSON Server): [http://localhost:3001](http://localhost:3001)
+- Monolith Application: [http://localhost:8081](http://localhost:8081)
+- ERP API (JSON Server): [http://localhost:3100](http://localhost:3100)
+- Tax API (JSON Server): [http://localhost:3101](http://localhost:3101)
+- PostgreSQL: localhost:5433 (username: `eshop_user`, password: `eshop_password`)
 
 ### Run Tests
 ```powershell

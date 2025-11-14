@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory=$true, Position=0)]
-    [ValidateSet("start", "test", "stop", "logs", "all")]
+    [ValidateSet("build", "start", "test", "stop", "logs", "all")]
     [string]$Command,
 
     [Parameter(Position=1)]
@@ -96,7 +96,9 @@ function Start-System {
     # Force stop any containers that might be using our ports
     Write-Host "Checking for port conflicts..." -ForegroundColor Cyan
     $containersOnPort3100 = docker ps -q --filter "publish=3100" 2>$null
+    $containersOnPort3101 = docker ps -q --filter "publish=3101" 2>$null
     $containersOnPort8081 = docker ps -q --filter "publish=8081" 2>$null
+    $containersOnPort5433 = docker ps -q --filter "publish=5433" 2>$null
 
     if ($containersOnPort3100) {
         Write-Host "  Stopping containers using port 3100..." -ForegroundColor Yellow
@@ -104,10 +106,22 @@ function Start-System {
         docker rm $containersOnPort3100 2>$null
     }
 
+    if ($containersOnPort3101) {
+        Write-Host "  Stopping containers using port 3101..." -ForegroundColor Yellow
+        docker stop $containersOnPort3101 2>$null
+        docker rm $containersOnPort3101 2>$null
+    }
+
     if ($containersOnPort8081) {
         Write-Host "  Stopping containers using port 8081..." -ForegroundColor Yellow
         docker stop $containersOnPort8081 2>$null
         docker rm $containersOnPort8081 2>$null
+    }
+
+    if ($containersOnPort5433) {
+        Write-Host "  Stopping containers using port 5433..." -ForegroundColor Yellow
+        docker stop $containersOnPort5433 2>$null
+        docker rm $containersOnPort5433 2>$null
     }
 
     # Wait to ensure containers are fully stopped and ports are released

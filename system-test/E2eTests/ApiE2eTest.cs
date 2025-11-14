@@ -221,6 +221,52 @@ public class ApiE2eTest : IDisposable
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
+    private record ErpProduct(
+        string Id,
+        string Title,
+        string Description,
+        decimal Price,
+        string Category,
+        string Brand
+    );
+
+    private async Task SetupProductInErp(
+        string sku,
+        string title,
+        decimal price,
+        string description = "Test product description",
+        string category = "Test Category",
+        string brand = "Test Brand")
+    {
+        var erpApiUrl = _config.BaseUrl.Replace(":8081", ":3100");
+        using var erpClient = new HttpClient { BaseAddress = new Uri(erpApiUrl) };
+
+        var product = new ErpProduct(
+            Id: sku,
+            Title: title,
+            Description: description,
+            Price: price,
+            Category: category,
+            Brand: brand
+        );
+
+        var response = await erpClient.PostAsJsonAsync("/products", product);
+        Assert.True(response.IsSuccessStatusCode, $"Failed to setup product in ERP: {response.StatusCode}");
+    }
+
+    private async Task<string> SetupProductInErpAndGetSku(
+        string skuPrefix,
+        string title,
+        decimal price,
+        string description = "Test product description",
+        string category = "Test Category",
+        string brand = "Test Brand")
+    {
+        var uniqueSku = $"{skuPrefix}-{Guid.NewGuid().ToString().Substring(0, 8)}";
+        await SetupProductInErp(uniqueSku, title, price, description, category, brand);
+        return uniqueSku;
+    }
+
     public void Dispose()
     {
         _httpClient?.Dispose();
