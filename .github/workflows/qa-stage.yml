@@ -1,78 +1,120 @@
-name: QA Stage
+name: qa-stage
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to deploy to QA (e.g., 1.2.3-alpha.1)'
+        description: 'Prerelease version to deploy (e.g., v1.0.4-rc)'
         required: true
         type: string
 
+concurrency:
+  group: qa-stage
+  cancel-in-progress: true
+
 jobs:
-  deploy-to-qa:
+  check-release-exists:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Check if prerelease exists
+      - name: Check Version Release Exists
         id: check-release
-        run: |
-          RELEASE_EXISTS=$(curl -s -o /dev/null -w "%{http_code}" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/tags/v${{ inputs.version }}")
-          
-          if [ "$RELEASE_EXISTS" != "200" ]; then
-            echo "Error: Release v${{ inputs.version }} does not exist"
-            exit 1
-          fi
-          
-          # Check if it's a prerelease
-          IS_PRERELEASE=$(curl -s \
-            "https://api.github.com/repos/${{ github.repository }}/releases/tags/v${{ inputs.version }}" | \
-            jq -r '.prerelease')
-          
-          if [ "$IS_PRERELEASE" != "true" ]; then
-            echo "Error: Release v${{ inputs.version }} is not a prerelease"
-            exit 1
-          fi
-
-      - name: Resolve Docker images
-        id: resolve-images
-        run: |
-          MONOLITH_IMAGE="${{ secrets.DOCKER_ORGANIZATION }}/modern-acceptance-testing-in-legacy-code-dotnet-monolith:commit-${{ inputs.version }}"
-          echo "monolith-image=$MONOLITH_IMAGE" >> $GITHUB_OUTPUT
-          echo "Deploying monolith image: $MONOLITH_IMAGE"
-
-      - name: Deploy to QA environment
-        uses: ./.github/actions/deploy-docker-images
+        uses: optivem/check-release-exists-action@v1
         with:
-          monolith-image: ${{ steps.resolve-images.outputs.monolith-image }}
-
-      - name: Wait for services to be ready
-        run: |
-          echo "Waiting for services to start..."
-          sleep 30
-          curl -f http://localhost:8080/echo || exit 1
-
-      - name: Create deployment release
+          version: ${{ inputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl -X POST \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ github.repository }}/releases \
-            -d '{
-              "tag_name": "qa-${{ inputs.version }}",
-              "name": "QA Deployment - ${{ inputs.version }}",
-              "body": "Deployed version ${{ inputs.version }} to QA environment\n\nMonolith: ${{ steps.resolve-images.outputs.monolith-image }}",
-              "draft": false,
-              "prerelease": true
-            }'
 
-      - name: Display deployment info
-        run: |
-          echo "Successfully deployed to QA environment"
-          echo "Version: ${{ inputs.version }}"
-          echo "Monolith: ${{ steps.resolve-images.outputs.monolith-image }}"
+  resolve-docker-images:
+    needs: check-release-exists
+    if: needs.check-release-exists.result == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      image-urls: ${{ steps.resolve-images.outputs.image-urls }}
+    steps:
+      - name: Resolve Docker Images
+        id: resolve-images
+        uses: optivem/resolve-docker-images-action@v1
+        with:
+          tag: ${{ inputs.version }}
+          base-image-urls: |
+            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/monolith
+
+  deployment:
+    needs: [check-release-exists, resolve-docker-images]
+    if: needs.resolve-docker-images.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy System
+        id: deploy
+        uses: ./.github/actions/deploy-docker-images
+        with:
+          environment: qa
+          version: ${{ inputs.version }}
+          image-urls: ${{ needs.resolve-docker-images.outputs.image-urls }}
+
+  status-version:
+    needs: [deployment]
+    if: needs.deployment.result == 'success' # Only on successful deployment
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.determine-version.outputs.version }}
+      status: deployed
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Generate Status Version
+        id: determine-version
+        uses: optivem/generate-status-version-action@v1
+        with:
+          version: ${{ inputs.version }}
+          environment: qa
+          status: deployed
+
+  deployment-release:
+    needs: [resolve-docker-images, status-version]
+    if: needs.status-version.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      release-url: ${{ steps.create-release.outputs.release-url }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create Deployment Release
+        id: create-release
+        uses: optivem/create-release-action@v1
+        with:
+          base-version: ${{ inputs.version }}
+          release-version: ${{ needs.status-version.outputs.version }}
+          environment: qa
+          status: ${{ needs.status-version.outputs.status }}
+          artifact-urls: ${{ (needs.resolve-docker-images.result == 'success' && needs.resolve-docker-images.outputs.image-urls) || '[]' }}
+          is-prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  summary:
+    needs: [check-release-exists, resolve-docker-images, deployment, status-version, deployment-release]
+    if: always() # Run even if previous jobs fail
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Generate QA Deployment Stage Summary
+      uses: optivem/summarize-system-stage-action@v1
+      with:
+        stage-name: 'QA Stage'
+        environment: qa
+        stage-result: ${{ needs.deployment-release.result }}
+        success-version: ${{ needs.status-version.outputs.version }}
+        success-artifact-ids: ${{ needs.resolve-docker-images.outputs.image-urls }}

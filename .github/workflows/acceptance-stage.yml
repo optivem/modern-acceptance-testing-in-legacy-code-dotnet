@@ -1,80 +1,166 @@
-name: Acceptance Stage
+name: acceptance-stage
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # Every 30 minutes
+    - cron: '*/30 * * * *'  # Run every 30 minutes
   workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'Force run (even if no new images)'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: acceptance-stage
+  cancel-in-progress: true
 
 env:
   DOTNET_VERSION: '8.0.x'
 
 jobs:
-  acceptance-test:
+  find-latest-images:
     runs-on: ubuntu-latest
+    outputs:
+      image-digest-urls: ${{ steps.get-digest.outputs.image-digest-urls }}
+      latest-image-timestamp: ${{ steps.get-digest.outputs.latest-image-timestamp }}
+
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout code
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Resolve Latest Docker Digests
+      id: get-digest
+      uses: optivem/find-latest-docker-images-action@v1
+      with:
+        image-urls: |
+          ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/monolith:latest
+
+  should-run:
+    needs: find-latest-images
+    if: needs.find-latest-images.result == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should-run }}
+    steps:
+      - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          fetch-depth: 0
 
-      - name: Find latest Docker images
-        id: find-images
-        run: |
-          MONOLITH_IMAGE=$(curl -s "https://hub.docker.com/v2/repositories/${{ secrets.DOCKER_ORGANIZATION }}/modern-acceptance-testing-in-legacy-code-dotnet-monolith/tags?page_size=100" | jq -r '.results[] | select(.name | startswith("commit-")) | .name' | sort -V | tail -n 1)
-          echo "monolith-image=${{ secrets.DOCKER_ORGANIZATION }}/modern-acceptance-testing-in-legacy-code-dotnet-monolith:$MONOLITH_IMAGE" >> $GITHUB_OUTPUT
-          echo "Using monolith image: $MONOLITH_IMAGE"
-
-      - name: Deploy with Docker Compose
-        uses: ./.github/actions/deploy-docker-images
+      - name: Should Run Acceptance Stage
+        id: check
+        uses: optivem/should-run-acceptance-stage-action@v1
         with:
-          monolith-image: ${{ steps.find-images.outputs.monolith-image }}
+          latest-image-timestamp: ${{ needs.find-latest-images.outputs.latest-image-timestamp }}
+          force-run: ${{ inputs.force_run == true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Wait for services to be ready
-        run: |
-          echo "Waiting for services to start..."
-          sleep 30
-          curl -f http://localhost:8080/echo || exit 1
+  system-test:
+    needs: [should-run, find-latest-images]
+    if: needs.should-run.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
 
-      - name: Restore system test dependencies
-        working-directory: ./system-test
-        run: dotnet restore
+    permissions:
+      contents: read
 
-      - name: Build system tests
-        working-directory: ./system-test
-        run: dotnet build --no-restore --configuration Release
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-      - name: Install Playwright browsers
-        working-directory: ./system-test
-        run: |
-          dotnet build
-          pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+    - name: Deploy System
+      id: deploy-system
+      uses: ./.github/actions/deploy-docker-images
+      with:
+        environment: acceptance
+        version: latest
+        image-urls: ${{ needs.find-latest-images.outputs.image-digest-urls }}
 
-      - name: Run system tests
-        working-directory: ./system-test
-        run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" --verbosity normal
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Publish test results
-        if: always()
-        uses: dorny/test-reporter@v1
-        with:
-          name: Acceptance Test Results
-          path: system-test/TestResults/*.trx
-          reporter: dotnet-trx
-          fail-on-error: true
+    - name: Restore system test dependencies
+      working-directory: ./system-test
+      run: dotnet restore
 
-      - name: Upload test artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: acceptance-test-results
-          path: |
-            system-test/TestResults/
-            system-test/bin/Debug/net8.0/playwright-traces/
+    - name: Build system tests
+      working-directory: ./system-test
+      run: dotnet build --no-restore --configuration Release
 
-      - name: Stop Docker Compose
-        if: always()
-        run: docker-compose down
+    - name: Install Playwright browsers
+      working-directory: ./system-test
+      run: |
+        dotnet build
+        pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+
+    - name: Run E2E Tests
+      working-directory: ./system-test
+      run: dotnet test --no-build --configuration Release --filter "FullyQualifiedName~E2eTests" --verbosity normal
+
+  prerelease:
+    needs: [find-latest-images, should-run, system-test]
+    if: needs.system-test.result == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.generate-version.outputs.version }}
+      image-urls: ${{ steps.tag-images.outputs.image-urls }}
+
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history and tags
+
+    - name: Generate Prerelease Version
+      id: generate-version
+      uses: optivem/generate-prerelease-version-action@v1
+
+    - name: Tag Docker Images for Prerelease
+      id: tag-images
+      uses: optivem/tag-docker-images-action@v1
+      with:
+        image-urls: ${{ needs.find-latest-images.outputs.image-digest-urls }}
+        tag: ${{ steps.generate-version.outputs.version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Prerelease
+      id: create-release
+      uses: optivem/create-release-action@v1
+      with:
+        base-version: latest
+        release-version: ${{ steps.generate-version.outputs.version }}
+        environment: acceptance
+        status: prerelease
+        artifact-urls: ${{ steps.tag-images.outputs.image-urls }}
+        is-prerelease: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  summary:
+    needs: [find-latest-images, should-run, prerelease, system-test]
+    if: always()  # Run even if previous jobs fail
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Acceptance Stage Summary
+      uses: optivem/summarize-system-stage-action@v1
+      with:
+        stage-name: 'Acceptance Stage'
+        environment: acceptance
+        stage-result: ${{ needs.prerelease.result }}
+        success-version: ${{ needs.prerelease.outputs.version }}
+        success-artifact-ids: ${{ needs.prerelease.outputs.image-urls }}
