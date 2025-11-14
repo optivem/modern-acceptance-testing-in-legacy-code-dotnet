@@ -41,8 +41,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__DefaultConnection=Host=postgres;Database=eshop;Username=eshop_user;Password=eshop_password
-      - ExternalApis__ErpApiBaseUrl=http://erp-api:3000
-      - ExternalApis__TaxApiBaseUrl=http://tax-api:3001
+      - ExternalApis__ErpApi__BaseUrl=http://erp-api:3000
+      - ExternalApis__TaxApi__BaseUrl=http://tax-api:3001
     depends_on:
       postgres:
         condition: service_healthy
