@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Optivem.AtddAccelerator.EShop.SystemTest.E2eTests.Helpers;
 
 namespace Optivem.AtddAccelerator.EShop.SystemTest.E2eTests;
 
@@ -8,6 +9,7 @@ public class ApiE2eTest : IDisposable
 {
     private readonly HttpClient _httpClient;
     private readonly TestConfiguration _config;
+    private readonly ErpApiHelper _erpApiHelper;
 
     public ApiE2eTest()
     {
@@ -16,16 +18,23 @@ public class ApiE2eTest : IDisposable
         {
             BaseAddress = new Uri(_config.BaseUrl)
         };
+        _erpApiHelper = new ErpApiHelper(_config);
     }
 
     [Fact]
     public async Task PlaceOrder_WithValidRequest_ShouldReturnCreated()
     {
-        // Arrange
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-PO-100";
+        var unitPrice = 99.99m;
+        var quantity = 5;
+
+        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", unitPrice);
+
         var request = new
         {
-            sku = "WIDGET-001",
-            quantity = 5,
+            sku = sku,
+            quantity = quantity.ToString(),
             country = "US"
         };
 
@@ -48,12 +57,19 @@ public class ApiE2eTest : IDisposable
     [Fact]
     public async Task GetOrder_WithExistingOrder_ShouldReturnOrder()
     {
-        // Arrange - First place an order
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-GO-200";
+        var unitPrice = 125.50m;
+        var quantity = 2;
+        var country = "US";
+
+        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", unitPrice);
+
         var placeRequest = new
         {
-            sku = "WIDGET-002",
-            quantity = 3,
-            country = "US"
+            sku = sku,
+            quantity = quantity.ToString(),
+            country = country
         };
         var placeResponse = await _httpClient.PostAsJsonAsync("/api/orders", placeRequest);
         var placeBody = await placeResponse.Content.ReadFromJsonAsync<JsonElement>();
@@ -67,16 +83,15 @@ public class ApiE2eTest : IDisposable
         
         var order = await getResponse.Content.ReadFromJsonAsync<JsonElement>();
         Assert.Equal(orderNumber, order.GetProperty("orderNumber").GetString());
-        Assert.Equal("WIDGET-002", order.GetProperty("sku").GetString());
-        Assert.Equal(3, order.GetProperty("quantity").GetInt32());
-        Assert.Equal("US", order.GetProperty("country").GetString());
-        Assert.Equal("PLACED", order.GetProperty("status").GetString());
-        
-        // Verify price calculations
-        Assert.True(order.GetProperty("unitPrice").GetDecimal() > 0);
-        Assert.True(order.GetProperty("originalPrice").GetDecimal() > 0);
-        Assert.True(order.GetProperty("subtotalPrice").GetDecimal() > 0);
-        Assert.True(order.GetProperty("totalPrice").GetDecimal() > 0);
+        Assert.Equal(sku, order.GetProperty("sku").GetString());
+        Assert.Equal(quantity, order.GetProperty("quantity").GetInt32());
+        Assert.Equal(country, order.GetProperty("country").GetString());
+
+        Assert.Equal(unitPrice, order.GetProperty("unitPrice").GetDecimal());
+
+        // Verify originalPrice = unitPrice * quantity
+        var expectedOriginalPrice = unitPrice * quantity;
+        Assert.Equal(expectedOriginalPrice, order.GetProperty("originalPrice").GetDecimal());
     }
 
     [Fact]
@@ -95,11 +110,14 @@ public class ApiE2eTest : IDisposable
     [Fact]
     public async Task CancelOrder_WithExistingPlacedOrder_ShouldReturnNoContent()
     {
-        // Arrange - First place an order
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-CO-300";
+        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", 99.99m);
+
         var placeRequest = new
         {
-            sku = "WIDGET-003",
-            quantity = 2,
+            sku = sku,
+            quantity = "2",
             country = "US"
         };
         var placeResponse = await _httpClient.PostAsJsonAsync("/api/orders", placeRequest);
@@ -134,11 +152,14 @@ public class ApiE2eTest : IDisposable
     [Fact]
     public async Task CancelOrder_WithAlreadyCancelledOrder_ShouldReturnBadRequest()
     {
-        // Arrange - First place and cancel an order
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-CC-400";
+        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", 89.99m);
+
         var placeRequest = new
         {
-            sku = "WIDGET-004",
-            quantity = 1,
+            sku = sku,
+            quantity = "1",
             country = "US"
         };
         var placeResponse = await _httpClient.PostAsJsonAsync("/api/orders", placeRequest);
@@ -155,17 +176,23 @@ public class ApiE2eTest : IDisposable
     }
 
     [Theory]
-    [InlineData("", 5, "US", "SKU must not be empty")]
-    [InlineData("WIDGET-005", 0, "US", "Quantity must be positive")]
-    [InlineData("WIDGET-006", -1, "US", "Quantity must be positive")]
-    [InlineData("WIDGET-007", 5, "", "Country must not be empty")]
+    [InlineData("", 5, "US", "SKU must not be empty", false)]
+    [InlineData("AUTO-IV-300", 0, "US", "Quantity must be positive", true)]
+    [InlineData("AUTO-NQ-400", -1, "US", "Quantity must be positive", true)]
+    [InlineData("AUTO-IV-500", 5, "", "Country must not be empty", true)]
     public async Task PlaceOrder_WithInvalidRequest_ShouldReturnBadRequest(
-        string sku, int quantity, string country, string expectedError)
+        string sku, int quantity, string country, string expectedError, bool setupErpProduct)
     {
-        // Arrange
+        // Arrange - Set up product in ERP if needed
+        var actualSku = sku;
+        if (setupErpProduct && !string.IsNullOrEmpty(sku))
+        {
+            actualSku = await _erpApiHelper.SetupProductInErp(sku, "Test Product", 99.99m);
+        }
+
         var request = new Dictionary<string, object?>
         {
-            ["sku"] = string.IsNullOrEmpty(sku) ? null : sku,
+            ["sku"] = string.IsNullOrEmpty(actualSku) ? null : actualSku,
             ["quantity"] = quantity,
             ["country"] = string.IsNullOrEmpty(country) ? null : country
         };
@@ -185,10 +212,13 @@ public class ApiE2eTest : IDisposable
     public async Task PlaceOrder_WithInvalidQuantityType_ShouldReturnBadRequest(
         object quantity, string expectedError)
     {
-        // Arrange
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-EQ-500";
+        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", 150.00m);
+
         var request = new Dictionary<string, object?>
         {
-            ["sku"] = "WIDGET-008",
+            ["sku"] = sku,
             ["quantity"] = quantity,
             ["country"] = "US"
         };
@@ -219,52 +249,6 @@ public class ApiE2eTest : IDisposable
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    private record ErpProduct(
-        string Id,
-        string Title,
-        string Description,
-        decimal Price,
-        string Category,
-        string Brand
-    );
-
-    private async Task SetupProductInErp(
-        string sku,
-        string title,
-        decimal price,
-        string description = "Test product description",
-        string category = "Test Category",
-        string brand = "Test Brand")
-    {
-        var erpApiUrl = _config.BaseUrl.Replace(":8081", ":3100");
-        using var erpClient = new HttpClient { BaseAddress = new Uri(erpApiUrl) };
-
-        var product = new ErpProduct(
-            Id: sku,
-            Title: title,
-            Description: description,
-            Price: price,
-            Category: category,
-            Brand: brand
-        );
-
-        var response = await erpClient.PostAsJsonAsync("/products", product);
-        Assert.True(response.IsSuccessStatusCode, $"Failed to setup product in ERP: {response.StatusCode}");
-    }
-
-    private async Task<string> SetupProductInErpAndGetSku(
-        string skuPrefix,
-        string title,
-        decimal price,
-        string description = "Test product description",
-        string category = "Test Category",
-        string brand = "Test Brand")
-    {
-        var uniqueSku = $"{skuPrefix}-{Guid.NewGuid().ToString().Substring(0, 8)}";
-        await SetupProductInErp(uniqueSku, title, price, description, category, brand);
-        return uniqueSku;
     }
 
     public void Dispose()

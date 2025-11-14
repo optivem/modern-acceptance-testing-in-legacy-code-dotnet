@@ -16,7 +16,7 @@ public class ErpGateway
     public async Task<ProductDetails?> GetProductDetailsAsync(string sku)
     {
         var erpApiBaseUrl = _configuration["ExternalApis:ErpApi:BaseUrl"];
-        var response = await _httpClient.GetAsync($"{erpApiBaseUrl}/products?sku={sku}");
+        var response = await _httpClient.GetAsync($"{erpApiBaseUrl}/products?id={sku}");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -29,7 +29,7 @@ public class ErpGateway
 
     public class ProductDetails
     {
-        [JsonPropertyName("sku")]
+        [JsonPropertyName("id")]
         public string Sku { get; set; } = default!;
 
         [JsonPropertyName("price")]

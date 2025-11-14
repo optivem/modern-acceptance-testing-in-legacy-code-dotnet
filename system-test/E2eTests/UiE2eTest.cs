@@ -1,5 +1,6 @@
 using Microsoft.Playwright;
 using System.Net.Http.Json;
+using Optivem.AtddAccelerator.EShop.SystemTest.E2eTests.Helpers;
 
 namespace Optivem.AtddAccelerator.EShop.SystemTest.E2eTests;
 
@@ -8,10 +9,12 @@ public class UiE2eTest : IAsyncLifetime
     private IPlaywright? _playwright;
     private IBrowser? _browser;
     private readonly TestConfiguration _config;
+    private readonly ErpApiHelper _erpApiHelper;
 
     public UiE2eTest()
     {
         _config = new TestConfiguration();
+        _erpApiHelper = new ErpApiHelper(_config);
     }
 
     public async Task InitializeAsync()
@@ -26,12 +29,15 @@ public class UiE2eTest : IAsyncLifetime
     [Fact]
     public async Task PlaceOrder_WithValidInputs_ShouldDisplaySuccessMessage()
     {
-        // Arrange
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-UI-001";
+        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", 99.99m);
+
         var page = await _browser!.NewPageAsync();
         await page.GotoAsync($"{_config.BaseUrl}/shop.html");
 
         // Act
-        await page.FillAsync("#productId", "WIDGET-UI-001");
+        await page.FillAsync("#productId", sku);
         await page.FillAsync("#quantity", "5");
         await page.FillAsync("#country", "US");
         await page.ClickAsync("button[type='submit']");
@@ -49,10 +55,13 @@ public class UiE2eTest : IAsyncLifetime
     [Fact]
     public async Task GetOrder_WithExistingOrder_ShouldDisplayOrderDetails()
     {
-        // Arrange - First place an order
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-UI-002";
+        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", 149.99m);
+
         var shopPage = await _browser!.NewPageAsync();
         await shopPage.GotoAsync($"{_config.BaseUrl}/shop.html");
-        await shopPage.FillAsync("#productId", "WIDGET-UI-002");
+        await shopPage.FillAsync("#productId", sku);
         await shopPage.FillAsync("#quantity", "3");
         await shopPage.FillAsync("#country", "US");
         await shopPage.ClickAsync("button[type='submit']");
@@ -75,7 +84,7 @@ public class UiE2eTest : IAsyncLifetime
         Assert.Equal(orderNumber, displayedOrderNumber);
         
         var displayedSku = await historyPage.InputValueAsync("#displayProductId");
-        Assert.Equal("WIDGET-UI-002", displayedSku);
+        Assert.Equal(sku, displayedSku);
         
         var displayedQuantity = await historyPage.InputValueAsync("#displayQuantity");
         Assert.Equal("3", displayedQuantity);
@@ -110,10 +119,13 @@ public class UiE2eTest : IAsyncLifetime
     [Fact]
     public async Task CancelOrder_WithExistingPlacedOrder_ShouldDisplayCancelledStatus()
     {
-        // Arrange - First place an order
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-UI-003";
+        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", 79.99m);
+
         var shopPage = await _browser!.NewPageAsync();
         await shopPage.GotoAsync($"{_config.BaseUrl}/shop.html");
-        await shopPage.FillAsync("#productId", "WIDGET-UI-003");
+        await shopPage.FillAsync("#productId", sku);
         await shopPage.FillAsync("#quantity", "2");
         await shopPage.FillAsync("#country", "US");
         await shopPage.ClickAsync("button[type='submit']");
@@ -239,52 +251,6 @@ public class UiE2eTest : IAsyncLifetime
             throw new InvalidOperationException($"Could not extract order number from: {text}");
         }
         return match.Value;
-    }
-
-    private record ErpProduct(
-        string Id,
-        string Title,
-        string Description,
-        decimal Price,
-        string Category,
-        string Brand
-    );
-
-    private async Task SetupProductInErp(
-        string sku,
-        string title,
-        decimal price,
-        string description = "Test product description",
-        string category = "Test Category",
-        string brand = "Test Brand")
-    {
-        var erpApiUrl = _config.BaseUrl.Replace(":8081", ":3100");
-        using var erpClient = new HttpClient { BaseAddress = new Uri(erpApiUrl) };
-
-        var product = new ErpProduct(
-            Id: sku,
-            Title: title,
-            Description: description,
-            Price: price,
-            Category: category,
-            Brand: brand
-        );
-
-        var response = await erpClient.PostAsJsonAsync("/products", product);
-        Assert.True(response.IsSuccessStatusCode, $"Failed to setup product in ERP: {response.StatusCode}");
-    }
-
-    private async Task<string> SetupProductInErpAndGetSku(
-        string skuPrefix,
-        string title,
-        decimal price,
-        string description = "Test product description",
-        string category = "Test Category",
-        string brand = "Test Brand")
-    {
-        var uniqueSku = $"{skuPrefix}-{Guid.NewGuid().ToString().Substring(0, 8)}";
-        await SetupProductInErp(uniqueSku, title, price, description, category, brand);
-        return uniqueSku;
     }
 
     public async Task DisposeAsync()
