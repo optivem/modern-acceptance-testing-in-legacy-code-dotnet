@@ -25,7 +25,7 @@ public class ErpApiHelper
             Brand: "Test Brand"
         );
 
-        var erpApiUrl = _config.BaseUrl.Replace(":8080", ":3100");
+        var erpApiUrl = _config.BaseUrl.Replace(":8081", ":3100");
         using var erpClient = new HttpClient { BaseAddress = new Uri(erpApiUrl) };
 
         var response = await erpClient.PostAsJsonAsync("/products", product);
