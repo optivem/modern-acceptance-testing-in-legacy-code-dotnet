@@ -46,6 +46,10 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,10 +57,13 @@ jobs:
       - name: Publish Docker Image
         uses: optivem/publish-docker-image-action@v1
         with:
-          docker-username: ${{ secrets.DOCKER_USERNAME }}
-          docker-password: ${{ secrets.DOCKER_PASSWORD }}
-          docker-organization: ${{ secrets.DOCKER_ORGANIZATION }}
-          docker-repository: modern-acceptance-testing-in-legacy-code-dotnet-monolith
-          dockerfile-path: ./monolith/Dockerfile
-          context-path: ./monolith
-          docker-tag-prefix: commit
+          working-directory: monolith
+          image-name: monolith
+          registry: ghcr.io
+          registry-username: ${{ github.actor }}
+          image-namespace: ${{ github.repository }}
+          image-latest-tag: latest
+          commit-sha: ${{ github.sha }}
+          dockerfile: Dockerfile
+        env:
+          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
