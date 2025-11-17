@@ -1,33 +1,30 @@
-using System.Net;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Api;
 
-namespace Optivem.EShop.SystemTest.SmokeTests;
+namespace Optivem.AtddAccelerator.EShop.SystemTest.SmokeTests;
 
-public class ApiSmokeTest : IDisposable
+public class ApiSmokeTest : IAsyncLifetime
 {
-    private readonly HttpClient _httpClient;
-    private readonly TestConfiguration _config;
+    private ShopApiClient? _shopApiClient;
 
-    public ApiSmokeTest()
+    public Task InitializeAsync()
     {
-        _config = new TestConfiguration();
-        _httpClient = new HttpClient
-        {
-            BaseAddress = new Uri(_config.BaseUrl)
-        };
+        _shopApiClient = ClientFactory.CreateShopApiClient();
+        return Task.CompletedTask;
     }
 
     [Fact]
     public async Task Echo_ShouldReturnOk()
     {
         // Act
-        var response = await _httpClient.GetAsync("/api/echo");
+        var httpResponse = await _shopApiClient!.Echo().EchoAsync();
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        _shopApiClient.Echo().AssertEchoSuccessful(httpResponse);
     }
 
-    public void Dispose()
+    public async Task DisposeAsync()
     {
-        _httpClient?.Dispose();
+        await ClientCloser.CloseAsync(_shopApiClient);
     }
 }

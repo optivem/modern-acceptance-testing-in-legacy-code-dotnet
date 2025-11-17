@@ -10,7 +10,7 @@ public class NewOrderPage
     private const string CountryInputSelector = "[aria-label=\"Country\"]";
     private const string PlaceOrderButtonSelector = "[aria-label=\"Place Order\"]";
     private const string ConfirmationMessageSelector = "[role='alert']";
-    private const string OrderNumberRegex = @"Success! Order has been created with Order Number ([\w-]+)";
+    private const string OrderNumberRegex = @"Order Number: (ORD-[\w-]+)";
     private const int OrderNumberMatcherGroup = 1;
     private const string OriginalPriceRegex = @"Original Price \$(\d+(?:\.\d{2})?)";
     private const int OriginalPriceMatcherGroup = 1;
@@ -59,7 +59,7 @@ public class NewOrderPage
         return matcher.Groups[OrderNumberMatcherGroup].Value;
     }
 
-    public async Task<double> ExtractOriginalPriceAsync()
+    public async Task<decimal> ExtractOriginalPriceAsync()
     {
         var confirmationMessageText = await ReadConfirmationMessageTextAsync();
         var pattern = new Regex(OriginalPriceRegex);
@@ -68,6 +68,27 @@ public class NewOrderPage
         Assert.True(matcher.Success, 
             $"Should extract original price from confirmation message: {confirmationMessageText}");
         
-        return double.Parse(matcher.Groups[OriginalPriceMatcherGroup].Value);
+        return decimal.Parse(matcher.Groups[OriginalPriceMatcherGroup].Value);
+    }
+
+    public async Task AssertOrderPlacedSuccessfullyAsync()
+    {
+        var confirmationMessageText = await ReadConfirmationMessageTextAsync();
+        Assert.NotNull(confirmationMessageText);
+        Assert.Contains("Order placed successfully", confirmationMessageText);
+        Assert.Contains("Order Number:", confirmationMessageText);
+    }
+
+    public async Task AssertValidationErrorAsync(string expectedError)
+    {
+        var confirmationMessageText = await ReadConfirmationMessageTextAsync();
+        Assert.NotNull(confirmationMessageText);
+        Assert.Contains(expectedError, confirmationMessageText);
+    }
+
+    public async Task AssertNewOrderPageLoadedAsync()
+    {
+        var heading = await _pageClient.ReadTextContentAsync("h1");
+        Assert.Equal("Shop", heading);
     }
 }

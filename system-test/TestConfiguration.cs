@@ -21,7 +21,7 @@ public class TestConfiguration
     // Client layer configuration
     public static string ShopUiBaseUrl => _configuration["ShopUiBaseUrl"] ?? BaseUrl;
     
-    public static string ShopApiBaseUrl => _configuration["ShopApiBaseUrl"] ?? BaseUrl;
+    public static string ShopApiBaseUrl => _configuration["ShopApiBaseUrl"] ?? $"{BaseUrl}/api";
     
     public static string ErpApiBaseUrl => _configuration["ErpApiBaseUrl"] ?? BaseUrl.Replace(":8081", ":3100");
 }

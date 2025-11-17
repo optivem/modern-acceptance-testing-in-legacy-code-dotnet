@@ -59,10 +59,12 @@ public class TestHttpClient
     private void AssertStatus(HttpResponseMessage httpResponse, HttpStatusCode expectedStatus)
     {
         var actualStatus = httpResponse.StatusCode;
-        var responseBody = httpResponse.Content.ReadAsStringAsync().Result;
         
-        Assert.Equal(expectedStatus, actualStatus,
-            $"Expected status {(int)expectedStatus} but got {(int)actualStatus}. Response body: {responseBody}");
+        if (actualStatus != expectedStatus)
+        {
+            var responseBody = httpResponse.Content.ReadAsStringAsync().Result;
+            Assert.Fail($"Expected status {(int)expectedStatus} but got {(int)actualStatus}. Response body: {responseBody}");
+        }
     }
 
     public async Task<T> ReadBodyAsync<T>(HttpResponseMessage httpResponse)

@@ -123,4 +123,71 @@ public class OrderHistoryPage
     {
         await _pageClient.WaitForHiddenAsync(CancelOrderButtonSelector);
     }
+
+    public async Task<string> GetDisplayedOrderNumberAsync()
+    {
+        return await GetOrderNumberAsync();
+    }
+
+    public async Task<string> GetDisplayedSkuAsync()
+    {
+        return await GetSkuAsync();
+    }
+
+    public async Task<string> GetDisplayedQuantityAsync()
+    {
+        return await GetQuantityAsync();
+    }
+
+    public async Task<string> GetDisplayedCountryAsync()
+    {
+        return await GetCountryAsync();
+    }
+
+    public async Task<string> GetDisplayedUnitPriceAsync()
+    {
+        return await GetUnitPriceAsync();
+    }
+
+    public async Task<string> GetDisplayedOriginalPriceAsync()
+    {
+        return await GetOriginalPriceAsync();
+    }
+
+    public async Task<string> GetDisplayedStatusAsync()
+    {
+        return await GetStatusAsync();
+    }
+
+    public async Task AssertOrderDetailsDisplayedAsync()
+    {
+        // Wait for order details to be visible
+        await Task.Delay(500); // Small delay to allow page to render
+    }
+
+    public async Task AssertOrderNotFoundAsync()
+    {
+        var confirmationMessage = await ReadConfirmationMessageAsync();
+        Assert.NotNull(confirmationMessage);
+        Assert.Contains("Order not found", confirmationMessage);
+    }
+
+    public async Task AssertOrderCancelledAsync()
+    {
+        await Task.Delay(1000); // Wait for page refresh after cancellation
+        var status = await GetStatusAsync();
+        Assert.Equal("CANCELLED", status);
+    }
+
+    public async Task AssertCancelButtonNotVisibleAsync()
+    {
+        var isHidden = await IsCancelButtonHiddenAsync();
+        Assert.True(isHidden, "Cancel button should not be visible");
+    }
+
+    public async Task AssertOrderHistoryPageLoadedAsync()
+    {
+        var heading = await _pageClient.ReadTextContentAsync("h1");
+        Assert.Equal("Order History", heading);
+    }
 }

@@ -1,50 +1,30 @@
-using Microsoft.Playwright;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Ui;
 
-namespace Optivem.EShop.SystemTest.SmokeTests;
+namespace Optivem.AtddAccelerator.EShop.SystemTest.SmokeTests;
 
 public class UiSmokeTest : IAsyncLifetime
 {
-    private IPlaywright? _playwright;
-    private IBrowser? _browser;
-    private readonly TestConfiguration _config;
+    private ShopUiClient? _shopUiClient;
 
-    public UiSmokeTest()
+    public Task InitializeAsync()
     {
-        _config = new TestConfiguration();
-    }
-
-    public async Task InitializeAsync()
-    {
-        _playwright = await Playwright.CreateAsync();
-        _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = true
-        });
+        _shopUiClient = ClientFactory.CreateShopUiClient();
+        return Task.CompletedTask;
     }
 
     [Fact]
     public async Task HomePage_ShouldLoadSuccessfully()
     {
-        // Arrange
-        var page = await _browser!.NewPageAsync();
-        
         // Act
-        await page.GotoAsync(_config.BaseUrl);
-        
+        await _shopUiClient!.OpenHomePageAsync();
+
         // Assert
-        var title = await page.TitleAsync();
-        Assert.Equal("Optivem eShop (.NET)", title);
-        
-        var heading = await page.Locator("h1").TextContentAsync();
-        Assert.Equal("Optivem eShop (.NET)", heading);
+        _shopUiClient.AssertHomePageLoaded();
     }
 
     public async Task DisposeAsync()
     {
-        if (_browser != null)
-        {
-            await _browser.CloseAsync();
-        }
-        _playwright?.Dispose();
+        await ClientCloser.CloseAsync(_shopUiClient);
     }
 }

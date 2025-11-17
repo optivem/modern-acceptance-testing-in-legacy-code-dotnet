@@ -1,142 +1,113 @@
-using Microsoft.Playwright;
-using System.Net.Http.Json;
-using Optivem.EShop.SystemTest.E2eTests.Helpers;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.External.Erp;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Ui;
 
 namespace Optivem.EShop.SystemTest.E2eTests;
 
 public class UiE2eTest : IAsyncLifetime
 {
-    private IPlaywright? _playwright;
-    private IBrowser? _browser;
-    private readonly TestConfiguration _config;
-    private readonly ErpApiHelper _erpApiHelper;
+    private ShopUiClient? _shopUiClient;
+    private ErpApiClient? _erpApiClient;
 
-    public UiE2eTest()
+    public Task InitializeAsync()
     {
-        _config = new TestConfiguration();
-        _erpApiHelper = new ErpApiHelper(_config);
-    }
-
-    public async Task InitializeAsync()
-    {
-        _playwright = await Playwright.CreateAsync();
-        _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = true
-        });
+        _shopUiClient = ClientFactory.CreateShopUiClient();
+        _erpApiClient = ClientFactory.CreateErpApiClient();
+        return Task.CompletedTask;
     }
 
     [Fact]
     public async Task PlaceOrder_WithValidInputs_ShouldDisplaySuccessMessage()
     {
-        // Arrange - Set up product in ERP first
+        // Arrange
         var baseSku = "AUTO-UI-001";
-        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", 99.99m);
+        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, 99.99m);
 
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync($"{_config.BaseUrl}/shop.html");
+        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var newOrderPage = await homePage.ClickNewOrderAsync();
 
         // Act
-        await page.FillAsync("#productId", sku);
-        await page.FillAsync("#quantity", "5");
-        await page.FillAsync("#country", "US");
-        await page.ClickAsync("button[type='submit']");
+        await newOrderPage.InputProductIdAsync(sku);
+        await newOrderPage.InputQuantityAsync("5");
+        await newOrderPage.InputCountryAsync("US");
+        await newOrderPage.ClickPlaceOrderAsync();
 
         // Assert
-        var resultDiv = page.Locator("#orderResult");
-        await resultDiv.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-        
-        var resultText = await resultDiv.TextContentAsync();
-        Assert.NotNull(resultText);
-        Assert.Contains("Order placed successfully", resultText);
-        Assert.Contains("Order Number:", resultText);
+        await newOrderPage.AssertOrderPlacedSuccessfullyAsync();
+        var orderNumber = await newOrderPage.ExtractOrderNumberAsync();
+        Assert.NotNull(orderNumber);
+        Assert.True(orderNumber.StartsWith("ORD-"));
     }
 
     [Fact]
     public async Task PlaceOrder_ShouldCalculateOriginalOrderPrice()
     {
-        // Arrange - Set up product in ERP first
+        // Arrange
         var baseSku = "AUTO-UI-001B";
         var unitPrice = 109.95m;
         var quantity = 5;
-        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", unitPrice);
+        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, unitPrice);
 
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync($"{_config.BaseUrl}/shop.html");
+        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var newOrderPage = await homePage.ClickNewOrderAsync();
 
         // Act
-        await page.FillAsync("#productId", sku);
-        await page.FillAsync("#quantity", quantity.ToString());
-        await page.FillAsync("#country", "US");
-        await page.ClickAsync("button[type='submit']");
+        await newOrderPage.InputProductIdAsync(sku);
+        await newOrderPage.InputQuantityAsync(quantity.ToString());
+        await newOrderPage.InputCountryAsync("US");
+        await newOrderPage.ClickPlaceOrderAsync();
 
         // Assert
-        var resultDiv = page.Locator("#orderResult");
-        await resultDiv.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-        
-        var resultText = await resultDiv.TextContentAsync();
-        Assert.NotNull(resultText);
-        
-        // Extract original price from message like "Order placed successfully! Order Number: ORD-xxx and Original Price $549.75"
-        var match = System.Text.RegularExpressions.Regex.Match(resultText, @"Original Price \$([0-9]+[.,][0-9]+)");
-        Assert.True(match.Success, $"Could not find original price in: {resultText}");
-        
-        var originalPriceString = match.Groups[1].Value;
-        var originalPrice = decimal.Parse(originalPriceString, System.Globalization.CultureInfo.InvariantCulture);
-        
+        var originalPrice = await newOrderPage.ExtractOriginalPriceAsync();
         var expectedOriginalPrice = 549.75m;
-        Assert.Equal(expectedOriginalPrice, originalPrice, 2); // 2 decimal places precision
+        Assert.Equal(expectedOriginalPrice, originalPrice, 2);
     }
 
     [Fact]
     public async Task GetOrder_WithExistingOrder_ShouldDisplayOrderDetails()
     {
-        // Arrange - Set up product in ERP first
+        // Arrange
         var baseSku = "AUTO-UI-002";
         var unitPrice = 499.99m;
         var quantity = 3;
-        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", unitPrice);
+        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, unitPrice);
 
-        var shopPage = await _browser!.NewPageAsync();
-        await shopPage.GotoAsync($"{_config.BaseUrl}/shop.html");
-        await shopPage.FillAsync("#productId", sku);
-        await shopPage.FillAsync("#quantity", quantity.ToString());
-        await shopPage.FillAsync("#country", "US");
-        await shopPage.ClickAsync("button[type='submit']");
+        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var newOrderPage = await homePage.ClickNewOrderAsync();
+        await newOrderPage.InputProductIdAsync(sku);
+        await newOrderPage.InputQuantityAsync(quantity.ToString());
+        await newOrderPage.InputCountryAsync("US");
+        await newOrderPage.ClickPlaceOrderAsync();
         
-        var resultDiv = shopPage.Locator("#orderResult");
-        await resultDiv.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-        var resultText = await resultDiv.TextContentAsync();
-        var orderNumber = ExtractOrderNumber(resultText!);
+        var orderNumber = await newOrderPage.ExtractOrderNumberAsync();
 
         // Act
-        var historyPage = await _browser.NewPageAsync();
-        await historyPage.GotoAsync($"{_config.BaseUrl}/order-history.html");
-        await historyPage.FillAsync("#orderNumber", orderNumber);
-        await historyPage.ClickAsync("button[type='submit']");
+        var orderHistoryPage = await homePage.ClickOrderHistoryAsync();
+        await orderHistoryPage.InputOrderNumberAsync(orderNumber);
+        await orderHistoryPage.ClickViewOrderAsync();
 
         // Assert
-        await historyPage.WaitForSelectorAsync("#displayOrderNumber");
+        await orderHistoryPage.AssertOrderDetailsDisplayedAsync();
         
-        var displayedOrderNumber = await historyPage.InputValueAsync("#displayOrderNumber");
+        var displayedOrderNumber = await orderHistoryPage.GetDisplayedOrderNumberAsync();
         Assert.Equal(orderNumber, displayedOrderNumber);
         
-        var displayedSku = await historyPage.InputValueAsync("#displayProductId");
+        var displayedSku = await orderHistoryPage.GetDisplayedSkuAsync();
         Assert.Equal(sku, displayedSku);
         
-        var displayedQuantity = await historyPage.InputValueAsync("#displayQuantity");
+        var displayedQuantity = await orderHistoryPage.GetDisplayedQuantityAsync();
         Assert.Equal("3", displayedQuantity);
         
-        var displayedCountry = await historyPage.InputValueAsync("#displayCountry");
+        var displayedCountry = await orderHistoryPage.GetDisplayedCountryAsync();
         Assert.Equal("US", displayedCountry);
         
-        var displayedUnitPrice = await historyPage.InputValueAsync("#displayUnitPrice");
+        var displayedUnitPrice = await orderHistoryPage.GetDisplayedUnitPriceAsync();
         Assert.Equal("$499.99", displayedUnitPrice);
         
-        var displayedOriginalPrice = await historyPage.InputValueAsync("#displayOriginalPrice");
+        var displayedOriginalPrice = await orderHistoryPage.GetDisplayedOriginalPriceAsync();
         Assert.Equal("$1499.97", displayedOriginalPrice);
         
-        var displayedStatus = await historyPage.InputValueAsync("#displayStatus");
+        var displayedStatus = await orderHistoryPage.GetDisplayedStatusAsync();
         Assert.Equal("PLACED", displayedStatus);
     }
 
@@ -144,61 +115,42 @@ public class UiE2eTest : IAsyncLifetime
     public async Task GetOrder_WithNonExistentOrder_ShouldDisplayErrorMessage()
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync($"{_config.BaseUrl}/order-history.html");
+        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var orderHistoryPage = await homePage.ClickOrderHistoryAsync();
 
         // Act
-        await page.FillAsync("#orderNumber", "NON-EXISTENT-ORDER");
-        await page.ClickAsync("button[type='submit']");
+        await orderHistoryPage.InputOrderNumberAsync("NON-EXISTENT-ORDER");
+        await orderHistoryPage.ClickViewOrderAsync();
 
         // Assert
-        var orderDetails = page.Locator("#orderDetails");
-        await orderDetails.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-        
-        var detailsText = await orderDetails.TextContentAsync();
-        Assert.NotNull(detailsText);
-        Assert.Contains("Order not found", detailsText);
+        await orderHistoryPage.AssertOrderNotFoundAsync();
     }
 
     [Fact]
     public async Task CancelOrder_WithExistingPlacedOrder_ShouldDisplayCancelledStatus()
     {
-        // Arrange - Set up product in ERP first
+        // Arrange
         var baseSku = "AUTO-UI-003";
-        var sku = await _erpApiHelper.SetupProductInErp(baseSku, "Test Product", 79.99m);
+        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, 79.99m);
 
-        var shopPage = await _browser!.NewPageAsync();
-        await shopPage.GotoAsync($"{_config.BaseUrl}/shop.html");
-        await shopPage.FillAsync("#productId", sku);
-        await shopPage.FillAsync("#quantity", "2");
-        await shopPage.FillAsync("#country", "US");
-        await shopPage.ClickAsync("button[type='submit']");
+        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var newOrderPage = await homePage.ClickNewOrderAsync();
+        await newOrderPage.InputProductIdAsync(sku);
+        await newOrderPage.InputQuantityAsync("2");
+        await newOrderPage.InputCountryAsync("US");
+        await newOrderPage.ClickPlaceOrderAsync();
         
-        var resultDiv = shopPage.Locator("#orderResult");
-        await resultDiv.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-        var resultText = await resultDiv.TextContentAsync();
-        var orderNumber = ExtractOrderNumber(resultText!);
+        var orderNumber = await newOrderPage.ExtractOrderNumberAsync();
 
         // Act
-        var historyPage = await _browser.NewPageAsync();
-        await historyPage.GotoAsync($"{_config.BaseUrl}/order-history.html");
-        await historyPage.FillAsync("#orderNumber", orderNumber);
-        await historyPage.ClickAsync("button[type='submit']");
-        
-        await historyPage.WaitForSelectorAsync("#cancelButton");
-        await historyPage.ClickAsync("#cancelButton");
-        
-        // Wait for the page to refresh after cancellation
-        await Task.Delay(1000);
+        var orderHistoryPage = await homePage.ClickOrderHistoryAsync();
+        await orderHistoryPage.InputOrderNumberAsync(orderNumber);
+        await orderHistoryPage.ClickViewOrderAsync();
+        await orderHistoryPage.ClickCancelOrderAsync();
 
         // Assert
-        await historyPage.WaitForSelectorAsync("#displayStatus");
-        var displayedStatus = await historyPage.InputValueAsync("#displayStatus");
-        Assert.Equal("CANCELLED", displayedStatus);
-        
-        // Verify cancel button is no longer visible
-        var cancelButton = historyPage.Locator("#cancelButton");
-        await Assertions.Expect(cancelButton).Not.ToBeVisibleAsync();
+        await orderHistoryPage.AssertOrderCancelledAsync();
+        await orderHistoryPage.AssertCancelButtonNotVisibleAsync();
     }
 
     [Theory]
@@ -210,22 +162,17 @@ public class UiE2eTest : IAsyncLifetime
         string sku, string quantity, string country, string expectedError)
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync($"{_config.BaseUrl}/shop.html");
+        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var newOrderPage = await homePage.ClickNewOrderAsync();
 
         // Act
-        await page.FillAsync("#productId", sku);
-        await page.FillAsync("#quantity", quantity);
-        await page.FillAsync("#country", country);
-        await page.ClickAsync("button[type='submit']");
+        await newOrderPage.InputProductIdAsync(sku);
+        await newOrderPage.InputQuantityAsync(quantity);
+        await newOrderPage.InputCountryAsync(country);
+        await newOrderPage.ClickPlaceOrderAsync();
 
         // Assert
-        var resultDiv = page.Locator("#orderResult");
-        await resultDiv.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-        
-        var resultText = await resultDiv.TextContentAsync();
-        Assert.NotNull(resultText);
-        Assert.Contains(expectedError, resultText);
+        await newOrderPage.AssertValidationErrorAsync(expectedError);
     }
 
     [Theory]
@@ -235,74 +182,48 @@ public class UiE2eTest : IAsyncLifetime
         string quantity, string expectedError)
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync($"{_config.BaseUrl}/shop.html");
+        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var newOrderPage = await homePage.ClickNewOrderAsync();
 
         // Act
-        await page.FillAsync("#productId", "WIDGET-UI-007");
-        await page.FillAsync("#quantity", quantity);
-        await page.FillAsync("#country", "US");
-        await page.ClickAsync("button[type='submit']");
+        await newOrderPage.InputProductIdAsync("WIDGET-UI-007");
+        await newOrderPage.InputQuantityAsync(quantity);
+        await newOrderPage.InputCountryAsync("US");
+        await newOrderPage.ClickPlaceOrderAsync();
 
         // Assert
-        var resultDiv = page.Locator("#orderResult");
-        await resultDiv.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-        
-        var resultText = await resultDiv.TextContentAsync();
-        Assert.NotNull(resultText);
-        Assert.Contains(expectedError, resultText);
+        await newOrderPage.AssertValidationErrorAsync(expectedError);
     }
 
     [Fact]
     public async Task NavigateToShop_FromHomePage_ShouldLoadShopPage()
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync(_config.BaseUrl);
+        var homePage = await _shopUiClient!.OpenHomePageAsync();
 
         // Act
-        await page.ClickAsync("a[href='/shop.html']");
+        var newOrderPage = await homePage.ClickNewOrderAsync();
 
         // Assert
-        await page.WaitForURLAsync($"{_config.BaseUrl}/shop.html");
-        var heading = await page.Locator("h1").TextContentAsync();
-        Assert.Equal("Shop", heading);
+        await newOrderPage.AssertNewOrderPageLoadedAsync();
     }
 
     [Fact]
     public async Task NavigateToOrderHistory_FromHomePage_ShouldLoadOrderHistoryPage()
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync(_config.BaseUrl);
+        var homePage = await _shopUiClient!.OpenHomePageAsync();
 
         // Act
-        await page.ClickAsync("a[href='/order-history.html']");
+        var orderHistoryPage = await homePage.ClickOrderHistoryAsync();
 
         // Assert
-        await page.WaitForURLAsync($"{_config.BaseUrl}/order-history.html");
-        var heading = await page.Locator("h1").TextContentAsync();
-        Assert.Equal("Order History", heading);
-    }
-
-    private static string ExtractOrderNumber(string text)
-    {
-        // Extract order number from text like "Order placed successfully! Order Number: ORD-123456"
-        // Also supports: "Success! Order has been created with Order Number ORD-123456"
-        var match = System.Text.RegularExpressions.Regex.Match(text, @"(ORD-[a-f0-9-]+)");
-        if (!match.Success)
-        {
-            throw new InvalidOperationException($"Could not extract order number from: {text}");
-        }
-        return match.Value;
+        await orderHistoryPage.AssertOrderHistoryPageLoadedAsync();
     }
 
     public async Task DisposeAsync()
     {
-        if (_browser != null)
-        {
-            await _browser.CloseAsync();
-        }
-        _playwright?.Dispose();
+        await ClientCloser.CloseAsync(_shopUiClient);
+        await ClientCloser.CloseAsync(_erpApiClient);
     }
 }
