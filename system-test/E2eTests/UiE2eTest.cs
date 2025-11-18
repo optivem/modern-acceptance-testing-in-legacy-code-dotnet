@@ -36,7 +36,7 @@ public class UiE2eTest : IAsyncLifetime
         await newOrderPage.AssertOrderPlacedSuccessfullyAsync();
         var orderNumber = await newOrderPage.ExtractOrderNumberAsync();
         Assert.NotNull(orderNumber);
-        Assert.True(orderNumber.StartsWith("ORD-"));
+        Assert.StartsWith("ORD-", orderNumber);
     }
 
     [Fact]

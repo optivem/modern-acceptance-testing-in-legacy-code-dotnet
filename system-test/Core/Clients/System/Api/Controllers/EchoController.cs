@@ -4,7 +4,7 @@ namespace Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Api.Contr
 
 public class EchoController
 {
-    private const string Endpoint = "/echo";
+    private const string Endpoint = "echo";
 
     private readonly TestHttpClient _httpClient;
 

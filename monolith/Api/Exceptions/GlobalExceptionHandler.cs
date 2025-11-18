@@ -24,7 +24,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         var (statusCode, response) = exception switch
         {
             NotExistValidationException => (StatusCodes.Status404NotFound, null),
-            ValidationException validationEx => (StatusCodes.Status400BadRequest, 
+            ValidationException validationEx => (StatusCodes.Status422UnprocessableEntity, 
                 new ErrorResponse(validationEx.Message)),
             _ => (StatusCodes.Status500InternalServerError, 
                 new ErrorResponse($"Internal server error: {exception.Message}"))

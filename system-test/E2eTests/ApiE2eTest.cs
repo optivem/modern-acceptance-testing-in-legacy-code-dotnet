@@ -2,6 +2,7 @@ using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.External.Erp;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Api;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Api.Dtos;
+using Optivem.EShop.SystemTest.Core.Clients.System.Api.Dtos.Enums;
 
 namespace Optivem.EShop.SystemTest.E2eTests;
 
@@ -39,7 +40,7 @@ public class ApiE2eTest : IAsyncLifetime
         // Assert
         var response = await _shopApiClient.Orders().AssertOrderPlacedSuccessfullyAsync(httpResponse);
         Assert.NotNull(response.OrderNumber);
-        Assert.True(response.OrderNumber.StartsWith("ORD-"));
+        Assert.StartsWith("ORD-", response.OrderNumber);
     }
 
     [Fact]
@@ -116,7 +117,7 @@ public class ApiE2eTest : IAsyncLifetime
     }
 
     [Fact]
-    public async Task CancelOrder_WithAlreadyCancelledOrder_ShouldReturnBadRequest()
+    public async Task CancelOrder_WithAlreadyCancelledOrder_ShouldReturnUnprocessableEntity()
     {
         // Arrange
         var baseSku = "AUTO-CC-400";
@@ -129,7 +130,7 @@ public class ApiE2eTest : IAsyncLifetime
         var httpResponse = await _shopApiClient.Orders().CancelOrderAsync(orderNumber);
 
         // Assert
-        Assert.Equal(System.Net.HttpStatusCode.BadRequest, httpResponse.StatusCode);
+        Assert.Equal(System.Net.HttpStatusCode.UnprocessableEntity, httpResponse.StatusCode);
     }
 
     [Theory]

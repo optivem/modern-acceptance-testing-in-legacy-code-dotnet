@@ -1,3 +1,5 @@
+using Optivem.EShop.SystemTest.Core.Clients.System.Api.Dtos.Enums;
+
 namespace Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Api.Dtos;
 
 public class GetOrderResponse
