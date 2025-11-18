@@ -5,7 +5,7 @@ namespace Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.External.Erp.Con
 
 public class ProductController
 {
-    private const string Endpoint = "/products";
+    private const string Endpoint = "products";
 
     private readonly TestHttpClient _httpClient;
 
