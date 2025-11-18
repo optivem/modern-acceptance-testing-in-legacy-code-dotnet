@@ -8,8 +8,8 @@ namespace Optivem.EShop.SystemTest.E2eTests;
 
 public class ApiE2eTest : IAsyncLifetime
 {
-    private ShopApiClient? _shopApiClient;
-    private ErpApiClient? _erpApiClient;
+    private ShopApiClient _shopApiClient = default!;
+    private ErpApiClient _erpApiClient = default!;
 
     public Task InitializeAsync()
     {
@@ -32,10 +32,10 @@ public class ApiE2eTest : IAsyncLifetime
         var unitPrice = 99.99m;
         var quantity = 5;
 
-        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, unitPrice);
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, unitPrice);
 
         // Act
-        var httpResponse = await _shopApiClient!.Orders().PlaceOrderAsync(sku, quantity.ToString(), "US");
+        var httpResponse = await _shopApiClient.Orders().PlaceOrderAsync(sku, quantity.ToString(), "US");
 
         // Assert
         var response = await _shopApiClient.Orders().AssertOrderPlacedSuccessfullyAsync(httpResponse);
@@ -52,12 +52,12 @@ public class ApiE2eTest : IAsyncLifetime
         var quantity = 2;
         var country = "US";
 
-        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, unitPrice);
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, unitPrice);
 
         var orderNumber = await PlaceOrderAndGetOrderNumberAsync(sku, quantity, country);
 
         // Act
-        var httpResponse = await _shopApiClient!.Orders().ViewOrderAsync(orderNumber);
+        var httpResponse = await _shopApiClient.Orders().ViewOrderAsync(orderNumber);
 
         // Assert
         var order = await _shopApiClient.Orders().AssertOrderViewedSuccessfullyAsync(httpResponse);
@@ -77,7 +77,7 @@ public class ApiE2eTest : IAsyncLifetime
         var orderNumber = "NON-EXISTENT-ORDER";
 
         // Act
-        var httpResponse = await _shopApiClient!.Orders().ViewOrderAsync(orderNumber);
+        var httpResponse = await _shopApiClient.Orders().ViewOrderAsync(orderNumber);
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.NotFound, httpResponse.StatusCode);
@@ -88,12 +88,12 @@ public class ApiE2eTest : IAsyncLifetime
     {
         // Arrange
         var baseSku = "AUTO-CO-300";
-        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, 99.99m);
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, 99.99m);
 
         var orderNumber = await PlaceOrderAndGetOrderNumberAsync(sku, 2, "US");
 
         // Act
-        var cancelResponse = await _shopApiClient!.Orders().CancelOrderAsync(orderNumber);
+        var cancelResponse = await _shopApiClient.Orders().CancelOrderAsync(orderNumber);
 
         // Assert
         _shopApiClient.Orders().AssertOrderCancelledSuccessfully(cancelResponse);
@@ -110,7 +110,7 @@ public class ApiE2eTest : IAsyncLifetime
         var orderNumber = "NON-EXISTENT-ORDER";
 
         // Act
-        var httpResponse = await _shopApiClient!.Orders().CancelOrderAsync(orderNumber);
+        var httpResponse = await _shopApiClient.Orders().CancelOrderAsync(orderNumber);
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.NotFound, httpResponse.StatusCode);
@@ -121,10 +121,10 @@ public class ApiE2eTest : IAsyncLifetime
     {
         // Arrange
         var baseSku = "AUTO-CC-400";
-        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, 89.99m);
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, 89.99m);
 
         var orderNumber = await PlaceOrderAndGetOrderNumberAsync(sku, 1, "US");
-        await _shopApiClient!.Orders().CancelOrderAsync(orderNumber);
+        await _shopApiClient.Orders().CancelOrderAsync(orderNumber);
 
         // Act
         var httpResponse = await _shopApiClient.Orders().CancelOrderAsync(orderNumber);
@@ -145,11 +145,11 @@ public class ApiE2eTest : IAsyncLifetime
         var actualSku = sku;
         if (setupErpProduct && !string.IsNullOrEmpty(sku))
         {
-            actualSku = await _erpApiClient!.Products().CreateProductAsync(sku, 99.99m);
+            actualSku = await _erpApiClient.Products().CreateProductAsync(sku, 99.99m);
         }
 
         // Act
-        var httpResponse = await _shopApiClient!.Orders().PlaceOrderAsync(actualSku, quantity, country);
+        var httpResponse = await _shopApiClient.Orders().PlaceOrderAsync(actualSku, quantity, country);
 
         // Assert
         _shopApiClient.Orders().AssertOrderPlacementFailed(httpResponse);
@@ -164,10 +164,10 @@ public class ApiE2eTest : IAsyncLifetime
     {
         // Arrange
         var baseSku = "AUTO-EQ-500";
-        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, 150.00m);
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, 150.00m);
 
         // Act
-        var httpResponse = await _shopApiClient!.Orders().PlaceOrderAsync(sku, quantity?.ToString() ?? "", "US");
+        var httpResponse = await _shopApiClient.Orders().PlaceOrderAsync(sku, quantity?.ToString() ?? "", "US");
 
         // Assert
         _shopApiClient.Orders().AssertOrderPlacementFailed(httpResponse);
@@ -184,7 +184,7 @@ public class ApiE2eTest : IAsyncLifetime
     public async Task PlaceOrder_WithMissingFields_ShouldReturnBadRequest()
     {
         // Act
-        var httpResponse = await _shopApiClient!.Orders().PlaceOrderAsync("", "", "");
+        var httpResponse = await _shopApiClient.Orders().PlaceOrderAsync("", "", "");
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.UnprocessableEntity, httpResponse.StatusCode);
@@ -192,14 +192,14 @@ public class ApiE2eTest : IAsyncLifetime
 
     private async Task<string> PlaceOrderAndGetOrderNumberAsync(string sku, int quantity, string country)
     {
-        var httpResponse = await _shopApiClient!.Orders().PlaceOrderAsync(sku, quantity.ToString(), country);
+        var httpResponse = await _shopApiClient.Orders().PlaceOrderAsync(sku, quantity.ToString(), country);
         var placeOrderResponse = await _shopApiClient.Orders().AssertOrderPlacedSuccessfullyAsync(httpResponse);
         return placeOrderResponse.OrderNumber!;
     }
 
     private async Task<GetOrderResponse> GetOrderDetailsAsync(string orderNumber)
     {
-        var httpResponse = await _shopApiClient!.Orders().ViewOrderAsync(orderNumber);
+        var httpResponse = await _shopApiClient.Orders().ViewOrderAsync(orderNumber);
         return await _shopApiClient.Orders().AssertOrderViewedSuccessfullyAsync(httpResponse);
     }
 }

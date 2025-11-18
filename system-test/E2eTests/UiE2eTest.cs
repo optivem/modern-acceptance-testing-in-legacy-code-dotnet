@@ -6,8 +6,8 @@ namespace Optivem.EShop.SystemTest.E2eTests;
 
 public class UiE2eTest : IAsyncLifetime
 {
-    private ShopUiClient? _shopUiClient;
-    private ErpApiClient? _erpApiClient;
+    private ShopUiClient _shopUiClient = default!;
+    private ErpApiClient _erpApiClient = default!;
 
     public Task InitializeAsync()
     {
@@ -16,14 +16,20 @@ public class UiE2eTest : IAsyncLifetime
         return Task.CompletedTask;
     }
 
+    public async Task DisposeAsync()
+    {
+        await ClientCloser.CloseAsync(_shopUiClient);
+        await ClientCloser.CloseAsync(_erpApiClient);
+    }
+
     [Fact]
     public async Task PlaceOrder_WithValidInputs_ShouldDisplaySuccessMessage()
     {
         // Arrange
         var baseSku = "AUTO-UI-001";
-        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, 99.99m);
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, 99.99m);
 
-        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var homePage = await _shopUiClient.OpenHomePageAsync();
         var newOrderPage = await homePage.ClickNewOrderAsync();
 
         // Act
@@ -46,9 +52,9 @@ public class UiE2eTest : IAsyncLifetime
         var baseSku = "AUTO-UI-001B";
         var unitPrice = 109.95m;
         var quantity = 5;
-        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, unitPrice);
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, unitPrice);
 
-        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var homePage = await _shopUiClient.OpenHomePageAsync();
         var newOrderPage = await homePage.ClickNewOrderAsync();
 
         // Act
@@ -70,9 +76,9 @@ public class UiE2eTest : IAsyncLifetime
         var baseSku = "AUTO-UI-002";
         var unitPrice = 499.99m;
         var quantity = 3;
-        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, unitPrice);
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, unitPrice);
 
-        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var homePage = await _shopUiClient.OpenHomePageAsync();
         var newOrderPage = await homePage.ClickNewOrderAsync();
         await newOrderPage.InputProductIdAsync(sku);
         await newOrderPage.InputQuantityAsync(quantity.ToString());
@@ -82,7 +88,7 @@ public class UiE2eTest : IAsyncLifetime
         var orderNumber = await newOrderPage.ExtractOrderNumberAsync();
 
         // Act - Navigate back to home page first, then to order history
-        homePage = await _shopUiClient!.OpenHomePageAsync();
+        homePage = await _shopUiClient.OpenHomePageAsync();
         var orderHistoryPage = await homePage.ClickOrderHistoryAsync();
         await orderHistoryPage.InputOrderNumberAsync(orderNumber);
         await orderHistoryPage.ClickViewOrderAsync();
@@ -116,7 +122,7 @@ public class UiE2eTest : IAsyncLifetime
     public async Task GetOrder_WithNonExistentOrder_ShouldDisplayErrorMessage()
     {
         // Arrange
-        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var homePage = await _shopUiClient.OpenHomePageAsync();
         var orderHistoryPage = await homePage.ClickOrderHistoryAsync();
 
         // Act
@@ -132,9 +138,9 @@ public class UiE2eTest : IAsyncLifetime
     {
         // Arrange
         var baseSku = "AUTO-UI-003";
-        var sku = await _erpApiClient!.Products().CreateProductAsync(baseSku, 79.99m);
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, 79.99m);
 
-        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var homePage = await _shopUiClient.OpenHomePageAsync();
         var newOrderPage = await homePage.ClickNewOrderAsync();
         await newOrderPage.InputProductIdAsync(sku);
         await newOrderPage.InputQuantityAsync("2");
@@ -144,7 +150,7 @@ public class UiE2eTest : IAsyncLifetime
         var orderNumber = await newOrderPage.ExtractOrderNumberAsync();
 
         // Act - Navigate back to home page first, then to order history
-        homePage = await _shopUiClient!.OpenHomePageAsync();
+        homePage = await _shopUiClient.OpenHomePageAsync();
         var orderHistoryPage = await homePage.ClickOrderHistoryAsync();
         await orderHistoryPage.InputOrderNumberAsync(orderNumber);
         await orderHistoryPage.ClickViewOrderAsync();
@@ -164,7 +170,7 @@ public class UiE2eTest : IAsyncLifetime
         string sku, string quantity, string country, string expectedError)
     {
         // Arrange
-        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var homePage = await _shopUiClient.OpenHomePageAsync();
         var newOrderPage = await homePage.ClickNewOrderAsync();
 
         // Act
@@ -184,7 +190,7 @@ public class UiE2eTest : IAsyncLifetime
         string quantity, string expectedError)
     {
         // Arrange
-        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var homePage = await _shopUiClient.OpenHomePageAsync();
         var newOrderPage = await homePage.ClickNewOrderAsync();
 
         // Act
@@ -201,7 +207,7 @@ public class UiE2eTest : IAsyncLifetime
     public async Task NavigateToShop_FromHomePage_ShouldLoadShopPage()
     {
         // Arrange
-        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var homePage = await _shopUiClient.OpenHomePageAsync();
 
         // Act
         var newOrderPage = await homePage.ClickNewOrderAsync();
@@ -214,18 +220,12 @@ public class UiE2eTest : IAsyncLifetime
     public async Task NavigateToOrderHistory_FromHomePage_ShouldLoadOrderHistoryPage()
     {
         // Arrange
-        var homePage = await _shopUiClient!.OpenHomePageAsync();
+        var homePage = await _shopUiClient.OpenHomePageAsync();
 
         // Act
         var orderHistoryPage = await homePage.ClickOrderHistoryAsync();
 
         // Assert
         await orderHistoryPage.AssertOrderHistoryPageLoadedAsync();
-    }
-
-    public async Task DisposeAsync()
-    {
-        await ClientCloser.CloseAsync(_shopUiClient);
-        await ClientCloser.CloseAsync(_erpApiClient);
     }
 }

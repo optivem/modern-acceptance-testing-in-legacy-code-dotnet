@@ -5,7 +5,7 @@ namespace Optivem.AtddAccelerator.EShop.SystemTest.SmokeTests;
 
 public class ApiSmokeTest : IAsyncLifetime
 {
-    private ShopApiClient? _shopApiClient;
+    private ShopApiClient _shopApiClient = default!;
 
     public Task InitializeAsync()
     {
@@ -13,18 +13,18 @@ public class ApiSmokeTest : IAsyncLifetime
         return Task.CompletedTask;
     }
 
+    public async Task DisposeAsync()
+    {
+        await ClientCloser.CloseAsync(_shopApiClient);
+    }
+
     [Fact]
     public async Task Echo_ShouldReturnOk()
     {
         // Act
-        var httpResponse = await _shopApiClient!.Echo().EchoAsync();
+        var httpResponse = await _shopApiClient.Echo().EchoAsync();
 
         // Assert
         _shopApiClient.Echo().AssertEchoSuccessful(httpResponse);
-    }
-
-    public async Task DisposeAsync()
-    {
-        await ClientCloser.CloseAsync(_shopApiClient);
     }
 }
