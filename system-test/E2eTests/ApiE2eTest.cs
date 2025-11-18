@@ -186,7 +186,7 @@ public class ApiE2eTest : IAsyncLifetime
         var httpResponse = await _shopApiClient!.Orders().PlaceOrderAsync("", "", "");
 
         // Assert
-        Assert.Equal(System.Net.HttpStatusCode.BadRequest, httpResponse.StatusCode);
+        Assert.Equal(System.Net.HttpStatusCode.UnprocessableEntity, httpResponse.StatusCode);
     }
 
     private async Task<string> PlaceOrderAndGetOrderNumberAsync(string sku, int quantity, string country)

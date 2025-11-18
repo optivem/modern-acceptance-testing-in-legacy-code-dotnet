@@ -8,7 +8,8 @@ public class TestHttpClient
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
+        Converters = { new global::System.Text.Json.Serialization.JsonStringEnumConverter() }
     };
 
     private readonly HttpClient _httpClient;

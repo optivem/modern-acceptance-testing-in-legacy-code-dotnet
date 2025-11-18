@@ -88,7 +88,7 @@ public class OrderService
             TaxRate = order.TaxRate,
             TaxAmount = order.TaxAmount,
             TotalPrice = order.TotalPrice,
-            Status = order.Status.ToString(),
+            Status = order.Status,
             Country = order.Country
         };
     }

@@ -12,6 +12,7 @@ public class PlaceOrderRequest
     [Required(ErrorMessage = "Quantity must not be empty")]
     [Range(1, int.MaxValue, ErrorMessage = "Quantity must be positive")]
     [JsonPropertyName("quantity")]
+    [JsonConverter(typeof(EmptyStringToNullIntConverter))]
     public int? Quantity { get; set; }
 
     [Required(ErrorMessage = "Country must not be empty")]

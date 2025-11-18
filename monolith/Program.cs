@@ -11,6 +11,35 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            // Check if this is a JSON binding error by examining ModelState keys
+            // JSON binding errors have keys that start with "$" (e.g., "$.quantity")
+            var hasJsonBindingError = context.ModelState.Keys.Any(key => key.StartsWith("$"));
+            
+            if (hasJsonBindingError)
+            {
+                // Return 400 for JSON binding errors (type conversion failures)
+                var problemDetails = new Microsoft.AspNetCore.Mvc.ValidationProblemDetails(context.ModelState)
+                {
+                    Status = 400
+                };
+                return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(problemDetails);
+            }
+            else
+            {
+                // Return 422 for semantic validation errors (Required, Range, etc.)
+                var problemDetails = new Microsoft.AspNetCore.Mvc.ValidationProblemDetails(context.ModelState)
+                {
+                    Status = 422
+                };
+                return new Microsoft.AspNetCore.Mvc.UnprocessableEntityObjectResult(problemDetails);
+            }
+        };
     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

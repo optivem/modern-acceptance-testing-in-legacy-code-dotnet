@@ -39,7 +39,7 @@ public class GetOrderResponse
     public decimal TotalPrice { get; set; }
 
     [JsonPropertyName("status")]
-    public string Status { get; set; } = string.Empty;
+    public OrderStatus Status { get; set; }
 
     [JsonPropertyName("country")]
     public string Country { get; set; } = string.Empty;
