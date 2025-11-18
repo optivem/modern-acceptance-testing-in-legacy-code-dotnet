@@ -5,21 +5,21 @@ namespace Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Ui.Pages;
 public class OrderHistoryPage
 {
     private const string OrderNumberInputSelector = "[aria-label=\"Order Number\"]";
-    private const string ViewOrderButtonSelector = "[aria-label=\"View Order\"]";
+    private const string ViewOrderButtonSelector = "[aria-label=\"Search\"]";
     private const string CancelOrderButtonSelector = "[aria-label=\"Cancel Order\"]";
-    private const string OrderNumberOutputSelector = "[aria-label=\"Order Number Output\"]";
-    private const string SkuOutputSelector = "[aria-label=\"SKU Output\"]";
-    private const string QuantityOutputSelector = "[aria-label=\"Quantity Output\"]";
-    private const string UnitPriceOutputSelector = "[aria-label=\"Unit Price Output\"]";
-    private const string OriginalPriceOutputSelector = "[aria-label=\"Original Price Output\"]";
-    private const string DiscountRateOutputSelector = "[aria-label=\"Discount Rate Output\"]";
-    private const string DiscountAmountOutputSelector = "[aria-label=\"Discount Amount Output\"]";
-    private const string SubtotalPriceOutputSelector = "[aria-label=\"Subtotal Price Output\"]";
-    private const string TaxRateOutputSelector = "[aria-label=\"Tax Rate Output\"]";
-    private const string TaxAmountOutputSelector = "[aria-label=\"Tax Amount Output\"]";
-    private const string TotalPriceOutputSelector = "[aria-label=\"Total Price Output\"]";
-    private const string StatusOutputSelector = "[aria-label=\"Status Output\"]";
-    private const string CountryOutputSelector = "[aria-label=\"Country Output\"]";
+    private const string OrderNumberOutputSelector = "[aria-label=\"Display Order Number\"]";
+    private const string SkuOutputSelector = "[aria-label=\"Display Product ID\"]";
+    private const string QuantityOutputSelector = "[aria-label=\"Display Quantity\"]";
+    private const string UnitPriceOutputSelector = "[aria-label=\"Display Unit Price\"]";
+    private const string OriginalPriceOutputSelector = "[aria-label=\"Display Original Price\"]";
+    private const string DiscountRateOutputSelector = "[aria-label=\"Display Discount Rate\"]";
+    private const string DiscountAmountOutputSelector = "[aria-label=\"Display Discount Amount\"]";
+    private const string SubtotalPriceOutputSelector = "[aria-label=\"Display Subtotal Price\"]";
+    private const string TaxRateOutputSelector = "[aria-label=\"Display Tax Rate\"]";
+    private const string TaxAmountOutputSelector = "[aria-label=\"Display Tax Amount\"]";
+    private const string TotalPriceOutputSelector = "[aria-label=\"Display Total Price\"]";
+    private const string StatusOutputSelector = "[aria-label=\"Display Status\"]";
+    private const string CountryOutputSelector = "[aria-label=\"Display Country\"]";
     private const string ConfirmationMessageSelector = "[role='alert']";
 
     private readonly TestPageClient _pageClient;

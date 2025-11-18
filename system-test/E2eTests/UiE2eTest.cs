@@ -81,7 +81,8 @@ public class UiE2eTest : IAsyncLifetime
         
         var orderNumber = await newOrderPage.ExtractOrderNumberAsync();
 
-        // Act
+        // Act - Navigate back to home page first, then to order history
+        homePage = await _shopUiClient!.OpenHomePageAsync();
         var orderHistoryPage = await homePage.ClickOrderHistoryAsync();
         await orderHistoryPage.InputOrderNumberAsync(orderNumber);
         await orderHistoryPage.ClickViewOrderAsync();
@@ -142,7 +143,8 @@ public class UiE2eTest : IAsyncLifetime
         
         var orderNumber = await newOrderPage.ExtractOrderNumberAsync();
 
-        // Act
+        // Act - Navigate back to home page first, then to order history
+        homePage = await _shopUiClient!.OpenHomePageAsync();
         var orderHistoryPage = await homePage.ClickOrderHistoryAsync();
         await orderHistoryPage.InputOrderNumberAsync(orderNumber);
         await orderHistoryPage.ClickViewOrderAsync();
