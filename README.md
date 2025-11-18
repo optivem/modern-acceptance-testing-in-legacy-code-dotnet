@@ -24,6 +24,13 @@ Check that you have PowerShell 7
 $PSVersionTable.PSVersion
 ```
 
+Ensure you have Playwright browser installed:
+
+```shell
+cd system-test
+pwsh bin/Debug/net8.0/playwright.ps1 install
+```
+
 ## Run Everything
 
 ```powershell

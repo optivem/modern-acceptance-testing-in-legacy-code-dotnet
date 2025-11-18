@@ -5,7 +5,7 @@ namespace Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Api.Contr
 
 public class OrderController
 {
-    private const string Endpoint = "/orders";
+    private const string Endpoint = "orders";
 
     private readonly TestHttpClient _httpClient;
 

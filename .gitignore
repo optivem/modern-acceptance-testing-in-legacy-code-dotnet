@@ -16,6 +16,12 @@ x86/
 [Bb]in/
 [Oo]bj/
 
+# Test results
+TestResults/
+*.trx
+*.html
+*.xml
+
 # Visual Studio cache/options
 .vsts/
 slnx.sqlite

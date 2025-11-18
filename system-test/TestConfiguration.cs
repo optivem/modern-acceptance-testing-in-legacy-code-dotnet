@@ -14,14 +14,13 @@ public class TestConfiguration
             .Build();
     }
 
-    public static string BaseUrl => _configuration["BaseUrl"] ?? "http://localhost:8081";
-    
     public static int WaitSeconds => int.Parse(_configuration["WaitSeconds"] ?? "10");
 
-    // Client layer configuration
-    public static string ShopUiBaseUrl => _configuration["ShopUiBaseUrl"] ?? BaseUrl;
+    // EShop configuration
+    public static string ShopUiBaseUrl => _configuration["Test:EShop:Ui:BaseUrl"] ?? "http://localhost:8081";
     
-    public static string ShopApiBaseUrl => _configuration["ShopApiBaseUrl"] ?? $"{BaseUrl}/api";
+    public static string ShopApiBaseUrl => _configuration["Test:EShop:Api:BaseUrl"] ?? "http://localhost:8081/api";
     
-    public static string ErpApiBaseUrl => _configuration["ErpApiBaseUrl"] ?? BaseUrl.Replace(":8081", ":3100");
+    // ERP configuration
+    public static string ErpApiBaseUrl => _configuration["Test:Erp:Api:BaseUrl"] ?? "http://localhost:3100";
 }
