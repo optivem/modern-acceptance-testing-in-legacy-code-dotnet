@@ -16,15 +16,14 @@ public class TaxGateway
     public async Task<CountryDetails?> GetTaxDetailsAsync(string country)
     {
         var taxApiBaseUrl = _configuration["ExternalApis:TaxApi:BaseUrl"];
-        var response = await _httpClient.GetAsync($"{taxApiBaseUrl}/countries?code={country}");
+        var response = await _httpClient.GetAsync($"{taxApiBaseUrl}/countries/{country}");
 
         if (!response.IsSuccessStatusCode)
         {
             return null;
         }
 
-        var countries = await response.Content.ReadFromJsonAsync<List<CountryDetails>>();
-        return countries?.FirstOrDefault();
+        return await response.Content.ReadFromJsonAsync<CountryDetails>();
     }
 
     public class CountryDetails

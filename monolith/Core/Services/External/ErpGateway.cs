@@ -16,15 +16,14 @@ public class ErpGateway
     public async Task<ProductDetails?> GetProductDetailsAsync(string sku)
     {
         var erpApiBaseUrl = _configuration["ExternalApis:ErpApi:BaseUrl"];
-        var response = await _httpClient.GetAsync($"{erpApiBaseUrl}/products?id={sku}");
+        var response = await _httpClient.GetAsync($"{erpApiBaseUrl}/products/{sku}");
 
         if (!response.IsSuccessStatusCode)
         {
             return null;
         }
 
-        var products = await response.Content.ReadFromJsonAsync<List<ProductDetails>>();
-        return products?.FirstOrDefault();
+        return await response.Content.ReadFromJsonAsync<ProductDetails>();
     }
 
     public class ProductDetails
