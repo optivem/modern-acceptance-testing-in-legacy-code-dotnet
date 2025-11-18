@@ -6,10 +6,10 @@ namespace Optivem.EShop.Monolith.Core.DTOs;
 public class GetOrderResponse
 {
     [JsonPropertyName("orderNumber")]
-    public string OrderNumber { get; set; } = string.Empty;
+    public string? OrderNumber { get; set; }
 
     [JsonPropertyName("sku")]
-    public string Sku { get; set; } = string.Empty;
+    public string? Sku { get; set; }
 
     [JsonPropertyName("quantity")]
     public int Quantity { get; set; }
@@ -42,5 +42,5 @@ public class GetOrderResponse
     public OrderStatus Status { get; set; }
 
     [JsonPropertyName("country")]
-    public string Country { get; set; } = string.Empty;
+    public string? Country { get; set; }
 }

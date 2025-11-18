@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Optivem.EShop.Monolith.Core.DTOs;
+namespace Optivem.EShop.Monolith.Core.Converters;
 
 public class EmptyStringToNullIntConverter : JsonConverter<int?>
 {

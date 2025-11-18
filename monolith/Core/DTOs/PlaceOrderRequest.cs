@@ -1,3 +1,4 @@
+using Optivem.EShop.Monolith.Core.Converters;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
