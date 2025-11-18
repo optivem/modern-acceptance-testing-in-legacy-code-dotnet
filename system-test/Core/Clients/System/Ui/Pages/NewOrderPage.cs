@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.Commons;
 
@@ -68,7 +69,8 @@ public class NewOrderPage
         Assert.True(matcher.Success, 
             $"Should extract original price from confirmation message: {confirmationMessageText}");
         
-        return decimal.Parse(matcher.Groups[OriginalPriceMatcherGroup].Value);
+        var priceString = matcher.Groups[OriginalPriceMatcherGroup].Value;
+        return decimal.Parse(priceString, CultureInfo.InvariantCulture);
     }
 
     public async Task AssertOrderPlacedSuccessfullyAsync()
