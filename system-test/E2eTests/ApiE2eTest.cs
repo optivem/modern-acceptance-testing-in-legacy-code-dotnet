@@ -46,11 +46,11 @@ public class ApiE2eTest : IAsyncLifetime
     [Fact]
     public async Task GetOrder_WithExistingOrder_ShouldReturnOrder()
     {
-        // Arrange
+        // Arrange - Set up product in ERP first
         var baseSku = "AUTO-GO-200";
-        var unitPrice = 125.50m;
-        var quantity = 2;
-        var country = "US";
+        var unitPrice = 299.50m;
+        var quantity = 3;
+        var country = "DE";
 
         var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, unitPrice);
 
@@ -59,14 +59,21 @@ public class ApiE2eTest : IAsyncLifetime
         // Act
         var httpResponse = await _shopApiClient.Orders().ViewOrderAsync(orderNumber);
 
-        // Assert
+        // Assert - Assert all fields from GetOrderResponse
         var order = await _shopApiClient.Orders().AssertOrderViewedSuccessfullyAsync(httpResponse);
+        Assert.NotNull(order.OrderNumber);
         Assert.Equal(orderNumber, order.OrderNumber);
         Assert.Equal(sku, order.Sku);
         Assert.Equal(quantity, order.Quantity);
         Assert.Equal(country, order.Country);
+        
+        // Assert with concrete values based on known input
         Assert.Equal(unitPrice, order.UnitPrice);
-        Assert.Equal(251.00m, order.OriginalPrice);
+        
+        var expectedOriginalPrice = 898.50m;
+        Assert.Equal(expectedOriginalPrice, order.OriginalPrice);
+        
+        Assert.NotNull(order.Status);
         Assert.Equal(OrderStatus.PLACED, order.Status);
     }
 
@@ -157,6 +164,23 @@ public class ApiE2eTest : IAsyncLifetime
         Assert.Contains(expectedError, errorMessage);
     }
 
+    [Fact]
+    public async Task PlaceOrder_WithNonExistentSku_ShouldReturnUnprocessableEntity()
+    {
+        // Arrange
+        var sku = "NON-EXISTENT-SKU-12345";
+        var quantity = "5";
+        var country = "US";
+
+        // Act
+        var httpResponse = await _shopApiClient.Orders().PlaceOrderAsync(sku, quantity, country);
+
+        // Assert
+        _shopApiClient.Orders().AssertOrderPlacementFailed(httpResponse);
+        var errorMessage = await _shopApiClient.Orders().GetErrorMessageAsync(httpResponse);
+        Assert.Contains("Product does not exist for SKU", errorMessage);
+    }
+
     [Theory]
     [MemberData(nameof(GetInvalidQuantityTestData))]
     public async Task PlaceOrder_WithInvalidQuantityType_ShouldReturnBadRequest(
@@ -178,6 +202,86 @@ public class ApiE2eTest : IAsyncLifetime
     public static IEnumerable<object[]> GetInvalidQuantityTestData()
     {
         yield return new object[] { null!, "Quantity must not be empty" };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetEmptyQuantityTestData))]
+    public async Task PlaceOrder_WithEmptyQuantity_ShouldReturnBadRequest(
+        string? quantityValue, string expectedError)
+    {
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-EQ-500";
+        var unitPrice = 150.00m;
+
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, unitPrice);
+
+        // Act
+        var httpResponse = await _shopApiClient.Orders().PlaceOrderAsync(sku, quantityValue ?? "", "US");
+
+        // Assert
+        _shopApiClient.Orders().AssertOrderPlacementFailed(httpResponse);
+        var errorMessage = await _shopApiClient.Orders().GetErrorMessageAsync(httpResponse);
+        Assert.Contains(expectedError, errorMessage);
+    }
+
+    public static IEnumerable<object[]> GetEmptyQuantityTestData()
+    {
+        yield return new object?[] { null, "Quantity must not be empty" };
+        yield return new object[] { "", "Quantity must not be empty" };
+        yield return new object[] { "   ", "Quantity must not be empty" };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetNonIntegerQuantityTestData))]
+    public async Task PlaceOrder_WithNonIntegerQuantity_ShouldReturnBadRequest(
+        string quantityValue, string expectedError)
+    {
+        // Arrange - Set up product in ERP first
+        var baseSku = "AUTO-NIQ-600";
+        var unitPrice = 175.00m;
+
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, unitPrice);
+
+        // Act
+        var httpResponse = await _shopApiClient.Orders().PlaceOrderAsync(sku, quantityValue, "US");
+
+        // Assert
+        _shopApiClient.Orders().AssertOrderPlacementFailed(httpResponse);
+        var errorMessage = await _shopApiClient.Orders().GetErrorMessageAsync(httpResponse);
+        Assert.Contains(expectedError, errorMessage);
+    }
+
+    public static IEnumerable<object[]> GetNonIntegerQuantityTestData()
+    {
+        yield return new object[] { "3.5", "Quantity must be an integer" };
+        yield return new object[] { "lala", "Quantity must be an integer" };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetEmptyCountryTestData))]
+    public async Task PlaceOrder_WithEmptyCountry_ShouldReturnBadRequest(
+        string? countryValue, string expectedError)
+    {
+        // Arrange - Set up product in ERP first and get unique SKU
+        var baseSku = "AUTO-EC-700";
+        var unitPrice = 225.00m;
+
+        var sku = await _erpApiClient.Products().CreateProductAsync(baseSku, unitPrice);
+
+        // Act
+        var httpResponse = await _shopApiClient.Orders().PlaceOrderAsync(sku, "5", countryValue ?? "");
+
+        // Assert
+        _shopApiClient.Orders().AssertOrderPlacementFailed(httpResponse);
+        var errorMessage = await _shopApiClient.Orders().GetErrorMessageAsync(httpResponse);
+        Assert.Contains(expectedError, errorMessage);
+    }
+
+    public static IEnumerable<object[]> GetEmptyCountryTestData()
+    {
+        yield return new object?[] { null, "Country must not be empty" };
+        yield return new object[] { "", "Country must not be empty" };
+        yield return new object[] { "   ", "Country must not be empty" };
     }
 
     [Fact]

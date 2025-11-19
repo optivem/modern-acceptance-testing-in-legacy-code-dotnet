@@ -23,8 +23,8 @@ public class EmptyStringToNullIntConverter : JsonConverter<int?>
                 return result;
             }
             
-            // Invalid format - return null to trigger validation
-            return null;
+            // Invalid format - throw exception with specific message
+            throw new JsonException("Quantity must be an integer");
         }
         
         if (reader.TokenType == JsonTokenType.Number)
@@ -37,7 +37,7 @@ public class EmptyStringToNullIntConverter : JsonConverter<int?>
             return null;
         }
         
-        throw new JsonException($"Unable to convert to int?");
+        throw new JsonException("Quantity must be an integer");
     }
 
     public override void Write(Utf8JsonWriter writer, int? value, JsonSerializerOptions options)

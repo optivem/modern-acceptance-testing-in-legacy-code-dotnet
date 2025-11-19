@@ -17,27 +17,39 @@ builder.Services.AddControllers()
     {
         options.InvalidModelStateResponseFactory = context =>
         {
-            // Check if this is a JSON binding error by examining ModelState keys
-            // JSON binding errors have keys that start with "$" (e.g., "$.quantity")
-            var hasJsonBindingError = context.ModelState.Keys.Any(key => key.StartsWith("$"));
-            
-            if (hasJsonBindingError)
+            // Check for JSON binding errors (e.g., from JsonConverter throwing JsonException)
+            var jsonBindingErrors = context.ModelState
+                .Where(kvp => kvp.Key.StartsWith("$"))
+                .SelectMany(kvp => kvp.Value?.Errors ?? new Microsoft.AspNetCore.Mvc.ModelBinding.ModelErrorCollection())
+                .ToList();
+
+            if (jsonBindingErrors.Any())
             {
-                // Return 400 for JSON binding errors (type conversion failures)
-                var problemDetails = new Microsoft.AspNetCore.Mvc.ValidationProblemDetails(context.ModelState)
-                {
-                    Status = 400
-                };
-                return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(problemDetails);
+                // Extract the error message from the first JSON binding error
+                var firstError = jsonBindingErrors.First();
+                var errorMessage = firstError.Exception?.Message ?? firstError.ErrorMessage;
+                
+                // Return 422 with the custom error message
+                context.HttpContext.Response.StatusCode = 422;
+                context.HttpContext.Response.ContentType = "application/json";
+                var response = new { message = errorMessage };
+                return new Microsoft.AspNetCore.Mvc.JsonResult(response);
             }
             else
             {
                 // Return 422 for semantic validation errors (Required, Range, etc.)
-                var problemDetails = new Microsoft.AspNetCore.Mvc.ValidationProblemDetails(context.ModelState)
-                {
-                    Status = 422
-                };
-                return new Microsoft.AspNetCore.Mvc.UnprocessableEntityObjectResult(problemDetails);
+                var errors = context.ModelState
+                    .Where(x => x.Value?.Errors.Count > 0)
+                    .SelectMany(x => x.Value!.Errors)
+                    .Select(x => x.ErrorMessage)
+                    .ToList();
+
+                var errorMessage = string.Join("; ", errors);
+                
+                context.HttpContext.Response.StatusCode = 422;
+                context.HttpContext.Response.ContentType = "application/json";
+                var response = new { message = errorMessage };
+                return new Microsoft.AspNetCore.Mvc.JsonResult(response);
             }
         };
     });
