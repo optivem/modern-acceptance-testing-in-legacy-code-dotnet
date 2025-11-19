@@ -1,4 +1,5 @@
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.External.Erp;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.External.Tax;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Api;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Ui;
 
@@ -19,5 +20,10 @@ public static class ClientFactory
     public static ErpApiClient CreateErpApiClient()
     {
         return new ErpApiClient(TestConfiguration.ErpApiBaseUrl);
+    }
+
+    public static TaxApiClient CreateTaxApiClient()
+    {
+        return new TaxApiClient(TestConfiguration.TaxApiBaseUrl);
     }
 }

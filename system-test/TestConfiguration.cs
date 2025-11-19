@@ -23,4 +23,7 @@ public class TestConfiguration
     
     // ERP configuration
     public static string ErpApiBaseUrl => _configuration["Test:Erp:Api:BaseUrl"] ?? "http://localhost:3100";
+
+    // Tax configuration
+    public static string TaxApiBaseUrl => _configuration["Test:Tax:Api:BaseUrl"] ?? "http://localhost:3101";
 }
