@@ -15,6 +15,7 @@ public class ApiSmokeTest
 
         // Assert
         Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("Hello World!", content);
+        Assert.Contains("<!DOCTYPE html>", content);
+        Assert.Contains("Optivem eShop", content);
     }
 }

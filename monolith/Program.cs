@@ -58,9 +58,9 @@ app.UseExceptionHandler();
 
 app.UseCors();
 
-app.UseStaticFiles();
+app.UseDefaultFiles();
 
-app.MapGet("/", () => "Hello World!");
+app.UseStaticFiles();
 
 app.MapControllers();
 
