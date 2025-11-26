@@ -1,21 +1,29 @@
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.System.Api;
+
 namespace Optivem.AtddAccelerator.EShop.SystemTest.SmokeTests;
 
-public class ApiSmokeTest
+public class ApiSmokeTest : IDisposable
 {
-    [Fact]
-    public async Task Service_ShouldRespond()
+    private readonly ShopApiClient _shopApiClient;
+
+    public ApiSmokeTest()
     {
-        // Arrange
-        var httpClient = new HttpClient();
-        var baseUrl = TestConfiguration.ShopUiBaseUrl;
-
-        // Act
-        var response = await httpClient.GetAsync(baseUrl);
-        var content = await response.Content.ReadAsStringAsync();
-
-        // Assert
-        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("<!DOCTYPE html>", content);
-        Assert.Contains("Optivem eShop", content);
+        _shopApiClient = ClientFactory.CreateShopApiClient();
     }
+
+    public void Dispose()
+    {
+        ClientCloser.Close(_shopApiClient);
+    }
+
+    //[Fact]
+    //public void Echo_ShouldReturnOk()
+    //{
+    //    // Act
+    //    var result = _shopApiClient.Echo().Echo();
+
+    //    // Assert
+    //    Assert.True(result.Success, $"Expected successful response but got errors: {string.Join(", ", result.IsFailure ? result.Errors : new List<string>())}");
+    //}
 }

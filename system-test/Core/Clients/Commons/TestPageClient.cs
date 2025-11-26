@@ -89,19 +89,44 @@ public class TestPageClient
         return locator.CountAsync().GetAwaiter().GetResult() == 0;
     }
 
+    public void WaitForHidden(string selector)
+    {
+        var waitForOptions = GetWaitForOptions();
+        waitForOptions.State = WaitForSelectorState.Hidden;
+        waitForOptions.Timeout = _timeoutMilliseconds;
+
+        var locator = _page.Locator(selector);
+        locator.WaitForAsync(waitForOptions).GetAwaiter().GetResult();
+    }
+
+    public void WaitForVisible(string selector)
+    {
+        var waitForOptions = GetWaitForOptions();
+        waitForOptions.State = WaitForSelectorState.Visible;
+        waitForOptions.Timeout = _timeoutMilliseconds;
+
+        var locator = _page.Locator(selector);
+        locator.WaitForAsync(waitForOptions).GetAwaiter().GetResult();
+    }
+
     private void Wait(ILocator locator)
     {
         try
         {
-            locator.WaitForAsync(new LocatorWaitForOptions
-            {
-                State = WaitForSelectorState.Visible,
-                Timeout = _timeoutMilliseconds
-            }).GetAwaiter().GetResult();
+            var waitForOptions = GetWaitForOptions();
+            locator.WaitForAsync(waitForOptions).GetAwaiter().GetResult();
         }
         catch (TimeoutException ex)
         {
             throw new TimeoutException($"Element not found or not visible within {_timeoutMilliseconds}ms", ex);
         }
+    }
+
+    private LocatorWaitForOptions GetWaitForOptions()
+    {
+        return new LocatorWaitForOptions
+        {
+            Timeout = _timeoutMilliseconds
+        };
     }
 }

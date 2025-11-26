@@ -20,6 +20,18 @@ public static class TestHttpUtils
         return JsonSerializer.Deserialize<T>(responseBody, JsonOptions)!;
     }
 
+    public static string SerializeRequest(object request)
+    {
+        try
+        {
+            return JsonSerializer.Serialize(request, JsonOptions);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to serialize request object", ex);
+        }
+    }
+
     public static List<string> GetErrorMessages(HttpResponseMessage httpResponse)
     {
         var problemDetail = ReadResponse<ProblemDetailResponse>(httpResponse);
