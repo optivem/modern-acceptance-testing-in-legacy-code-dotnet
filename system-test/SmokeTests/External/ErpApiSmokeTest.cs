@@ -1,23 +1,34 @@
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.External.Erp;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Drivers;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Drivers.External;
+using Optivem.AtddAccelerator.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Clients.Commons;
 
 namespace Optivem.AtddAccelerator.EShop.SystemTest.SmokeTests.External;
 
-public class ErpApiSmokeTest : IAsyncLifetime
+public class ErpApiSmokeTest
 {
-    private ErpApiClient _erpApiClient = default!;
+    private ErpApiDriver _erpApiDriver = default!;
 
-    public Task InitializeAsync()
+    public ErpApiSmokeTest()
     {
-        _erpApiClient = ClientFactory.CreateErpApiClient();
-        return Task.CompletedTask;
+        _erpApiDriver = DriverFactory.CreateErpApiDriver();
     }
 
-    public async Task DisposeAsync()
-    {
-        await Closer.CloseAsync(_erpApiClient);
-    }
+    //public void Dispose()
+    //{
+    //    Closer.Close(_erpApiDriver);
+    //}
+
+    //[Fact]
+    //public void ShouldBeAbleToGoToErp()
+    //{
+    //    var result = _shopApiDriver.GoToShop();
+    //    Assert.True(result.Success);
+    //}
+
+
 
     //[Fact]
     //public void Home_ShouldReturn200OK()
