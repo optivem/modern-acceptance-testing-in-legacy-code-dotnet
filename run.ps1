@@ -154,7 +154,7 @@ function Test-System {
     Write-Host "Running tests..." -ForegroundColor Cyan
 
     Set-Location system-test
-    dotnet test --logger "trx;verbosity=detailed" --logger "html;verbosity=detailed" --logger "console;verbosity=detailed" --results-directory "./TestResults"
+    dotnet test --logger "trx;verbosity=detailed" --logger "html;verbosity=detailed" --logger "console;verbosity=minimal" --results-directory "./TestResults"
     $testResult = $LASTEXITCODE
     Set-Location ..
 
