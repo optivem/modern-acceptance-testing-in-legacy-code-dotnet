@@ -73,7 +73,7 @@ function Start-System {
         Write-Host "Building monolith application..." -ForegroundColor Cyan
         Set-Location monolith
 
-        dotnet build
+        dotnet build Optivem.AtddAccelerator.EShop.Monolith.csproj
 
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Build failed!" -ForegroundColor Red
