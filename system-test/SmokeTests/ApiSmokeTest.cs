@@ -17,13 +17,13 @@ public class ApiSmokeTest : IDisposable
         ClientCloser.Close(_shopApiClient);
     }
 
-    //[Fact]
-    //public void Echo_ShouldReturnOk()
-    //{
-    //    // Act
-    //    var result = _shopApiClient.Echo().Echo();
+    [Fact]
+    public void Echo_ShouldReturnOk()
+    {
+        // Act
+        var result = _shopApiClient.Echo().Echo();
 
-    //    // Assert
-    //    Assert.True(result.Success, $"Expected successful response but got errors: {string.Join(", ", result.IsFailure ? result.Errors : new List<string>())}");
-    //}
+        // Assert
+        Assert.True(result.Success, $"Expected successful response but got errors: {string.Join(", ", result.IsFailure ? result.Errors : new List<string>())}");
+    }
 }
