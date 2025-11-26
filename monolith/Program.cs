@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Optivem.AtddAccelerator.EShop.Monolith.Api.Exceptions;
 using Optivem.AtddAccelerator.EShop.Monolith.Core.Repositories;
@@ -7,7 +8,11 @@ using Optivem.AtddAccelerator.EShop.Monolith.Core.Services.External;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 // Configure Database
