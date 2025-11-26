@@ -2,6 +2,7 @@ using Optivem.AtddAccelerator.EShop.SystemTest.Core.Commons.Dtos.Enums;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Drivers;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Drivers.External;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Drivers.System;
+using Optivem.EShop.SystemTest.Core.Clients.Commons;
 
 namespace Optivem.AtddAccelerator.EShop.SystemTest.E2eTests;
 
@@ -23,9 +24,9 @@ public abstract class BaseE2eTest : IAsyncLifetime
 
     public Task DisposeAsync()
     {
-        DriverCloser.Close(ShopDriver);
-        DriverCloser.Close(ErpApiDriver);
-        DriverCloser.Close(TaxApiDriver);
+        Closer.Close(ShopDriver);
+        Closer.Close(ErpApiDriver);
+        Closer.Close(TaxApiDriver);
         return Task.CompletedTask;
     }
 

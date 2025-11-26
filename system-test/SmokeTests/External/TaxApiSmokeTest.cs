@@ -1,5 +1,6 @@
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients;
 using Optivem.AtddAccelerator.EShop.SystemTest.Core.Clients.External.Tax;
+using Optivem.EShop.SystemTest.Core.Clients.Commons;
 
 namespace Optivem.AtddAccelerator.EShop.SystemTest.SmokeTests.External;
 
@@ -15,7 +16,7 @@ public class TaxApiSmokeTest : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        await ClientCloser.CloseAsync(_taxApiClient);
+        await Closer.CloseAsync(_taxApiClient);
     }
 
     //[Fact]
