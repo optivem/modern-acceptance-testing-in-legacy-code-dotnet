@@ -15,6 +15,13 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Clone External Dependencies
+      run: |
+        echo "📥 Cloning external dependencies repository..."
+        git clone https://github.com/optivem/modern-acceptance-testing-in-legacy-code-external.git modern-acceptance-testing-in-legacy-code-external
+        echo "✅ External dependencies cloned successfully"
+      shell: bash
+
     - name: Deploy System
       run: |
         echo "🚀 Deploying system version ${{ inputs.version }} to ${{ inputs.environment }} environment..."
@@ -41,21 +48,21 @@ runs:
         echo "   - On-premise (Kubernetes, Docker Swarm, VMs)"
         echo "   - Other cloud providers (DigitalOcean, Linode, etc.)"
         echo ""
-        
-        # Extract monolith image from image-urls array
-        MONOLITH_IMAGE=$(echo '${{ inputs.image-urls }}' | jq -r '.[0]')
-        
         echo "🐳 Starting Docker Compose for simulated deployment..."
-        echo "   Monolith Image: $MONOLITH_IMAGE"
-        
-        # Override monolith image and start services
-        MONOLITH_IMAGE="$MONOLITH_IMAGE" docker compose -f docker-compose.pipeline.yml up -d
+        docker compose -f docker-compose.pipeline.yml up -d
       shell: bash
 
-    - name: Wait for Application to be Ready
+    - name: Wait for System - Frontend
       uses: optivem/wait-for-docker-compose-action@v1
       with:
-        url: 'http://localhost:8081/'
+        url: 'http://localhost:3001/'
+        max-attempts: '30'
+        wait-seconds: '10'
+
+    - name: Wait for System - Backend
+      uses: optivem/wait-for-docker-compose-action@v1
+      with:
+        url: 'http://localhost:8081/health'
         max-attempts: '30'
         wait-seconds: '10'
 
