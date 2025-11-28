@@ -2,45 +2,25 @@ using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers.Commons;
 
-public static class ResultAssert
+public static class ResultExtensions
 {
-    public static ResultAssertion<T> AssertThatResult<T>(Result<T> actual) => new(actual);
-}
-
-public class ResultAssertion<T>
-{
-    private readonly Result<T> _actual;
-
-    public ResultAssertion(Result<T> actual)
+    public static Result<T> ShouldBeSuccess<T>(this Result<T> result)
     {
-        _actual = actual;
+        result.Success.ShouldBeTrue($"Expected result to be success but was failure with errors: {string.Join(", ", result.GetErrors())}");
+        return result;
     }
 
-    public ResultAssertion<T> IsSuccess()
+    public static Result<T> ShouldBeFailure<T>(this Result<T> result)
     {
-        if (!_actual.Success)
-        {
-            throw new Exception($"Expected result to be success but was failure with errors: {string.Join(", ", _actual.GetErrors())}");
-        }
-        return this;
+        result.IsFailure().ShouldBeTrue("Expected result to be failure but was success");
+        return result;
     }
 
-    public ResultAssertion<T> IsFailure()
+    public static Result<T> ShouldBeFailure<T>(this Result<T> result, string errorMessage)
     {
-        if (!_actual.IsFailure())
-        {
-            throw new Exception("Expected result to be failure but was success");
-        }
-        return this;
-    }
-
-    public ResultAssertion<T> IsFailure(string errorMessage)
-    {
-        IsFailure();
-        if (!_actual.GetErrors().Contains(errorMessage))
-        {
-            throw new Exception($"Expected result to contain error '{errorMessage}' but errors were: {string.Join(", ", _actual.GetErrors())}");
-        }
-        return this;
+        result.ShouldBeFailure();
+        result.GetErrors().ShouldContain(errorMessage, 
+            $"Expected result to contain error '{errorMessage}' but errors were: {string.Join(", ", result.GetErrors())}");
+        return result;
     }
 }

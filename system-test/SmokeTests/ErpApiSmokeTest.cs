@@ -1,7 +1,7 @@
 using Optivem.EShop.SystemTest.Core.Drivers;
+using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
 using Xunit;
-using static Optivem.EShop.SystemTest.Core.Drivers.Commons.ResultAssert;
 
 namespace Optivem.EShop.SystemTest.SmokeTests;
 
@@ -18,8 +18,7 @@ public class ErpApiSmokeTest : IDisposable
     public void ShouldCreateProduct()
     {
         var sku = "TEST-" + Guid.NewGuid();
-        var createProductResult = _erpApiDriver.CreateProduct(sku, "99.99");
-        AssertThatResult(createProductResult).IsSuccess();
+        _erpApiDriver.CreateProduct(sku, "99.99").ShouldBeSuccess();
     }
 
     public void Dispose()

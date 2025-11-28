@@ -1,7 +1,7 @@
 using Optivem.EShop.SystemTest.Core.Drivers;
+using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Xunit;
-using static Optivem.EShop.SystemTest.Core.Drivers.Commons.ResultAssert;
 
 namespace Optivem.EShop.SystemTest.E2eTests;
 
@@ -15,49 +15,46 @@ public class ApiE2eTest : BaseE2eTest
     [Fact]
     public void ShouldRejectOrderWithNullQuantity()
     {
-        var result = ShopDriver.PlaceOrder("some-sku", null!, "US");
-        AssertThatResult(result).IsFailure("Quantity must not be empty");
+        ShopDriver.PlaceOrder("some-sku", null!, "US")
+            .ShouldBeFailure("Quantity must not be empty");
     }
 
     [Fact]
     public void ShouldRejectOrderWithNullSku()
     {
-        var result = ShopDriver.PlaceOrder(null!, "5", "US");
-        AssertThatResult(result).IsFailure("SKU must not be empty");
+        ShopDriver.PlaceOrder(null!, "5", "US")
+            .ShouldBeFailure("SKU must not be empty");
     }
 
     [Fact]
     public void ShouldRejectOrderWithNullCountry()
     {
-        var result = ShopDriver.PlaceOrder("some-sku", "5", null!);
-        AssertThatResult(result).IsFailure("Country must not be empty");
+        ShopDriver.PlaceOrder("some-sku", "5", null!)
+            .ShouldBeFailure("Country must not be empty");
     }
 
     [Fact]
     public void ShouldNotCancelNonExistentOrder()
     {
-        var result = ShopDriver.CancelOrder("NON-EXISTENT-ORDER-99999");
-        AssertThatResult(result).IsFailure("Order NON-EXISTENT-ORDER-99999 does not exist.");
+        ShopDriver.CancelOrder("NON-EXISTENT-ORDER-99999")
+            .ShouldBeFailure("Order NON-EXISTENT-ORDER-99999 does not exist.");
     }
 
     [Fact]
     public void ShouldNotCancelAlreadyCancelledOrder()
     {
         var sku = "MNO-" + Guid.NewGuid();
-        var createProductResult = ErpApiDriver.CreateProduct(sku, "35.00");
-        AssertThatResult(createProductResult).IsSuccess();
+        ErpApiDriver.CreateProduct(sku, "35.00").ShouldBeSuccess();
 
-        var placeOrderResult = ShopDriver.PlaceOrder(sku, "3", "US");
-        AssertThatResult(placeOrderResult).IsSuccess();
+        var placeOrderResult = ShopDriver.PlaceOrder(sku, "3", "US").ShouldBeSuccess();
 
         var orderNumber = placeOrderResult.GetValue().OrderNumber;
 
         // Cancel the order first time - should succeed
-        var firstCancelResult = ShopDriver.CancelOrder(orderNumber!);
-        AssertThatResult(firstCancelResult).IsSuccess();
+        ShopDriver.CancelOrder(orderNumber!).ShouldBeSuccess();
 
         // Try to cancel the same order again - should fail
-        var secondCancelResult = ShopDriver.CancelOrder(orderNumber!);
-        AssertThatResult(secondCancelResult).IsFailure("Order has already been cancelled");
+        ShopDriver.CancelOrder(orderNumber!)
+            .ShouldBeFailure("Order has already been cancelled");
     }
 }

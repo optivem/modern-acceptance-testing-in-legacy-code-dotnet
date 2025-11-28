@@ -6,7 +6,6 @@ using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Enums;
 using Xunit;
-using static Optivem.EShop.SystemTest.Core.Drivers.Commons.ResultAssert;
 
 namespace Optivem.EShop.SystemTest.E2eTests;
 
@@ -36,18 +35,15 @@ public abstract class BaseE2eTest : IDisposable
     public void ShouldPlaceOrderAndCalculateOriginalPrice()
     {
         var sku = "ABC-" + Guid.NewGuid();
-        var createProductResult = ErpApiDriver.CreateProduct(sku, "20.00");
-        AssertThatResult(createProductResult).IsSuccess();
+        ErpApiDriver.CreateProduct(sku, "20.00").ShouldBeSuccess();
 
-        var placeOrderResult = ShopDriver.PlaceOrder(sku, "5", "US");
-        AssertThatResult(placeOrderResult).IsSuccess();
+        var placeOrderResult = ShopDriver.PlaceOrder(sku, "5", "US").ShouldBeSuccess();
 
         var orderNumber = placeOrderResult.GetValue().OrderNumber;
 
         orderNumber.ShouldStartWith("ORD-");
 
-        var viewOrderResult = ShopDriver.ViewOrder(orderNumber!);
-        AssertThatResult(viewOrderResult).IsSuccess();
+        var viewOrderResult = ShopDriver.ViewOrder(orderNumber!).ShouldBeSuccess();
 
         var viewOrderResponse = viewOrderResult.GetValue();
         viewOrderResponse.OrderNumber.ShouldBe(orderNumber);
@@ -79,18 +75,14 @@ public abstract class BaseE2eTest : IDisposable
     public void ShouldCancelOrder()
     {
         var sku = "XYZ-" + Guid.NewGuid();
-        var createProductResult = ErpApiDriver.CreateProduct(sku, "50.00");
-        AssertThatResult(createProductResult).IsSuccess();
+        ErpApiDriver.CreateProduct(sku, "50.00").ShouldBeSuccess();
 
-        var placeOrderResult = ShopDriver.PlaceOrder(sku, "2", "US");
-        AssertThatResult(placeOrderResult).IsSuccess();
+        var placeOrderResult = ShopDriver.PlaceOrder(sku, "2", "US").ShouldBeSuccess();
 
         var orderNumber = placeOrderResult.GetValue().OrderNumber;
-        var cancelOrderResult = ShopDriver.CancelOrder(orderNumber!);
-        AssertThatResult(cancelOrderResult).IsSuccess();
+        ShopDriver.CancelOrder(orderNumber!).ShouldBeSuccess();
 
-        var viewOrderResult = ShopDriver.ViewOrder(orderNumber!);
-        AssertThatResult(viewOrderResult).IsSuccess();
+        var viewOrderResult = ShopDriver.ViewOrder(orderNumber!).ShouldBeSuccess();
 
         var viewOrderResponse = viewOrderResult.GetValue();
         viewOrderResponse.OrderNumber.ShouldBe(orderNumber);
@@ -105,37 +97,35 @@ public abstract class BaseE2eTest : IDisposable
     [Fact]
     public void ShouldRejectOrderWithNonExistentSku()
     {
-        var result = ShopDriver.PlaceOrder("NON-EXISTENT-SKU-12345", "5", "US");
-        AssertThatResult(result).IsFailure("Product does not exist for SKU: NON-EXISTENT-SKU-12345");
+        ShopDriver.PlaceOrder("NON-EXISTENT-SKU-12345", "5", "US")
+            .ShouldBeFailure("Product does not exist for SKU: NON-EXISTENT-SKU-12345");
     }
 
     [Fact]
     public void ShouldNotBeAbleToViewNonExistentOrder()
     {
-        var result = ShopDriver.ViewOrder("NON-EXISTENT-ORDER-12345");
-        AssertThatResult(result).IsFailure("Order NON-EXISTENT-ORDER-12345 does not exist.");
+        ShopDriver.ViewOrder("NON-EXISTENT-ORDER-12345")
+            .ShouldBeFailure("Order NON-EXISTENT-ORDER-12345 does not exist.");
     }
 
     [Fact]
     public void ShouldRejectOrderWithNegativeQuantity()
     {
         var sku = "DEF-" + Guid.NewGuid();
-        var createProductResult = ErpApiDriver.CreateProduct(sku, "30.00");
-        AssertThatResult(createProductResult).IsSuccess();
+        ErpApiDriver.CreateProduct(sku, "30.00").ShouldBeSuccess();
 
-        var result = ShopDriver.PlaceOrder(sku, "-3", "US");
-        AssertThatResult(result).IsFailure("Quantity must be positive");
+        ShopDriver.PlaceOrder(sku, "-3", "US")
+            .ShouldBeFailure("Quantity must be positive");
     }
 
     [Fact]
     public void ShouldRejectOrderWithZeroQuantity()
     {
         var sku = "GHI-" + Guid.NewGuid();
-        var createProductResult = ErpApiDriver.CreateProduct(sku, "40.00");
-        AssertThatResult(createProductResult).IsSuccess();
+        ErpApiDriver.CreateProduct(sku, "40.00").ShouldBeSuccess();
 
-        var result = ShopDriver.PlaceOrder(sku, "0", "US");
-        AssertThatResult(result).IsFailure("Quantity must be positive");
+        ShopDriver.PlaceOrder(sku, "0", "US")
+            .ShouldBeFailure("Quantity must be positive");
     }
 
     [Theory]
@@ -143,8 +133,8 @@ public abstract class BaseE2eTest : IDisposable
     [InlineData("   ")]
     public void ShouldRejectOrderWithEmptySku(string sku)
     {
-        var result = ShopDriver.PlaceOrder(sku, "5", "US");
-        AssertThatResult(result).IsFailure("SKU must not be empty");
+        ShopDriver.PlaceOrder(sku, "5", "US")
+            .ShouldBeFailure("SKU must not be empty");
     }
 
     [Theory]
@@ -152,8 +142,8 @@ public abstract class BaseE2eTest : IDisposable
     [InlineData("   ")]
     public void ShouldRejectOrderWithEmptyQuantity(string emptyQuantity)
     {
-        var result = ShopDriver.PlaceOrder("some-sku", emptyQuantity, "US");
-        AssertThatResult(result).IsFailure("Quantity must not be empty");
+        ShopDriver.PlaceOrder("some-sku", emptyQuantity, "US")
+            .ShouldBeFailure("Quantity must not be empty");
     }
 
     [Theory]
@@ -161,8 +151,8 @@ public abstract class BaseE2eTest : IDisposable
     [InlineData("lala")]
     public void ShouldRejectOrderWithNonIntegerQuantity(string nonIntegerQuantity)
     {
-        var result = ShopDriver.PlaceOrder("some-sku", nonIntegerQuantity, "US");
-        AssertThatResult(result).IsFailure("Quantity must be an integer");
+        ShopDriver.PlaceOrder("some-sku", nonIntegerQuantity, "US")
+            .ShouldBeFailure("Quantity must be an integer");
     }
 
     [Theory]
@@ -170,7 +160,7 @@ public abstract class BaseE2eTest : IDisposable
     [InlineData("   ")]
     public void ShouldRejectOrderWithEmptyCountry(string emptyCountry)
     {
-        var result = ShopDriver.PlaceOrder("some-sku", "5", emptyCountry);
-        AssertThatResult(result).IsFailure("Country must not be empty");
+        ShopDriver.PlaceOrder("some-sku", "5", emptyCountry)
+            .ShouldBeFailure("Country must not be empty");
     }
 }
