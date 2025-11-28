@@ -1,6 +1,6 @@
 Shop:
   UiBaseUrl: http://localhost:3001
-  ApiBaseUrl: http://localhost:8081/api
+  ApiBaseUrl: http://localhost:8081
 
 Erp:
   ApiBaseUrl: http://localhost:9001/erp
