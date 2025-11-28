@@ -1,8 +1,39 @@
 services:
+
+  frontend:
+    build:
+      context: ../modern-acceptance-testing-in-legacy-code-frontend/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      - BACKEND_API_URL=http://backend:8080
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ../modern-acceptance-testing-in-legacy-code-backend/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/eshop
+      - POSTGRES_USERNAME=eshop_user
+      - POSTGRES_PASSWORD=eshop_password
+      - ALLOWED_ORIGINS=http://localhost:3001,http://frontend:3000
+      - ERP_API_URL=http://external:9000/erp/api
+      - TAX_API_URL=http://external:9000/tax/api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      external:
+        condition: service_started
+
   postgres:
     image: postgres:16-alpine
     ports:
-      - "5433:5432"
+      - "5401:5432"
     environment:
       - POSTGRES_DB=eshop
       - POSTGRES_USER=eshop_user
@@ -15,41 +46,15 @@ services:
       timeout: 5s
       retries: 5
 
-  erp-api:
-    image: williamyeh/json-server
+  external:
+    image: node:18-alpine
     ports:
-      - "3100:3000"
+      - "9001:9000"
     volumes:
-      - ./json-server-db.erp-api.json:/data/db.json
-    command: --watch /data/db.json --host 0.0.0.0
-
-  tax-api:
-    image: williamyeh/json-server
-    ports:
-      - "3101:3001"
-    volumes:
-      - ./json-server-db.tax-api.json:/data/db.json
-    command: --watch /data/db.json --host 0.0.0.0 --port 3001
-
-  monolith:
-    build:
-      context: ./monolith
-      dockerfile: Dockerfile
-    ports:
-      - "8081:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ConnectionStrings__DefaultConnection=Host=postgres;Database=eshop;Username=eshop_user;Password=eshop_password
-      - ExternalApis__ErpApi__BaseUrl=http://erp-api:3000
-      - ExternalApis__TaxApi__BaseUrl=http://tax-api:3001
-    depends_on:
-      postgres:
-        condition: service_healthy
-      erp-api:
-        condition: service_started
-      tax-api:
-        condition: service_started
+      - ../modern-acceptance-testing-in-legacy-code-external/external:/app
+    working_dir: /app
+    command: sh -c "npm install && npm start"
 
 volumes:
   postgres-data:
+

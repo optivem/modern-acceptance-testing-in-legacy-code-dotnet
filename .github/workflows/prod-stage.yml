@@ -60,7 +60,8 @@ jobs:
         with:
           tag: ${{ inputs.version }}
           base-image-urls: |
-            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/monolith
+            ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code-frontend/frontend
+            ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code-backend/backend
 
   tag-docker-images:
     needs: [generate-production-version, check-release-exists, resolve-docker-images]
@@ -82,7 +83,7 @@ jobs:
           image-urls: ${{ needs.resolve-docker-images.outputs.image-urls }}
           tag: ${{ needs.generate-production-version.outputs.production-version }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
 
   deploy-docker-images:
     needs: [generate-production-version, check-release-exists, tag-docker-images]

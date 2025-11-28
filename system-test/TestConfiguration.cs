@@ -1,29 +1,47 @@
-using Microsoft.Extensions.Configuration;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
-namespace Optivem.AtddAccelerator.EShop.SystemTest;
+namespace Optivem.EShop.SystemTest;
 
-public class TestConfiguration
+public static class TestConfiguration
 {
-    private static readonly IConfiguration _configuration;
+    private static readonly TestSettings Settings;
 
     static TestConfiguration()
     {
-        _configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(PascalCaseNamingConvention.Instance)
             .Build();
+
+        var yamlContent = File.ReadAllText("Resources/application.yml");
+        Settings = deserializer.Deserialize<TestSettings>(yamlContent) ?? new TestSettings();
     }
 
-    public static int WaitSeconds => int.Parse(_configuration["WaitSeconds"] ?? "10");
+    public static string GetShopUiBaseUrl() => Settings.Shop.UiBaseUrl;
+    public static string GetShopApiBaseUrl() => Settings.Shop.ApiBaseUrl;
+    public static string GetErpApiBaseUrl() => Settings.Erp.ApiBaseUrl;
+    public static string GetTaxApiBaseUrl() => Settings.Tax.ApiBaseUrl;
+}
 
-    // EShop configuration
-    public static string ShopUiBaseUrl => _configuration["Test:EShop:Ui:BaseUrl"] ?? "http://localhost:8081";
-    
-    public static string ShopApiBaseUrl => _configuration["Test:EShop:Api:BaseUrl"] ?? "http://localhost:8081/api";
-    
-    // ERP configuration
-    public static string ErpApiBaseUrl => _configuration["Test:Erp:Api:BaseUrl"] ?? "http://localhost:3100";
+public class TestSettings
+{
+    public ShopSettings Shop { get; set; } = new();
+    public ErpSettings Erp { get; set; } = new();
+    public TaxSettings Tax { get; set; } = new();
+}
 
-    // Tax configuration
-    public static string TaxApiBaseUrl => _configuration["Test:Tax:Api:BaseUrl"] ?? "http://localhost:3101";
+public class ShopSettings
+{
+    public string UiBaseUrl { get; set; } = string.Empty;
+    public string ApiBaseUrl { get; set; } = string.Empty;
+}
+
+public class ErpSettings
+{
+    public string ApiBaseUrl { get; set; } = string.Empty;
+}
+
+public class TaxSettings
+{
+    public string ApiBaseUrl { get; set; } = string.Empty;
 }

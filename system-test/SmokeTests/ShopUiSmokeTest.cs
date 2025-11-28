@@ -1,9 +1,9 @@
 using Optivem.EShop.SystemTest.Core.Drivers;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 
-namespace Optivem.EShop.SystemTest.E2eTests;
+namespace Optivem.EShop.SystemTest.SmokeTests;
 
-public class UiE2eTest : BaseE2eTest
+public class ShopUiSmokeTest : BaseShopSmokeTest
 {
     protected override IShopDriver CreateDriver()
     {

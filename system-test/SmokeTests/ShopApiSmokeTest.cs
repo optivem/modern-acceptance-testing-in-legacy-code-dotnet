@@ -1,12 +1,12 @@
 using Optivem.EShop.SystemTest.Core.Drivers;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 
-namespace Optivem.EShop.SystemTest.E2eTests;
+namespace Optivem.EShop.SystemTest.SmokeTests;
 
-public class UiE2eTest : BaseE2eTest
+public class ShopApiSmokeTest : BaseShopSmokeTest
 {
     protected override IShopDriver CreateDriver()
     {
-        return DriverFactory.CreateShopUiDriver();
+        return DriverFactory.CreateShopApiDriver();
     }
 }
