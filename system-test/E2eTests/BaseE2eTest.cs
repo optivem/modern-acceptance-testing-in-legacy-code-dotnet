@@ -36,7 +36,9 @@ public abstract class BaseE2eTest : IDisposable
     public void ShouldPlaceOrderAndCalculateOriginalPrice()
     {
         var sku = "ABC-" + Guid.NewGuid();
-        ErpApiDriver.CreateProduct(sku, "20.00");
+        var createProductResult = ErpApiDriver.CreateProduct(sku, "20.00");
+        AssertThatResult(createProductResult).IsSuccess();
+
         var placeOrderResult = ShopDriver.PlaceOrder(sku, "5", "US");
         AssertThatResult(placeOrderResult).IsSuccess();
 
@@ -77,7 +79,9 @@ public abstract class BaseE2eTest : IDisposable
     public void ShouldCancelOrder()
     {
         var sku = "XYZ-" + Guid.NewGuid();
-        ErpApiDriver.CreateProduct(sku, "50.00");
+        var createProductResult = ErpApiDriver.CreateProduct(sku, "50.00");
+        AssertThatResult(createProductResult).IsSuccess();
+
         var placeOrderResult = ShopDriver.PlaceOrder(sku, "2", "US");
         AssertThatResult(placeOrderResult).IsSuccess();
 
@@ -116,7 +120,9 @@ public abstract class BaseE2eTest : IDisposable
     public void ShouldRejectOrderWithNegativeQuantity()
     {
         var sku = "DEF-" + Guid.NewGuid();
-        ErpApiDriver.CreateProduct(sku, "30.00");
+        var createProductResult = ErpApiDriver.CreateProduct(sku, "30.00");
+        AssertThatResult(createProductResult).IsSuccess();
+
         var result = ShopDriver.PlaceOrder(sku, "-3", "US");
         AssertThatResult(result).IsFailure("Quantity must be positive");
     }
@@ -125,7 +131,9 @@ public abstract class BaseE2eTest : IDisposable
     public void ShouldRejectOrderWithZeroQuantity()
     {
         var sku = "GHI-" + Guid.NewGuid();
-        ErpApiDriver.CreateProduct(sku, "40.00");
+        var createProductResult = ErpApiDriver.CreateProduct(sku, "40.00");
+        AssertThatResult(createProductResult).IsSuccess();
+
         var result = ShopDriver.PlaceOrder(sku, "0", "US");
         AssertThatResult(result).IsFailure("Quantity must be positive");
     }

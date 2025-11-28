@@ -1,4 +1,5 @@
 using System.Net;
+using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Dtos;
 
@@ -15,7 +16,7 @@ public class ErpApiDriver : IDisposable
         _testHttpClient = new TestHttpClient(_httpClient, baseUrl + "/api");
     }
 
-    public void CreateProduct(string sku, string unitPrice)
+    public Result<VoidResult> CreateProduct(string sku, string unitPrice)
     {
         var request = new CreateProductRequest
         {
@@ -29,13 +30,13 @@ public class ErpApiDriver : IDisposable
 
         var response = _testHttpClient.Post("/products", request);
         
-        // ERP API returns 201 Created for successful product creation
-        if (response.StatusCode != HttpStatusCode.Created && 
-            response.StatusCode != HttpStatusCode.OK)
+        if (response.StatusCode != HttpStatusCode.Created)
         {
             var errorContent = response.Content.ReadAsStringAsync().Result;
-            throw new Exception($"Failed to create product in ERP. SKU: {sku}, Status: {response.StatusCode}, Error: {errorContent}");
+            return Result<VoidResult>.FailureResult(new List<string> { $"Failed to create product in ERP. SKU: {sku}, Status: {response.StatusCode}, Error: {errorContent}" });
         }
+
+        return Result<VoidResult>.SuccessResult(new VoidResult());
     }
 
     public void Dispose()

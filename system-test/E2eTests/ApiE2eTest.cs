@@ -44,7 +44,9 @@ public class ApiE2eTest : BaseE2eTest
     public void ShouldNotCancelAlreadyCancelledOrder()
     {
         var sku = "MNO-" + Guid.NewGuid();
-        ErpApiDriver.CreateProduct(sku, "35.00");
+        var createProductResult = ErpApiDriver.CreateProduct(sku, "35.00");
+        AssertThatResult(createProductResult).IsSuccess();
+
         var placeOrderResult = ShopDriver.PlaceOrder(sku, "3", "US");
         AssertThatResult(placeOrderResult).IsSuccess();
 
