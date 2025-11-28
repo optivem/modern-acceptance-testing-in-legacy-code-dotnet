@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Optivem.EShop.SystemTest.Core.Drivers;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons;
-using Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
@@ -28,9 +27,9 @@ public abstract class BaseE2eTest : IDisposable
 
     public void Dispose()
     {
-        Closer.Close(ShopDriver);
-        Closer.Close(ErpApiDriver);
-        Closer.Close(TaxApiDriver);
+        ShopDriver?.Dispose();
+        ErpApiDriver?.Dispose();
+        TaxApiDriver?.Dispose();
     }
 
     [Fact]

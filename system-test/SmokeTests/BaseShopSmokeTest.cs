@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Xunit;
 
@@ -18,7 +17,7 @@ public abstract class BaseShopSmokeTest : IDisposable
 
     public void Dispose()
     {
-        Closer.Close(_shopDriver);
+        _shopDriver?.Dispose();
     }
 
     [Fact]
