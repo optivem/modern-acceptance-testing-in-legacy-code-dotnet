@@ -66,6 +66,20 @@ runs:
         max-attempts: '30'
         wait-seconds: '10'
 
+    - name: Wait for System - ERP
+      uses: optivem/wait-for-docker-compose-action@v1
+      with:
+        url: 'http://localhost:9001/erp/health'
+        max-attempts: '30'
+        wait-seconds: '10'
+
+    - name: Wait for System - Tax
+      uses: optivem/wait-for-docker-compose-action@v1
+      with:
+        url: 'http://localhost:9001/tax/health'
+        max-attempts: '30'
+        wait-seconds: '10'
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
