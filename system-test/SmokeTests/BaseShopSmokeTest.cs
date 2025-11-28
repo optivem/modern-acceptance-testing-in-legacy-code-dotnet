@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Xunit;
 
@@ -27,8 +27,8 @@ public abstract class BaseShopSmokeTest : IDisposable
         if (!result.Success)
         {
             var errors = result.GetErrors();
-            result.Success.Should().BeTrue($"Expected to connect to shop, but got errors: {string.Join(", ", errors)}");
+            result.Success.ShouldBeTrue($"Expected to connect to shop, but got errors: {string.Join(", ", errors)}");
         }
-        result.Success.Should().BeTrue();
+        result.Success.ShouldBeTrue();
     }
 }

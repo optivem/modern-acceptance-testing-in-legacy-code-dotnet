@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers.Commons;
 

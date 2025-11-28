@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using Optivem.EShop.SystemTest.Core.Drivers;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
@@ -42,35 +42,35 @@ public abstract class BaseE2eTest : IDisposable
 
         var orderNumber = placeOrderResult.GetValue().OrderNumber;
 
-        orderNumber.Should().StartWith("ORD-");
+        orderNumber.ShouldStartWith("ORD-");
 
         var viewOrderResult = ShopDriver.ViewOrder(orderNumber!);
         AssertThatResult(viewOrderResult).IsSuccess();
 
         var viewOrderResponse = viewOrderResult.GetValue();
-        viewOrderResponse.OrderNumber.Should().Be(orderNumber);
-        viewOrderResponse.Sku.Should().Be(sku);
-        viewOrderResponse.Quantity.Should().Be(5);
-        viewOrderResponse.Country.Should().Be("US");
-        viewOrderResponse.UnitPrice.Should().Be(20.00m);
-        viewOrderResponse.OriginalPrice.Should().Be(100.00m);
-        viewOrderResponse.Status.Should().Be(OrderStatus.PLACED);
+        viewOrderResponse.OrderNumber.ShouldBe(orderNumber);
+        viewOrderResponse.Sku.ShouldBe(sku);
+        viewOrderResponse.Quantity.ShouldBe(5);
+        viewOrderResponse.Country.ShouldBe("US");
+        viewOrderResponse.UnitPrice.ShouldBe(20.00m);
+        viewOrderResponse.OriginalPrice.ShouldBe(100.00m);
+        viewOrderResponse.Status.ShouldBe(OrderStatus.PLACED);
 
         var discountRate = viewOrderResponse.DiscountRate;
         var discountAmount = viewOrderResponse.DiscountAmount;
         var subtotalPrice = viewOrderResponse.SubtotalPrice;
 
-        discountRate.Should().BeGreaterThanOrEqualTo(0m);
-        discountAmount.Should().BeGreaterThanOrEqualTo(0m);
-        subtotalPrice.Should().BeGreaterThan(0m);
+        discountRate.ShouldBeGreaterThanOrEqualTo(0m);
+        discountAmount.ShouldBeGreaterThanOrEqualTo(0m);
+        subtotalPrice.ShouldBeGreaterThan(0m);
 
         var taxRate = viewOrderResponse.TaxRate;
         var taxAmount = viewOrderResponse.TaxAmount;
         var totalPrice = viewOrderResponse.TotalPrice;
 
-        taxRate.Should().BeGreaterThanOrEqualTo(0m, "Tax rate should be non-negative");
-        taxAmount.Should().BeGreaterThanOrEqualTo(0m, "Tax amount should be non-negative");
-        totalPrice.Should().BeGreaterThan(0m, "Total price should be positive");
+        taxRate.ShouldBeGreaterThanOrEqualTo(0m, "Tax rate should be non-negative");
+        taxAmount.ShouldBeGreaterThanOrEqualTo(0m, "Tax amount should be non-negative");
+        totalPrice.ShouldBeGreaterThan(0m, "Total price should be positive");
     }
 
     [Fact]
@@ -89,13 +89,13 @@ public abstract class BaseE2eTest : IDisposable
         AssertThatResult(viewOrderResult).IsSuccess();
 
         var viewOrderResponse = viewOrderResult.GetValue();
-        viewOrderResponse.OrderNumber.Should().Be(orderNumber);
-        viewOrderResponse.Sku.Should().Be(sku);
-        viewOrderResponse.Quantity.Should().Be(2);
-        viewOrderResponse.Country.Should().Be("US");
-        viewOrderResponse.UnitPrice.Should().Be(50.00m);
-        viewOrderResponse.OriginalPrice.Should().Be(100.00m);
-        viewOrderResponse.Status.Should().Be(OrderStatus.CANCELLED);
+        viewOrderResponse.OrderNumber.ShouldBe(orderNumber);
+        viewOrderResponse.Sku.ShouldBe(sku);
+        viewOrderResponse.Quantity.ShouldBe(2);
+        viewOrderResponse.Country.ShouldBe("US");
+        viewOrderResponse.UnitPrice.ShouldBe(50.00m);
+        viewOrderResponse.OriginalPrice.ShouldBe(100.00m);
+        viewOrderResponse.Status.ShouldBe(OrderStatus.CANCELLED);
     }
 
     [Fact]
