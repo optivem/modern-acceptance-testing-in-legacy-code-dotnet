@@ -15,11 +15,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Clone External Dependencies
+    - name: Clone Base Repository
       run: |
-        echo "📥 Cloning external dependencies repository..."
-        git clone https://github.com/optivem/modern-acceptance-testing-in-legacy-code-external.git modern-acceptance-testing-in-legacy-code-external
-        echo "✅ External dependencies cloned successfully"
+        echo "📥 Cloning base repository..."
+        git clone https://github.com/optivem/modern-acceptance-testing-in-legacy-code.git modern-acceptance-testing-in-legacy-code
+        echo "✅ Base repository cloned successfully"
       shell: bash
 
     - name: Deploy System
@@ -49,7 +49,7 @@ runs:
         echo "   - Other cloud providers (DigitalOcean, Linode, etc.)"
         echo ""
         echo "🐳 Starting Docker Compose for simulated deployment..."
-        docker compose -f docker-compose.pipeline.yml up -d
+        docker compose -f modern-acceptance-testing-in-legacy-code/docker-compose.pipeline.yml up -d
       shell: bash
 
     - name: Wait for System - Frontend
