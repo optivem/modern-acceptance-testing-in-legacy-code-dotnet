@@ -1,8 +1,5 @@
 # Modern Acceptance Testing in Legacy Code (.NET)
 
-[![frontend-commit-stage](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-frontend/actions/workflows/frontend-commit-stage.yml/badge.svg)](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-frontend/actions/workflows/frontend-commit-stage.yml)
-[![backend-commit-stage](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-backend/actions/workflows/backend-commit-stage.yml/badge.svg)](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-backend/actions/workflows/backend-commit-stage.yml)
-
 [![acceptance-stage](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/acceptance-stage.yml/badge.svg)](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/acceptance-stage.yml)
 [![qa-stage](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/qa-stage.yml/badge.svg)](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/qa-stage.yml)
 [![qa-signoff](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/qa-signoff.yml/badge.svg)](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/qa-signoff.yml)
