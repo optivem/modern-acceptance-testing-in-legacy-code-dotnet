@@ -3,7 +3,7 @@ param(
     [ValidateSet("local", "pipeline")]
     [string]$Mode = "local",
 
-    [switch]$TestOnly,
+    [switch]$Restart,
 
     [int]$LogLines = 50
 )
@@ -13,9 +13,8 @@ Remove-Variable -Name 'ProgressPreference' -ErrorAction SilentlyContinue
 $WorkingDirectory = Get-Location
 
 # Repository configuration
-$RepoOwner = "optivem"
 $RepoName = "modern-acceptance-testing-in-legacy-code"
-$RepoUrl = "https://github.com/$RepoOwner/$RepoName.git"
+$RepoUrl = "https://github.com/optivem/$RepoName.git"
 $RepoPath = Join-Path (Get-Location) "..\$RepoName"
 $ScriptPath = Join-Path $RepoPath "Run-SystemTests.ps1"
 
@@ -45,7 +44,7 @@ if (-not (Test-Path $ScriptPath)) {
 
 Write-Host "Executing script from repository..." -ForegroundColor Cyan
 Set-Location "$RepoPath"
-& $ScriptPath -Mode $Mode -TestOnly:$TestOnly -LogLines $LogLines -WorkingDirectory $WorkingDirectory
+& $ScriptPath -Mode $Mode -Restart:$Restart -LogLines $LogLines -WorkingDirectory $WorkingDirectory
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Script execution failed with exit code: $LASTEXITCODE" -ForegroundColor Red
