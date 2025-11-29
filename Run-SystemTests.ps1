@@ -8,21 +8,48 @@ param(
     [int]$LogLines = 50
 )
 
+Remove-Variable -Name 'ProgressPreference' -ErrorAction SilentlyContinue
 
-Write-Host "Hello World"
+$WorkingDirectory = Get-Location
 
-# Download the script from GitHub
-$TempScriptPath = Join-Path $env:TEMP "Run-SystemTests-Downloaded.ps1"
-$GitHubScriptUrl = "https://raw.githubusercontent.com/optivem/modern-acceptance-testing-in-legacy-code/main/scripts/Run-SystemTests.ps1"
+# Repository configuration
+$RepoOwner = "optivem"
+$RepoName = "modern-acceptance-testing-in-legacy-code"
+$RepoUrl = "https://github.com/$RepoOwner/$RepoName.git"
+$RepoPath = Join-Path (Get-Location) "..\$RepoName"
+$ScriptPath = Join-Path $RepoPath "Run-SystemTests.ps1"
 
-Write-Host "Downloading script from: $GitHubScriptUrl" -ForegroundColor Cyan
-Invoke-WebRequest -Uri $GitHubScriptUrl -OutFile $TempScriptPath
+# Clone or pull the repository
+if (Test-Path $RepoPath) {
+    Write-Host "Repository already exists. Pulling latest changes..." -ForegroundColor Cyan
+    Push-Location $RepoPath
+    try {
+        git pull
+        Write-Host "Repository updated." -ForegroundColor Green
+    }
+    finally {
+        Pop-Location
+    }
+}
+else {
+    Write-Host "Cloning repository from: $RepoUrl" -ForegroundColor Cyan
+    git clone $RepoUrl $RepoPath
+    Write-Host "Repository cloned." -ForegroundColor Green
+}
 
-Write-Host "Executing downloaded script..." -ForegroundColor Cyan
-& $TempScriptPath -Mode $Mode -TestOnly:$TestOnly -LogLines $LogLines
+# Verify script exists
+if (-not (Test-Path $ScriptPath)) {
+    Write-Host "Error: Script not found at $ScriptPath" -ForegroundColor Red
+    exit 1
+}
 
-# Clean up temp file
-Write-Host "Cleaning up temporary file..." -ForegroundColor Cyan
-Remove-Item $TempScriptPath -Force
+Write-Host "Executing script from repository..." -ForegroundColor Cyan
+Set-Location "$RepoPath"
+& $ScriptPath -Mode $Mode -TestOnly:$TestOnly -LogLines $LogLines -WorkingDirectory $WorkingDirectory
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Script execution failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+    exit $LASTEXITCODE
+}
 
 Write-Host "Done!" -ForegroundColor Green
