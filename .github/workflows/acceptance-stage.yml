@@ -37,8 +37,8 @@ jobs:
       uses: optivem/find-latest-docker-images-action@v1
       with:
         image-urls: |
-          ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code-frontend/frontend:latest
-          ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code-backend/backend:latest
+          ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code/frontend:latest
+          ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code/backend:latest
 
   should-run:
     needs: find-latest-images

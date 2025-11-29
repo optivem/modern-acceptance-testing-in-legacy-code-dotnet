@@ -39,8 +39,8 @@ jobs:
         with:
           tag: ${{ inputs.version }}
           base-image-urls: |
-            ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code-frontend/frontend
-            ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code-frontend/backend
+            ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code/frontend
+            ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code/backend
 
   deployment:
     needs: [check-release-exists, resolve-docker-images]
