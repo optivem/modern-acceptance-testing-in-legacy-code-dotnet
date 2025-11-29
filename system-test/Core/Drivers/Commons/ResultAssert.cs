@@ -6,7 +6,11 @@ public static class ResultExtensions
 {
     public static Result<T> ShouldBeSuccess<T>(this Result<T> result)
     {
-        result.Success.ShouldBeTrue($"Expected result to be success but was failure with errors: {string.Join(", ", result.GetErrors())}");
+        if (!result.Success)
+        {
+            var errors = string.Join(", ", result.GetErrors());
+            throw new ShouldAssertException($"Expected result to be success but was failure with errors: {errors}");
+        }
         return result;
     }
 
