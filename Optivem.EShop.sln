@@ -6,15 +6,27 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Optivem.EShop", "Optivem.EShop", "{6530B213-DBC8-4923-9443-189055D992C6}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		docker-compose.local.yml = docker-compose.local.yml
-		docker-compose.pipeline.yml = docker-compose.pipeline.yml
-		docker-compose.yml = docker-compose.yml
 		LICENSE = LICENSE
 		README.md = README.md
-		run.ps1 = run.ps1
+		Run-SystemTests.Config.ps1 = Run-SystemTests.Config.ps1
+		Run-SystemTests.ps1 = Run-SystemTests.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.EShop.SystemTest", "system-test\Optivem.EShop.SystemTest.csproj", "{85A8CC27-51D7-DA02-CD9C-1E64572DFBCA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{65C2C82B-4368-4B45-B4C7-298C5926EEDF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{FB45BF1E-D953-4FF7-8E79-C46B5B355405}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\acceptance-stage.yml = .github\workflows\acceptance-stage.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{AD0543BD-1239-42AB-A600-B712D414F066}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy-docker-images", "deploy-docker-images", "{002C24CD-96A9-47D2-9E1B-BFB1C3699FC2}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\deploy-docker-images\action.yml = .github\actions\deploy-docker-images\action.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +41,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{65C2C82B-4368-4B45-B4C7-298C5926EEDF} = {6530B213-DBC8-4923-9443-189055D992C6}
+		{FB45BF1E-D953-4FF7-8E79-C46B5B355405} = {65C2C82B-4368-4B45-B4C7-298C5926EEDF}
+		{AD0543BD-1239-42AB-A600-B712D414F066} = {65C2C82B-4368-4B45-B4C7-298C5926EEDF}
+		{002C24CD-96A9-47D2-9E1B-BFB1C3699FC2} = {AD0543BD-1239-42AB-A600-B712D414F066}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {97F54CAA-F817-4D8A-9111-B42319504E01}
