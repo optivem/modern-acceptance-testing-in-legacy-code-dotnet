@@ -3,9 +3,11 @@
 
 $Config = @{
     # Test Configuration
-    TestCommand = "dotnet test"
-    # TestCommand = "dotnet test --filter `"FullyQualifiedName~SmokeTests`""
-    TestReportPath = "system-test\TestResults\testResults.html"
+    TestCommand = "dotnet test --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html'"
+    SmokeTestCommand = "dotnet test --filter 'FullyQualifiedName~SmokeTests' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html'"
+    E2ETestCommand = "dotnet test --filter 'FullyQualifiedName~E2eTests' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html'"
+
+    TestReportPath = "TestResults\testResults.html"
 }
 
 # Export the configuration
