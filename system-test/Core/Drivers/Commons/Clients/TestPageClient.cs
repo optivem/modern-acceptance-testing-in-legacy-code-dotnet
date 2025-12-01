@@ -28,11 +28,12 @@ public class TestPageClient
 
     public IPage GetPage() => _page;
 
-    public void Fill(string selector, string text)
+    public void Fill(string selector, string? text)
     {
         var input = _page.Locator(selector);
         Wait(input);
-        input.FillAsync(text).Wait();
+        var safeText = text ?? string.Empty;
+        input.FillAsync(safeText).Wait();
     }
 
     public void Click(string selector)
@@ -68,6 +69,12 @@ public class TestPageClient
         var locator = _page.Locator(selector);
         Wait(locator);
         return locator.InputValueAsync().Result;
+    }
+
+    public int ReadInputIntegerValue(string selector)
+    {
+        var inputValue = ReadInputValue(selector);
+        return int.Parse(inputValue, CultureInfo.InvariantCulture);
     }
 
     public decimal ReadInputCurrencyDecimalValue(string selector)

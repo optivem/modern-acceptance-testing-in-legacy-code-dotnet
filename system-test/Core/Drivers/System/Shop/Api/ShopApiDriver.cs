@@ -18,7 +18,7 @@ public class ShopApiDriver : IShopDriver
         return _apiClient.Health().CheckHealth();
     }
 
-    public Result<PlaceOrderResponse> PlaceOrder(string sku, string quantity, string country)
+    public Result<PlaceOrderResponse> PlaceOrder(string? sku, string? quantity, string? country)
     {
         return _apiClient.Orders().PlaceOrder(sku, quantity, country);
     }

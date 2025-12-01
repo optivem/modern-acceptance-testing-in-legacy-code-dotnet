@@ -1,12 +1,13 @@
 using Shouldly;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Xunit;
+using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 
 namespace Optivem.EShop.SystemTest.SmokeTests;
 
 public abstract class BaseShopSmokeTest : IDisposable
 {
-    private IShopDriver _shopDriver = null!;
+    private IShopDriver _shopDriver;
 
     protected BaseShopSmokeTest()
     {
@@ -23,12 +24,6 @@ public abstract class BaseShopSmokeTest : IDisposable
     [Fact]
     public void ShouldBeAbleToGoToShop()
     {
-        var result = _shopDriver.GoToShop();
-        if (!result.Success)
-        {
-            var errors = result.GetErrors();
-            result.Success.ShouldBeTrue($"Expected to connect to shop, but got errors: {string.Join(", ", errors)}");
-        }
-        result.Success.ShouldBeTrue();
+        _shopDriver.GoToShop().ShouldBeSuccess();
     }
 }

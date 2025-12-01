@@ -3,7 +3,7 @@ using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
 using Xunit;
 
-namespace Optivem.EShop.SystemTest.SmokeTests;
+namespace Optivem.EShop.SystemTest.SmokeTests.External;
 
 public class TaxApiSmokeTest : IDisposable
 {
@@ -14,8 +14,12 @@ public class TaxApiSmokeTest : IDisposable
         _taxApiDriver = DriverFactory.CreateTaxApiDriver();
     }
     
-    // TODO: VJ: Add missing smoke tests for Tax API
-    
+    [Fact]
+    public void ShouldBeAbleToGoToTax()
+    {
+        _taxApiDriver.GoToTax().ShouldBeSuccess();
+    }
+
     public void Dispose()
     {
         _taxApiDriver?.Dispose();

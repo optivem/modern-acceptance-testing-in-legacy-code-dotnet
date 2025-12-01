@@ -1,7 +1,7 @@
 using System.Net;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
-using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Dtos;
+using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Client.Dtos;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Client.Controllers;
 
@@ -15,18 +15,20 @@ public class ProductController
         _testHttpClient = testHttpClient;
     }
 
-    public Result<VoidResult> CreateProduct(CreateProductRequest request)
+    public Result<VoidResult> CreateProduct(string sku, String price)
     {
+        var request = new CreateProductRequest
+        {
+            Id = sku,
+            Title = $"Test product title for {sku}",
+            Description = $"Test product description for {sku}",
+            Price = price,
+            Category = "Test Category",
+            Brand = "Test Brand"
+        };
+
         var response = _testHttpClient.Post(Endpoint, request);
 
-        if (response.StatusCode != HttpStatusCode.Created)
-        {
-            return Result<VoidResult>.FailureResult(new List<string>
-            {
-                $"Failed to create product. Status code: {response.StatusCode}, Body: {response.Content.ReadAsStringAsync().Result}"
-            });
-        }
-
-        return Result<VoidResult>.SuccessResult(new VoidResult());
+        return TestHttpUtils.GetCreatedResultOrFailure(response);
     }
 }

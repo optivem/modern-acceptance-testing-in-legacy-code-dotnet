@@ -4,8 +4,8 @@ namespace Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Dtos;
 
 public class GetOrderResponse
 {
-    public string? OrderNumber { get; set; }
-    public string? Sku { get; set; }
+    public required string OrderNumber { get; set; }
+    public required string Sku { get; set; }
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
     public decimal OriginalPrice { get; set; }
@@ -16,5 +16,5 @@ public class GetOrderResponse
     public decimal TaxAmount { get; set; }
     public decimal TotalPrice { get; set; }
     public OrderStatus Status { get; set; }
-    public string? Country { get; set; }
+    public required string Country { get; set; }
 }

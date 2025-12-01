@@ -33,23 +33,22 @@ public class ShopUiDriver : IShopDriver
     {
         _homePage = _client.OpenHomePage();
 
-        if (!_client.IsStatusOk())
+        if (!_client.IsStatusOk() || !_client.IsPageLoaded())
         {
             return Result.Failure();
         }
 
-        _client.AssertPageLoaded();
         _currentPage = Pages.Home;
         return Result.Success();
     }
 
-    public Result<PlaceOrderResponse> PlaceOrder(string sku, string quantity, string country)
+    public Result<PlaceOrderResponse> PlaceOrder(string? sku, string? quantity, string? country)
     {
         EnsureOnNewOrderPage();
         _newOrderPage!.InputSku(sku);
-        _newOrderPage.InputQuantity(quantity);
-        _newOrderPage.InputCountry(country);
-        _newOrderPage.ClickPlaceOrder();
+        _newOrderPage!.InputQuantity(quantity);
+        _newOrderPage!.InputCountry(country);
+        _newOrderPage!.ClickPlaceOrder();
 
         var isSuccess = _newOrderPage.HasSuccessNotification();
 
@@ -68,7 +67,7 @@ public class ShopUiDriver : IShopDriver
     {
         EnsureOnOrderHistoryPage();
         _orderHistoryPage!.InputOrderNumber(orderNumber);
-        _orderHistoryPage.ClickSearch();
+        _orderHistoryPage!.ClickSearch();
 
         var isSuccess = _orderHistoryPage.HasOrderDetails();
 
@@ -96,7 +95,7 @@ public class ShopUiDriver : IShopDriver
         {
             OrderNumber = displayOrderNumber,
             Sku = sku,
-            Quantity = int.Parse(quantity),
+            Quantity = quantity,
             UnitPrice = unitPrice,
             OriginalPrice = originalPrice,
             DiscountRate = discountRate,
@@ -120,15 +119,18 @@ public class ShopUiDriver : IShopDriver
         var cancellationMessage = _orderHistoryPage.ReadSuccessNotification();
         if (cancellationMessage != "Order cancelled successfully!")
         {
-            throw new InvalidOperationException("Should display cancellation success message");
+            return Result.Failure();
         }
 
         var displayStatusAfterCancel = _orderHistoryPage.GetStatus();
         if (displayStatusAfterCancel != OrderStatus.CANCELLED)
         {
-            throw new InvalidOperationException("Status should be CANCELLED after cancellation");
+            return Result.Failure();
         }
-        _orderHistoryPage.AssertCancelButtonNotVisible();
+
+        if(!_orderHistoryPage.IsCancelButtonHidden()) {
+            return Result.Failure();
+        }
 
         return Result.Success();
     }

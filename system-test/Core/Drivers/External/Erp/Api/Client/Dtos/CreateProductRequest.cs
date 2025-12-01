@@ -1,4 +1,4 @@
-namespace Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Dtos;
+namespace Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Client.Dtos;
 
 public class CreateProductRequest
 {

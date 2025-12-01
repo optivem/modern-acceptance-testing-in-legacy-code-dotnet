@@ -16,17 +16,17 @@ public class NewOrderPage : BasePage
     {
     }
 
-    public void InputSku(string sku)
+    public void InputSku(string? sku)
     {
         PageClient.Fill(SkuInputSelector, sku);
     }
 
-    public void InputQuantity(string quantity)
+    public void InputQuantity(string? quantity)
     {
         PageClient.Fill(QuantityInputSelector, quantity);
     }
 
-    public void InputCountry(string country)
+    public void InputCountry(string? country)
     {
         PageClient.Fill(CountryInputSelector, country);
     }

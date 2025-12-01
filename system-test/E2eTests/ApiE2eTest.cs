@@ -15,21 +15,21 @@ public class ApiE2eTest : BaseE2eTest
     [Fact]
     public void ShouldRejectOrderWithNullQuantity()
     {
-        ShopDriver.PlaceOrder("some-sku", null!, "US")
+        ShopDriver.PlaceOrder("some-sku", null, "US")
             .ShouldBeFailure("Quantity must not be empty");
     }
 
     [Fact]
     public void ShouldRejectOrderWithNullSku()
     {
-        ShopDriver.PlaceOrder(null!, "5", "US")
+        ShopDriver.PlaceOrder(null, "5", "US")
             .ShouldBeFailure("SKU must not be empty");
     }
 
     [Fact]
     public void ShouldRejectOrderWithNullCountry()
     {
-        ShopDriver.PlaceOrder("some-sku", "5", null!)
+        ShopDriver.PlaceOrder("some-sku", "5", null)
             .ShouldBeFailure("Country must not be empty");
     }
 
@@ -51,10 +51,10 @@ public class ApiE2eTest : BaseE2eTest
         var orderNumber = placeOrderResult.GetValue().OrderNumber;
 
         // Cancel the order first time - should succeed
-        ShopDriver.CancelOrder(orderNumber!).ShouldBeSuccess();
+        ShopDriver.CancelOrder(orderNumber).ShouldBeSuccess();
 
         // Try to cancel the same order again - should fail
-        ShopDriver.CancelOrder(orderNumber!)
+        ShopDriver.CancelOrder(orderNumber)
             .ShouldBeFailure("Order has already been cancelled");
     }
 }

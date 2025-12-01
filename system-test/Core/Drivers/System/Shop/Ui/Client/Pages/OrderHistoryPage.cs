@@ -63,7 +63,7 @@ public class OrderHistoryPage : BasePage
     public string GetOrderNumber() => PageClient.ReadInputValue(OrderNumberOutputSelector);
     public string GetSku() => PageClient.ReadInputValue(SkuOutputSelector);
     public string GetCountry() => PageClient.ReadInputValue(CountryOutputSelector);
-    public string GetQuantity() => PageClient.ReadInputValue(QuantityOutputSelector);
+    public int GetQuantity() => PageClient.ReadInputIntegerValue(QuantityOutputSelector);
     public decimal GetUnitPrice() => PageClient.ReadInputCurrencyDecimalValue(UnitPriceOutputSelector);
     public decimal GetOriginalPrice() => PageClient.ReadInputCurrencyDecimalValue(OriginalPriceOutputSelector);
     public decimal GetDiscountRate() => PageClient.ReadInputPercentageDecimalValue(DiscountRateOutputSelector);
@@ -85,11 +85,8 @@ public class OrderHistoryPage : BasePage
         PageClient.WaitForHidden(CancelOrderOutputSelector);
     }
 
-    public void AssertCancelButtonNotVisible()
+    public bool IsCancelButtonHidden()
     {
-        if (!PageClient.IsHidden(CancelOrderOutputSelector))
-        {
-            throw new InvalidOperationException("Cancel Order button should not be visible");
-        }
+        return PageClient.IsHidden(CancelOrderOutputSelector);
     }
 }

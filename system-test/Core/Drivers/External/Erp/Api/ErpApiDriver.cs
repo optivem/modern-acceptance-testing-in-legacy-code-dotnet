@@ -1,40 +1,29 @@
 using Optivem.EShop.SystemTest.Core.Drivers.Commons;
-using Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
-using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Client.Controllers;
-using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Dtos;
+using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Client;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
 
 public class ErpApiDriver : IDisposable
 {
-    private readonly HttpClient _httpClient;
-    private readonly TestHttpClient _testHttpClient;
-    private readonly ProductController _productController;
+    private readonly ErpApiClient _erpApiClient;
 
     public ErpApiDriver(string baseUrl)
     {
-        _httpClient = new HttpClient();
-        _testHttpClient = new TestHttpClient(_httpClient, baseUrl);
-        _productController = new ProductController(_testHttpClient);
+        _erpApiClient = new ErpApiClient(baseUrl);
     }
 
-    public Result<VoidResult> CreateProduct(string id, string price)
+    public Result<VoidResult> GoToErp()
     {
-        var request = new CreateProductRequest
-        {
-            Id = id,
-            Title = $"Test product title for {id}",
-            Description = $"Test product description for {id}",
-            Price = price,
-            Category = "Test Category",
-            Brand = "Test Brand"
-        };
+        return _erpApiClient.Health.CheckHealth();
+    }
 
-        return _productController.CreateProduct(request);
+    public Result<VoidResult> CreateProduct(string sku, string price)
+    {
+        return _erpApiClient.Products.CreateProduct(sku, price);
     }
 
     public void Dispose()
     {
-        _httpClient?.Dispose();
+        _erpApiClient?.Dispose();
     }
 }

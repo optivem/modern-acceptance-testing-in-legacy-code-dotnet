@@ -1,6 +1,8 @@
 using Microsoft.Playwright;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Ui.Client.Pages;
+using Shouldly;
+using System.Net;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Ui.Client;
 
@@ -16,7 +18,6 @@ public class ShopUiClient : IDisposable
     private readonly IBrowser _browser;
     private readonly IBrowserContext _context;
     private readonly IPage _page;
-    private readonly TestPageClient _pageClient;
     private readonly HomePage _homePage;
 
     private IResponse? _response;
@@ -28,8 +29,8 @@ public class ShopUiClient : IDisposable
         _browser = _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true }).Result;
         _context = _browser.NewContextAsync().Result;
         _page = _browser.NewPageAsync().Result;
-        _pageClient = new TestPageClient(_page, baseUrl);
-        _homePage = new HomePage(_pageClient);
+        var pageClient = new TestPageClient(_page, baseUrl);
+        _homePage = new HomePage(pageClient);
     }
 
     public HomePage OpenHomePage()
@@ -40,31 +41,39 @@ public class ShopUiClient : IDisposable
 
     public bool IsStatusOk()
     {
-        return _response?.Status == 200;
+        return _response?.Status == ((int)HttpStatusCode.OK);
+    }
+
+    public bool IsPageLoaded()
+    {
+        if (_response == null || _response.Status != (int)HttpStatusCode.OK)
+        {
+            return false;
+        }
+
+        var contentType = _response.Headers.ContainsKey(ContentType) ? _response.Headers[ContentType] : null;
+        if (contentType == null || !contentType.Equals(TextHtml))
+        {
+            return false;
+        }
+
+        var pageContent = _page.ContentAsync().Result;
+        return pageContent != null && pageContent.Contains(HtmlOpeningTag) && pageContent.Contains(HtmlClosingTag);
     }
 
     public void AssertPageLoaded()
     {
-        if (_response?.Status != 200)
-        {
-            throw new InvalidOperationException($"Expected status 200 but got {_response?.Status}");
-        }
+        _response.ShouldNotBeNull();
+        _response.Status.ShouldBe((int)HttpStatusCode.OK);
 
         var contentType = _response.Headers.ContainsKey(ContentType) ? _response.Headers[ContentType] : null;
-        if (contentType == null || !contentType.Contains(TextHtml))
-        {
-            throw new InvalidOperationException($"Content-Type should be text/html, but was: {contentType}");
-        }
+        contentType.ShouldNotBeNull();
+        contentType.Equals(TextHtml);
 
         var pageContent = _page.ContentAsync().Result;
-        if (!pageContent.Contains(HtmlOpeningTag))
-        {
-            throw new InvalidOperationException("Response should contain HTML opening tag");
-        }
-        if (!pageContent.Contains(HtmlClosingTag))
-        {
-            throw new InvalidOperationException("Response should contain HTML closing tag");
-        }
+        pageContent.ShouldNotBeNull();
+        pageContent.ShouldContain(HtmlOpeningTag);
+        pageContent.ShouldContain(HtmlClosingTag);
     }
 
     public void Dispose()

@@ -1,41 +1,26 @@
 using System.Net;
+using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
-using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api.Dtos;
+using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api.Client;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
 
 public class TaxApiDriver : IDisposable
 {
-    private readonly HttpClient _httpClient;
-    private readonly TestHttpClient _testHttpClient;
+    private readonly TaxApiClient _taxApiClient;
 
     public TaxApiDriver(string baseUrl)
     {
-        _httpClient = new HttpClient();
-        _testHttpClient = new TestHttpClient(_httpClient, baseUrl + "/api");
+        _taxApiClient = new TaxApiClient(baseUrl);
     }
 
-    public void CreateTaxRate(string country, string taxRate)
+    public Result<VoidResult> GoToTax()
     {
-        var request = new CreateTaxRateRequest
-        {
-            Country = country,
-            TaxRate = taxRate
-        };
-
-        var response = _testHttpClient.Post("/tax-rates", request);
-        
-        // Tax API returns 201 Created for successful tax rate creation
-        if (response.StatusCode != HttpStatusCode.Created && 
-            response.StatusCode != HttpStatusCode.OK)
-        {
-            var errorContent = response.Content.ReadAsStringAsync().Result;
-            throw new Exception($"Failed to create tax rate. Country: {country}, Status: {response.StatusCode}, Error: {errorContent}");
-        }
+        return _taxApiClient.Health.CheckHealth();
     }
 
     public void Dispose()
     {
-        _httpClient?.Dispose();
+        _taxApiClient?.Dispose();
     }
 }

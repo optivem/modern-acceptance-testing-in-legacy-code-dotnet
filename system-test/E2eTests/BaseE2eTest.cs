@@ -11,9 +11,9 @@ namespace Optivem.EShop.SystemTest.E2eTests;
 
 public abstract class BaseE2eTest : IDisposable
 {
-    protected IShopDriver ShopDriver = null!;
-    protected ErpApiDriver ErpApiDriver = null!;
-    protected TaxApiDriver TaxApiDriver = null!;
+    protected IShopDriver ShopDriver;
+    protected ErpApiDriver ErpApiDriver;
+    protected TaxApiDriver TaxApiDriver;
 
     protected BaseE2eTest()
     {
@@ -162,5 +162,14 @@ public abstract class BaseE2eTest : IDisposable
     {
         ShopDriver.PlaceOrder("some-sku", "5", emptyCountry)
             .ShouldBeFailure("Country must not be empty");
+    }
+
+    public void ShouldRejectOrderWithUnsupportedCountry()
+    {
+        var sku = "JKL-" + Guid.NewGuid();
+        ErpApiDriver.CreateProduct(sku, "25.00").ShouldBeSuccess();
+
+        ShopDriver.PlaceOrder(sku, "3", "XX")
+            .ShouldBeFailure("Country does not exist: XX");
     }
 }
