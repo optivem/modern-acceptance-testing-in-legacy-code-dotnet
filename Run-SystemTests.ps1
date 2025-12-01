@@ -2,8 +2,8 @@ param(
     [ValidateSet("local", "pipeline")]
     [string]$Mode = "local",
 
-    [ValidateSet("full", "smoke", "e2e")]
-    [string]$TestMode = "full",
+    [ValidateSet("all", "smoke", "e2e")]
+    [string]$TestMode = "all",
 
     [switch]$Restart,
 
