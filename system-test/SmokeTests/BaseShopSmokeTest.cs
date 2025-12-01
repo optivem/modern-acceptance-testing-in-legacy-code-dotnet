@@ -11,10 +11,10 @@ public abstract class BaseShopSmokeTest : IDisposable
 
     protected BaseShopSmokeTest()
     {
-        _shopDriver = CreateDriver();
+        _shopDriver = CreateShopDriver();
     }
 
-    protected abstract IShopDriver CreateDriver();
+    protected abstract IShopDriver CreateShopDriver();
 
     public void Dispose()
     {

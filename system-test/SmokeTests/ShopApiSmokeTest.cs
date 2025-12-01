@@ -5,7 +5,7 @@ namespace Optivem.EShop.SystemTest.SmokeTests;
 
 public class ShopApiSmokeTest : BaseShopSmokeTest
 {
-    protected override IShopDriver CreateDriver()
+    protected override IShopDriver CreateShopDriver()
     {
         return DriverFactory.CreateShopApiDriver();
     }

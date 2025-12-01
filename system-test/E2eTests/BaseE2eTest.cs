@@ -17,12 +17,12 @@ public abstract class BaseE2eTest : IDisposable
 
     protected BaseE2eTest()
     {
-        ShopDriver = CreateDriver();
+        ShopDriver = CreateShopDriver();
         ErpApiDriver = DriverFactory.CreateErpApiDriver();
         TaxApiDriver = DriverFactory.CreateTaxApiDriver();
     }
 
-    protected abstract IShopDriver CreateDriver();
+    protected abstract IShopDriver CreateShopDriver();
 
     public void Dispose()
     {

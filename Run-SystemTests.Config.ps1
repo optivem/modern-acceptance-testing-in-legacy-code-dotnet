@@ -3,7 +3,6 @@
 
 $Config = @{
     # Test Configuration
-    TestCommand = "dotnet test --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html'"
     SmokeTestCommand = "dotnet test --filter 'FullyQualifiedName~SmokeTests' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html'"
     E2ETestCommand = "dotnet test --filter 'FullyQualifiedName~E2eTests' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html'"
 

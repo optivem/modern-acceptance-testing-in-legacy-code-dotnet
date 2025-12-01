@@ -7,7 +7,7 @@ namespace Optivem.EShop.SystemTest.E2eTests;
 
 public class ApiE2eTest : BaseE2eTest
 {
-    protected override IShopDriver CreateDriver()
+    protected override IShopDriver CreateShopDriver()
     {
         return DriverFactory.CreateShopApiDriver();
     }
