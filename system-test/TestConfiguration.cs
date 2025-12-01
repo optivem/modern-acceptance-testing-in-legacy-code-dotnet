@@ -1,47 +1,23 @@
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+using Microsoft.Extensions.Configuration;
 
 namespace Optivem.EShop.SystemTest;
 
 public static class TestConfiguration
 {
-    private static readonly TestSettings Settings;
+    private static readonly IConfiguration Configuration;
 
     static TestConfiguration()
     {
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(PascalCaseNamingConvention.Instance)
+        Configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
             .Build();
-
-        var yamlContent = File.ReadAllText("Resources/application.yml");
-        Settings = deserializer.Deserialize<TestSettings>(yamlContent) ?? new TestSettings();
     }
 
-    public static string GetShopUiBaseUrl() => Settings.Shop.UiBaseUrl;
-    public static string GetShopApiBaseUrl() => Settings.Shop.ApiBaseUrl;
-    public static string GetErpApiBaseUrl() => Settings.Erp.ApiBaseUrl;
-    public static string GetTaxApiBaseUrl() => Settings.Tax.ApiBaseUrl;
+    public static string GetShopUiBaseUrl() => Configuration["Shop:UiBaseUrl"] ?? string.Empty;
+    public static string GetShopApiBaseUrl() => Configuration["Shop:ApiBaseUrl"] ?? string.Empty;
+    public static string GetErpApiBaseUrl() => Configuration["Erp:ApiBaseUrl"] ?? string.Empty;
+    public static string GetTaxApiBaseUrl() => Configuration["Tax:ApiBaseUrl"] ?? string.Empty;
 }
 
-public class TestSettings
-{
-    public ShopSettings Shop { get; set; } = new();
-    public ErpSettings Erp { get; set; } = new();
-    public TaxSettings Tax { get; set; } = new();
-}
 
-public class ShopSettings
-{
-    public string UiBaseUrl { get; set; } = string.Empty;
-    public string ApiBaseUrl { get; set; } = string.Empty;
-}
-
-public class ErpSettings
-{
-    public string ApiBaseUrl { get; set; } = string.Empty;
-}
-
-public class TaxSettings
-{
-    public string ApiBaseUrl { get; set; } = string.Empty;
-}
