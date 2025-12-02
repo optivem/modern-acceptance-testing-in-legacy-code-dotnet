@@ -1,4 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Drivers.Commons;
+using Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Dtos;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Api.Client;
 
@@ -6,11 +7,14 @@ namespace Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Api;
 
 public class ShopApiDriver : IShopDriver
 {
+    private readonly HttpClient _httpClient;
     private readonly ShopApiClient _apiClient;
 
     public ShopApiDriver(string baseUrl)
     {
-        _apiClient = new ShopApiClient(baseUrl);
+        _httpClient = HttpClientFactory.Create(baseUrl);
+        var testHttpClient = new TestHttpClient(_httpClient, baseUrl);
+        _apiClient = new ShopApiClient(testHttpClient);
     }
 
     public Result<VoidResult> GoToShop()
@@ -35,6 +39,6 @@ public class ShopApiDriver : IShopDriver
 
     public void Dispose()
     {
-        _apiClient?.Dispose();
+        _httpClient?.Dispose();
     }
 }

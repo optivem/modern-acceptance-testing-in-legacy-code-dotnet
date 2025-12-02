@@ -1,31 +1,16 @@
 ﻿using Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api.Client.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api.Client
+namespace Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api.Client;
+
+public class TaxApiClient
 {
-    public class TaxApiClient : IDisposable
+    private readonly HealthController _healthController;
+
+    public TaxApiClient(TestHttpClient testHttpClient)
     {
-        private readonly HttpClient _httpClient;
-        private readonly TestHttpClient _testHttpClient;
-        private readonly HealthController _healthController;
-
-        public TaxApiClient(string baseUrl)
-        {
-            _httpClient = HttpClientFactory.Create(baseUrl);
-            _testHttpClient = new TestHttpClient(_httpClient, baseUrl);
-            _healthController = new HealthController(_testHttpClient);
-        }
-
-        public HealthController Health => _healthController;
-
-        public void Dispose()
-        {
-            _httpClient?.Dispose();
-        }
+        _healthController = new HealthController(testHttpClient);
     }
+
+    public HealthController Health => _healthController;
 }
