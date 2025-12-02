@@ -30,36 +30,31 @@ public class ChannelTestDataAttribute : DataAttribute
 
 /// <summary>
 /// Represents a test case for a specific channel.
-/// Automatically manages driver lifecycle.
+/// Automatically initializes the shopDriver field in the test class.
 /// </summary>
-public class ChannelTestCase : IDisposable
+public class ChannelTestCase
 {
     private readonly string _channel;
-    private IShopDriver? _shopDriver;
+    internal IShopDriver? _driverInstance;
 
     public ChannelTestCase(string channel)
     {
         _channel = channel;
     }
 
-    public IShopDriver GetShopDriver()
+    public IShopDriver CreateShopDriver()
     {
-        if (_shopDriver == null)
+        if (_driverInstance == null)
         {
-            _shopDriver = _channel switch
+            _driverInstance = _channel switch
             {
                 ChannelType.UI => new ShopUiDriver(TestConfiguration.GetShopUiBaseUrl()),
                 ChannelType.API => new ShopApiDriver(TestConfiguration.GetShopApiBaseUrl()),
                 _ => throw new InvalidOperationException($"Unknown channel: {_channel}")
             };
         }
-        return _shopDriver;
+        return _driverInstance;
     }
 
-    public void Dispose()
-    {
-        _shopDriver?.Dispose();
-    }
-
-    public override string ToString() => _channel;
+    public override string ToString() => $"Channel: {_channel}";
 }

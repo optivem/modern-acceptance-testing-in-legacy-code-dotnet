@@ -25,7 +25,10 @@ public class ChannelDataAttribute : BeforeAfterTestAttribute, ITraitAttribute
 
     public override void Before(MethodInfo methodUnderTest)
     {
-        // Channel will be set via MemberData approach
+        // Unfortunately, BeforeAfterTestAttribute doesn't provide access to:
+        // - The test instance (e.g., ShopSmokeTest object)
+        // - The runtime parameter values (e.g., the specific ChannelTestCase)
+        // This is a limitation of xUnit's design compared to JUnit's @BeforeEach
     }
 
     public override void After(MethodInfo methodUnderTest)
