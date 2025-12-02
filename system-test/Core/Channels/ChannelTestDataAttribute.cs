@@ -56,5 +56,5 @@ public class ChannelTestCase
         return _driverInstance;
     }
 
-    public override string ToString() => $"Channel: {_channel}";
+    public override string ToString() => _channel;
 }
