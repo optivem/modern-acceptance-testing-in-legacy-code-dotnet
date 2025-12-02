@@ -16,7 +16,7 @@ namespace Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api.Client
 
         public TaxApiClient(string baseUrl)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            _httpClient = HttpClientFactory.Create(baseUrl);
             _testHttpClient = new TestHttpClient(_httpClient, baseUrl);
             _healthController = new HealthController(_testHttpClient);
         }

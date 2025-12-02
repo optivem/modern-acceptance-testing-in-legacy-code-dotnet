@@ -3,6 +3,9 @@
 
 $Config = @{
     # Test Configuration
+    TestInstallCommands = @(
+        "pwsh bin/Debug/net8.0/playwright.ps1 install"
+    )
     SmokeTestCommand = "dotnet test --filter 'FullyQualifiedName~SmokeTests' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html'"
     E2ETestCommand = "dotnet test --filter 'FullyQualifiedName~E2eTests' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html'"
 

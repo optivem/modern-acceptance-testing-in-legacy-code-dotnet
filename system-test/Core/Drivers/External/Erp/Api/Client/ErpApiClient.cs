@@ -17,7 +17,7 @@ namespace Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Client
 
         public ErpApiClient(string baseUrl)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            _httpClient = HttpClientFactory.Create(baseUrl);
             _testHttpClient = new TestHttpClient(_httpClient, baseUrl);
             _healthController = new HealthController(_testHttpClient);
             _productController = new ProductController(_testHttpClient);

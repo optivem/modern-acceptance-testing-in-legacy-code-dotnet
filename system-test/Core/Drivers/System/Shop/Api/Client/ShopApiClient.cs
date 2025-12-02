@@ -11,7 +11,7 @@ public class ShopApiClient : IDisposable
 
     public ShopApiClient(string baseUrl)
     {
-        _httpClient = new HttpClient();
+        _httpClient = HttpClientFactory.Create(baseUrl);
         var testHttpClient = new TestHttpClient(_httpClient, baseUrl);
         _healthController = new HealthController(testHttpClient);
         _orderController = new OrderController(testHttpClient);
