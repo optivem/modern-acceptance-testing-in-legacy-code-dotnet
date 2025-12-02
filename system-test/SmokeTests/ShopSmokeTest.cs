@@ -21,24 +21,17 @@ public class ShopSmokeTest : IDisposable
     {
         // Set the channel context for this test execution
         ChannelContext.Set(channel);
-        
-        try
-        {
-            // Create driver based on current channel context
-            _shopDriver = DriverFactory.CreateShopDriver();
-            
-            // Execute the test
-            _shopDriver.GoToShop().ShouldBeSuccess();
-        }
-        finally
-        {
-            // Clean up channel context
-            ChannelContext.Clear();
-        }
+
+        // Create driver based on current channel context
+        _shopDriver = DriverFactory.CreateShopDriver();
+
+        // Execute the test
+        _shopDriver.GoToShop().ShouldBeSuccess();
     }
 
     public void Dispose()
     {
         _shopDriver?.Dispose();
+        ChannelContext.Clear();
     }
 }
