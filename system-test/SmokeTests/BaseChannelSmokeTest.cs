@@ -9,17 +9,28 @@ namespace Optivem.EShop.SystemTest.SmokeTests;
 /// </summary>
 public abstract class BaseChannelSmokeTest : IDisposable
 {
-    protected IShopDriver ShopDriver { get; private set; } = null!;
+    private IShopDriver? _shopDriver;
+    
+    protected IShopDriver ShopDriver 
+    { 
+        get
+        {
+            if (_shopDriver == null)
+            {
+                _shopDriver = DriverFactory.CreateShopDriver();
+            }
+            return _shopDriver;
+        }
+    }
 
     protected void SetupChannel(string channel)
     {
         ChannelContext.Set(channel);
-        ShopDriver = DriverFactory.CreateShopDriver();
     }
 
     public void Dispose()
     {
-        ShopDriver?.Dispose();
+        _shopDriver?.Dispose();
         ChannelContext.Clear();
     }
 }

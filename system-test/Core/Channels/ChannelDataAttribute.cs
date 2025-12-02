@@ -4,11 +4,11 @@ using Xunit.Sdk;
 namespace Optivem.EShop.SystemTest.Core.Channels;
 
 /// <summary>
-/// Provides test data for channel-based parameterized tests.
+/// Provides test data for channel-based parameterized tests and automatically sets up channel context.
 /// This attribute enables running the same test across multiple channels (UI, API, etc.).
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public class ChannelDataAttribute : DataAttribute
+public class ChannelDataAttribute : BeforeAfterTestAttribute, ITraitAttribute
 {
     private readonly string[] _channels;
 
@@ -21,11 +21,15 @@ public class ChannelDataAttribute : DataAttribute
         }
     }
 
-    public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+    public string[] Channels => _channels;
+
+    public override void Before(MethodInfo methodUnderTest)
     {
-        foreach (var channel in _channels)
-        {
-            yield return new object[] { channel };
-        }
+        // Channel will be set via MemberData approach
+    }
+
+    public override void After(MethodInfo methodUnderTest)
+    {
+        ChannelContext.Clear();
     }
 }

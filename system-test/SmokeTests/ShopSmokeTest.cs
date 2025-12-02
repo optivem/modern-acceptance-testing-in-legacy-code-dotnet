@@ -1,6 +1,8 @@
 using Shouldly;
 using Optivem.EShop.SystemTest.Core.Channels;
+using Optivem.EShop.SystemTest.Core.Drivers;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons;
+using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Xunit;
 
 namespace Optivem.EShop.SystemTest.SmokeTests;
@@ -9,13 +11,12 @@ namespace Optivem.EShop.SystemTest.SmokeTests;
 /// Channel-based smoke test that runs across multiple channels (UI and API).
 /// This approach is similar to Java's @Channel annotation pattern.
 /// </summary>
-public class ShopSmokeTest : BaseChannelSmokeTest
+public class ShopSmokeTest
 {
     [Theory]
-    [ChannelData(ChannelType.UI, ChannelType.API)]
-    public void ShouldBeAbleToGoToShop(string channel)
+    [ChannelTestData(ChannelType.UI, ChannelType.API)]
+    public void ShouldBeAbleToGoToShop(ChannelTestCase channel)
     {
-        SetupChannel(channel);
-        ShopDriver.GoToShop().ShouldBeSuccess();
+        channel.GetShopDriver().GoToShop().ShouldBeSuccess();
     }
 }
