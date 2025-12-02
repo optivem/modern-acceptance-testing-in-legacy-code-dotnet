@@ -23,7 +23,7 @@ public class ChannelTestDataAttribute : DataAttribute
     {
         foreach (var channel in _channels)
         {
-            yield return new object[] { new ChannelTestCase(channel) };
+            yield return new object[] { new Channel(channel) };
         }
     }
 }
@@ -32,29 +32,24 @@ public class ChannelTestDataAttribute : DataAttribute
 /// Represents a test case for a specific channel.
 /// Automatically initializes the shopDriver field in the test class.
 /// </summary>
-public class ChannelTestCase
+public class Channel
 {
     private readonly string _channel;
-    internal IShopDriver? _driverInstance;
 
-    public ChannelTestCase(string channel)
+    public Channel(string channel)
     {
         _channel = channel;
     }
 
-    public IShopDriver CreateShopDriver()
+    public IShopDriver CreateDriver()
     {
-        if (_driverInstance == null)
-        {
-            _driverInstance = _channel switch
+        return _channel switch
             {
                 ChannelType.UI => new ShopUiDriver(TestConfiguration.GetShopUiBaseUrl()),
                 ChannelType.API => new ShopApiDriver(TestConfiguration.GetShopApiBaseUrl()),
                 _ => throw new InvalidOperationException($"Unknown channel: {_channel}")
             };
-        }
-        return _driverInstance;
     }
 
-    public override string ToString() => _channel;
+    public override string ToString() => $"Channel: {_channel}";
 }

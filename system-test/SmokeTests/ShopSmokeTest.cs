@@ -16,10 +16,10 @@ public class ShopSmokeTest : IDisposable
 
     [Theory]
     [ChannelTestData(ChannelType.UI, ChannelType.API)]
-    public void ShouldBeAbleToGoToShop(ChannelTestCase channel)
+    public void ShouldBeAbleToGoToShop(Channel channel)
     {
-        shopDriver = channel.CreateShopDriver();
-        
+        shopDriver = channel.CreateDriver();
+
         shopDriver.GoToShop().ShouldBeSuccess();
     }
 
