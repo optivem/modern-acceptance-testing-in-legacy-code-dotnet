@@ -1,35 +1,55 @@
 using System.Reflection;
+using Optivem.EShop.SystemTest.Core.Drivers;
+using Optivem.EShop.SystemTest.Core.Drivers.System;
+using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Api;
+using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Ui;
 using Xunit.Sdk;
 
 namespace Optivem.EShop.SystemTest.Core.Channels;
 
 /// <summary>
-/// Provides test data for channel-based parameterized tests and automatically sets up channel context.
-/// This attribute enables running the same test across multiple channels (UI, API, etc.).
+/// Provides channel test data with automatic setup and teardown.
 /// </summary>
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public class ChannelDataAttribute : BeforeAfterTestAttribute, ITraitAttribute
+public class ChannelDataAttribute : DataAttribute
 {
     private readonly string[] _channels;
 
     public ChannelDataAttribute(params string[] channels)
     {
         _channels = channels ?? throw new ArgumentNullException(nameof(channels));
-        if (_channels.Length == 0)
+    }
+
+    public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+    {
+        foreach (var channel in _channels)
         {
-            throw new ArgumentException("At least one channel must be specified", nameof(channels));
+            yield return new object[] { new Channel(channel) };
         }
     }
+}
 
-    public string[] Channels => _channels;
+/// <summary>
+/// Represents a test case for a specific channel.
+/// Automatically initializes the shopDriver field in the test class.
+/// </summary>
+public class Channel
+{
+    private readonly string _channel;
 
-    public override void Before(MethodInfo methodUnderTest)
+    public Channel(string channel)
     {
-        // No action
+        _channel = channel;
     }
 
-    public override void After(MethodInfo methodUnderTest)
+    public IShopDriver CreateDriver()
     {
-        ChannelContext.Clear();
+        return _channel switch
+            {
+                ChannelType.UI => new ShopUiDriver(TestConfiguration.GetShopUiBaseUrl()),
+                ChannelType.API => new ShopApiDriver(TestConfiguration.GetShopApiBaseUrl()),
+                _ => throw new InvalidOperationException($"Unknown channel: {_channel}")
+            };
     }
+
+    public override string ToString() => $"Channel: {_channel}";
 }

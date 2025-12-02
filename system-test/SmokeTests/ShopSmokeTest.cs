@@ -15,7 +15,7 @@ public class ShopSmokeTest : IDisposable
     private IShopDriver? shopDriver;
 
     [Theory]
-    [ChannelTestData(ChannelType.UI, ChannelType.API)]
+    [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldBeAbleToGoToShop(Channel channel)
     {
         shopDriver = channel.CreateDriver();
