@@ -323,6 +323,37 @@ namespace Optivem.EShop.SystemTest.E2eTests
             );
         }
 
+        // Another example: Viewing non-existent orders using the same helper pattern
+        [Theory]
+        [MemberData(nameof(ShouldNotBeAbleToViewNonExistentOrderUsingHelperData2))]
+        public void ShouldNotBeAbleToViewNonExistentOrderUsingHelper2(Channel channel, string orderNumber, string expectedMessage)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.ViewOrder(orderNumber)
+                .ShouldBeFailure(expectedMessage);
+        }
+
+        public static IEnumerable<object[]> ShouldNotBeAbleToViewNonExistentOrderUsingHelperData2()
+        {
+            var channels = new[] { ChannelType.UI, ChannelType.API }; // Both channels work for viewing orders
+            var testCases = new[]
+            {
+                ("NON-EXISTENT-ORDER-12345", "Order NON-EXISTENT-ORDER-12345 does not exist."),
+                ("INVALID-ORD-99999", "Order INVALID-ORD-99999 does not exist."),
+                ("MISSING-ORDER-00000", "Order MISSING-ORDER-00000 does not exist.")
+            };
+
+            foreach (var channelType in channels)
+            {
+                foreach (var (orderNumber, message) in testCases)
+                {
+                    yield return new object[] { new Channel(channelType), orderNumber, message };
+                }
+            }
+        }
+
+
         // Reusable helper method for any channel + (string, string) test data combination
         private static TheoryData<Channel, string, string> GenerateChannelTestData(
             string[] channels,
