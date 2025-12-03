@@ -153,7 +153,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ChannelInlineData(new[] { ChannelType.UI, ChannelType.API }, "", "   ")]
+        [ChannelInlineData([ChannelType.UI, ChannelType.API], "", "   ")]
         public void ShouldRejectOrderWithEmptySku(Channel channel, string sku)
         {
             _shopDriver = channel.CreateDriver();
@@ -163,7 +163,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ChannelInlineData(new[] { ChannelType.UI, ChannelType.API }, "", "   ")]
+        [ChannelInlineData([ChannelType.UI, ChannelType.API], "", "   ")]
         public void ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
         {
             _shopDriver = channel.CreateDriver();
@@ -173,7 +173,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ChannelInlineData(new[] { ChannelType.UI, ChannelType.API }, "3.5", "lala")]
+        [ChannelInlineData([ChannelType.UI, ChannelType.API], "3.5", "lala")]
         public void ShouldRejectOrderWithNonIntegerQuantity(Channel channel, string nonIntegerQuantity)
         {
             _shopDriver = channel.CreateDriver();
@@ -183,7 +183,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ChannelInlineData(new[] { ChannelType.UI, ChannelType.API }, "", "   ")]
+        [ChannelInlineData([ChannelType.UI, ChannelType.API], "", "   ")]
         public void ShouldRejectOrderWithEmptyCountry(Channel channel, string emptyCountry)
         {
             _shopDriver = channel.CreateDriver();
@@ -268,8 +268,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         // Uses ChannelInlineData multiple times - this works but is more verbose
         [Theory]
-        [ChannelInlineData(new[] { ChannelType.UI, ChannelType.API }, "", "Country must not be empty")]
-        [ChannelInlineData(new[] { ChannelType.UI, ChannelType.API }, "   ", "Country must not be empty")]
+        [ChannelInlineData([ChannelType.UI, ChannelType.API], "", "Country must not be empty")]
+        [ChannelInlineData([ChannelType.UI, ChannelType.API], "   ", "Country must not be empty")]
         public void ExperimentalShouldRejectOrderWithEmptyCountryMultipleParams(Channel channel, string emptyCountry, string message)
         {
             _shopDriver = channel.CreateDriver();
