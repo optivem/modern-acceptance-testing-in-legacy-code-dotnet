@@ -51,5 +51,5 @@ public class Channel
             };
     }
 
-    public override string ToString() => $"Channel: {_channel}";
+    public override string ToString() => _channel;
 }
