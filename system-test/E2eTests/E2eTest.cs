@@ -277,28 +277,27 @@ namespace Optivem.EShop.SystemTest.E2eTests
             return data;
         }
 
+        public static TheoryData<Channel, string, string> ShouldNotCancelNonExistentOrderUsingHelperData()
+        {
+            return GenerateChannelTestData(
+                [ChannelType.API], // API only - to add UI, just add ChannelType.UI to the array
+                [
+                    ("NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist."),
+                    ("INVALID-ORDER-12345", "Order INVALID-ORDER-12345 does not exist."),
+                    ("FAKE-ORDER-00000", "Order FAKE-ORDER-00000 does not exist.")
+                ]
+            );
+        }
+
         // Alternative: Using a reusable helper method for channel combinations
         [Theory]
-        [MemberData(nameof(GetNonExistentOrderTestDataWithHelper))]
+        [MemberData(nameof(ShouldNotCancelNonExistentOrderUsingHelperData))]
         public void ShouldNotCancelNonExistentOrderUsingHelper(Channel channel, string orderNumber, string expectedMessage)
         {
             _shopDriver = channel.CreateDriver();
 
             _shopDriver.CancelOrder(orderNumber)
                 .ShouldBeFailure(expectedMessage);
-        }
-
-        public static TheoryData<Channel, string, string> GetNonExistentOrderTestDataWithHelper()
-        {
-            return GenerateChannelTestData(
-                new[] { ChannelType.API }, // API only - to add UI, just add ChannelType.UI to the array
-                new[]
-                {
-                    ("NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist."),
-                    ("INVALID-ORDER-12345", "Order INVALID-ORDER-12345 does not exist."),
-                    ("FAKE-ORDER-00000", "Order FAKE-ORDER-00000 does not exist.")
-                }
-            );
         }
 
         // Reusable helper method for any channel + (string, string) test data combination
