@@ -155,8 +155,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         [Theory]
         [ChannelData(ChannelType.UI, ChannelType.API)]
-        [CombinatorialInlineData("")]
-        [CombinatorialInlineData("   ")]
+        [ChannelInlineData("")]
+        [ChannelInlineData("   ")]
         public void ShouldRejectOrderWithEmptySku(Channel channel, string sku)
         {
             _shopDriver = channel.CreateDriver();
@@ -167,8 +167,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         [Theory]
         [ChannelData(ChannelType.UI, ChannelType.API)]
-        [CombinatorialInlineData("")]
-        [CombinatorialInlineData("   ")]
+        [ChannelInlineData("")]
+        [ChannelInlineData("   ")]
         public void ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
         {
             _shopDriver = channel.CreateDriver();
@@ -179,8 +179,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         [Theory]
         [ChannelData(ChannelType.UI, ChannelType.API)]
-        [CombinatorialInlineData("3.5")]
-        [CombinatorialInlineData("lala")]
+        [ChannelInlineData("3.5")]
+        [ChannelInlineData("lala")]
         public void ShouldRejectOrderWithNonIntegerQuantity(Channel channel, string nonIntegerQuantity)
         {
             _shopDriver = channel.CreateDriver();
@@ -191,8 +191,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         [Theory]
         [ChannelData(ChannelType.UI, ChannelType.API)]
-        [CombinatorialInlineData("")]
-        [CombinatorialInlineData("   ")]
+        [ChannelInlineData("")]
+        [ChannelInlineData("   ")]
         public void ShouldRejectOrderWithEmptyCountry(Channel channel, string emptyCountry)
         {
             _shopDriver = channel.CreateDriver();
