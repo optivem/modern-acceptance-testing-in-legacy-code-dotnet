@@ -1,33 +1,45 @@
-﻿using Optivem.EShop.SystemTest.Core.Drivers.System;
-using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Api;
-using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Ui;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Optivem.EShop.SystemTest.Core.Channels.Library
+﻿namespace Optivem.EShop.SystemTest.Core.Channels.Library
 {
+    /// <summary>
+    /// Represents a test execution channel (e.g., UI, API).
+    /// Generic library class - not coupled to specific implementations.
+    /// </summary>
     public class Channel
     {
-        private readonly string _channel;
+        private readonly string _channelType;
 
-        public Channel(string channel)
+        public Channel(string channelType)
         {
-            _channel = channel;
+            _channelType = channelType ?? throw new ArgumentNullException(nameof(channelType));
         }
 
-        public IShopDriver CreateDriver()
+        /// <summary>
+        /// Gets the channel type identifier (e.g., "UI", "API").
+        /// </summary>
+        public string Type => _channelType;
+
+        /// <summary>
+        /// Creates a driver using the provided factory.
+        /// This keeps the Channel class generic and reusable.
+        /// </summary>
+        /// <typeparam name="TDriver">The type of driver to create</typeparam>
+        /// <param name="factory">Factory responsible for creating channel-specific drivers</param>
+        /// <returns>A driver instance for this channel</returns>
+        public TDriver CreateDriver<TDriver>(IChannelDriverFactory<TDriver> factory)
         {
-            return _channel switch
-            {
-                ChannelType.UI => new ShopUiDriver(TestConfiguration.GetShopUiBaseUrl()),
-                ChannelType.API => new ShopApiDriver(TestConfiguration.GetShopApiBaseUrl()),
-                _ => throw new InvalidOperationException($"Unknown channel: {_channel}")
-            };
+            if (factory == null)
+                throw new ArgumentNullException(nameof(factory));
+
+            return factory.CreateDriver(_channelType);
         }
 
-        public override string ToString() => _channel;
+        public override string ToString() => _channelType;
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Channel other && _channelType == other._channelType;
+        }
+
+        public override int GetHashCode() => _channelType.GetHashCode();
     }
 }
