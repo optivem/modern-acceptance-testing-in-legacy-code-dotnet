@@ -154,7 +154,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
+        [ChannelData(ChannelType.UI, ChannelType.API)]
         [CombinatorialInlineData("")]
         [CombinatorialInlineData("   ")]
         public void ShouldRejectOrderWithEmptySku(Channel channel, string sku)
@@ -166,7 +166,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
+        [ChannelData(ChannelType.UI, ChannelType.API)]
         [CombinatorialInlineData("")]
         [CombinatorialInlineData("   ")]
         public void ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
@@ -178,7 +178,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
+        [ChannelData(ChannelType.UI, ChannelType.API)]
         [CombinatorialInlineData("3.5")]
         [CombinatorialInlineData("lala")]
         public void ShouldRejectOrderWithNonIntegerQuantity(Channel channel, string nonIntegerQuantity)
@@ -190,7 +190,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
+        [ChannelData(ChannelType.UI, ChannelType.API)]
         [CombinatorialInlineData("")]
         [CombinatorialInlineData("   ")]
         public void ShouldRejectOrderWithEmptyCountry(Channel channel, string emptyCountry)
