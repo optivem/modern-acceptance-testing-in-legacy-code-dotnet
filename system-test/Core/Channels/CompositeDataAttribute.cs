@@ -12,41 +12,57 @@ public class CompositeDataDiscoverer : IDataDiscoverer
 {
     public IEnumerable<object[]> GetData(IAttributeInfo dataAttribute, IMethodInfo testMethod)
     {
-        // Get all attributes on the test method
-        var allAttributes = testMethod.GetCustomAttributes(typeof(DataAttribute));
-        
-        var channelDataAttr = allAttributes.FirstOrDefault(a => a.GetType().Name == "ChannelDataAttribute");
-        var inlineDataAttrs = allAttributes.Where(a => a.GetType().Name == "InlineDataAttribute").ToList();
+        // Use reflection to get the actual MethodInfo from IMethodInfo
+        var method = GetMethodInfo(testMethod);
+        if (method == null) yield break;
 
-        if (channelDataAttr == null || !inlineDataAttrs.Any())
+        // Get ChannelData attribute
+        var channelDataAttr = method.GetCustomAttributes(typeof(ChannelDataAttribute), false).FirstOrDefault() as ChannelDataAttribute;
+        if (channelDataAttr == null) yield break;
+
+        // Get InlineData attributes
+        var inlineDataAttrs = method.GetCustomAttributes(typeof(InlineDataAttribute), false).Cast<InlineDataAttribute>().ToArray();
+        if (!inlineDataAttrs.Any()) yield break;
+
+        // Get channels from ChannelDataAttribute using reflection
+        var channelsField = typeof(ChannelDataAttribute).GetField("_channels", BindingFlags.NonPublic | BindingFlags.Instance);
+        var channels = channelsField?.GetValue(channelDataAttr) as string[] ?? Array.Empty<string>();
+
+        // Create Cartesian product
+        foreach (var channel in channels)
         {
-            yield break;
-        }
-
-        // Get channels
-        var channels = channelDataAttr.GetConstructorArguments().FirstOrDefault() as string[] ?? Array.Empty<string>();
-
-        // Get inline data rows
-        foreach (var inlineAttr in inlineDataAttrs)
-        {
-            var inlineData = inlineAttr.GetConstructorArguments().FirstOrDefault() as object[] ?? Array.Empty<object>();
-
-            // Create Cartesian product: each channel combined with this inline data row
-            foreach (var channel in channels)
+            foreach (var inlineDataAttr in inlineDataAttrs)
             {
+                var inlineData = inlineDataAttr.GetData(method).FirstOrDefault();
+                if (inlineData == null) continue;
+
+                // Combine: [Channel] + [InlineData params]
                 var combinedData = new List<object> { new Channel(channel) };
                 combinedData.AddRange(inlineData);
+
                 yield return combinedData.ToArray();
             }
         }
+    }
+
+    private MethodInfo? GetMethodInfo(IMethodInfo methodInfo)
+    {
+        var typeInfo = methodInfo.Type as IReflectionTypeInfo;
+        if (typeInfo == null) return null;
+
+        var type = typeInfo.Type;
+        var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+        return methods.FirstOrDefault(m => m.Name == methodInfo.Name);
     }
 
     public bool SupportsDiscoveryEnumeration(IAttributeInfo dataAttribute, IMethodInfo testMethod) => true;
 }
 
 /// <summary>
-/// Marker attribute that tells xUnit to use the CompositeDataDiscoverer
-/// to combine ChannelData and InlineData attributes.
+/// Marker attribute that combines ChannelData and InlineData into a Cartesian product.
+/// 
+/// IMPORTANT: When using [CompositeData], the [ChannelData] and [InlineData] attributes
+/// are ONLY used as data sources for the composite - they won't generate their own test cases.
 /// 
 /// Usage:
 /// [Theory]
@@ -54,7 +70,10 @@ public class CompositeDataDiscoverer : IDataDiscoverer
 /// [ChannelData(ChannelType.UI, ChannelType.API)]
 /// [InlineData("", "Expected error")]
 /// [InlineData("   ", "Expected error")]
-/// public void MyTest(Channel channel, string input, string expectedError) { }
+/// public void MyTest(Channel channel, string input, string expectedError) 
+/// {
+///     // Generates 4 test cases: 2 channels × 2 inline data rows
+/// }
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 [DataDiscoverer("Optivem.EShop.SystemTest.Core.Channels.CompositeDataDiscoverer", "Optivem.EShop.SystemTest")]
@@ -62,7 +81,9 @@ public class CompositeDataAttribute : DataAttribute
 {
     public override IEnumerable<object[]> GetData(MethodInfo testMethod)
     {
-        // This is handled by the CompositeDataDiscoverer
+        // Actual data generation is handled by CompositeDataDiscoverer
         yield break;
     }
 }
+
+

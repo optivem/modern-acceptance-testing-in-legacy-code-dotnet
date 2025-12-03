@@ -266,6 +266,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .ShouldBeFailure("Order has already been cancelled");
         }
 
+        // Uses ChannelInlineData multiple times - this works but is more verbose
         [Theory]
         [ChannelInlineData(ChannelType.UI, ChannelType.API, "", "Country must not be empty")]
         [ChannelInlineData(ChannelType.UI, ChannelType.API, "   ", "Country must not be empty")]
