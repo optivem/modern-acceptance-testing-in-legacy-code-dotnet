@@ -1,9 +1,6 @@
 # Modern Acceptance Testing in Legacy Code (.NET)
 
 [![acceptance-stage](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/acceptance-stage.yml/badge.svg)](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/acceptance-stage.yml)
-[![qa-stage](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/qa-stage.yml/badge.svg)](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/qa-stage.yml)
-[![qa-signoff](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/qa-signoff.yml/badge.svg)](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/qa-signoff.yml)
-[![prod-stage](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/prod-stage.yml/badge.svg)](https://github.com/optivem/modern-acceptance-testing-in-legacy-code-dotnet/actions/workflows/prod-stage.yml)
 
 ## Prerequisites
 
