@@ -117,14 +117,26 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .ShouldBeFailure("Product does not exist for SKU: NON-EXISTENT-SKU-12345");
         }
 
+        public static IEnumerable<object[]> ShouldNotBeAbleToViewNonExistentOrderData()
+        {
+            return GenerateChannelTestDataEnumerable(
+                [ChannelType.UI, ChannelType.API],
+                [
+                    ("NON-EXISTENT-ORDER-12345", "Order NON-EXISTENT-ORDER-12345 does not exist."),
+                    ("INVALID-ORD-99999", "Order INVALID-ORD-99999 does not exist."),
+                    ("MISSING-ORDER-00000", "Order MISSING-ORDER-00000 does not exist.")
+                ]
+            );
+        }
+
         [Theory]
-        [ChannelData(ChannelType.UI, ChannelType.API)]
-        public void ShouldNotBeAbleToViewNonExistentOrder(Channel channel)
+        [MemberData(nameof(ShouldNotBeAbleToViewNonExistentOrderData))]
+        public void ShouldNotBeAbleToViewNonExistentOrder(Channel channel, string orderNumber, string expectedMessage)
         {
             _shopDriver = channel.CreateDriver();
 
-            _shopDriver.ViewOrder("NON-EXISTENT-ORDER-12345")
-                .ShouldBeFailure("Order NON-EXISTENT-ORDER-12345 does not exist.");
+            _shopDriver.ViewOrder(orderNumber)
+                .ShouldBeFailure(expectedMessage);
         }
 
         [Theory]
@@ -246,132 +258,15 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         [Theory]
         [ChannelData(ChannelType.API)]
-        public void ShouldNotCancelNonExistentOrder(Channel channel)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.CancelOrder("NON-EXISTENT-ORDER-99999")
-                .ShouldBeFailure("Order NON-EXISTENT-ORDER-99999 does not exist.");
-        }
-
-        [Theory]
-        [MemberData(nameof(GetNonExistentOrderTestData))]
-        public void ShouldNotCancelNonExistentOrderParameterized(Channel channel, string orderNumber, string expectedMessage)
+        [ChannelInlineData("NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist.")]
+        [ChannelInlineData("INVALID-ORDER-12345", "Order INVALID-ORDER-12345 does not exist.")]
+        [ChannelInlineData("FAKE-ORDER-00000", "Order FAKE-ORDER-00000 does not exist.")]
+        public void ShouldNotCancelNonExistentOrder(Channel channel, string orderNumber, string expectedMessage)
         {
             _shopDriver = channel.CreateDriver();
 
             _shopDriver.CancelOrder(orderNumber)
                 .ShouldBeFailure(expectedMessage);
-        }
-
-        public static TheoryData<Channel, string, string> GetNonExistentOrderTestData()
-        {
-            var data = new TheoryData<Channel, string, string>();
-            var channels = new[] { ChannelType.API };
-            var testCases = new[]
-            {
-                ("NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist."),
-                ("INVALID-ORDER-12345", "Order INVALID-ORDER-12345 does not exist."),
-                ("FAKE-ORDER-00000", "Order FAKE-ORDER-00000 does not exist.")
-            };
-
-            foreach (var channelType in channels)
-            {
-                foreach (var (orderNum, message) in testCases)
-                {
-                    data.Add(new Channel(channelType), orderNum, message);
-                }
-            }
-
-            return data;
-        }
-
-        public static TheoryData<Channel, string, string> ShouldNotCancelNonExistentOrderUsingHelperData()
-        {
-            return GenerateChannelTestData(
-                [ChannelType.API], // API only - to add UI, just add ChannelType.UI to the array
-                [
-                    ("NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist."),
-                    ("INVALID-ORDER-12345", "Order INVALID-ORDER-12345 does not exist."),
-                    ("FAKE-ORDER-00000", "Order FAKE-ORDER-00000 does not exist.")
-                ]
-            );
-        }
-
-        // Alternative: Using a reusable helper method for channel combinations
-        [Theory]
-        [MemberData(nameof(ShouldNotCancelNonExistentOrderUsingHelperData))]
-        public void ShouldNotCancelNonExistentOrderUsingHelper(Channel channel, string orderNumber, string expectedMessage)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.CancelOrder(orderNumber)
-                .ShouldBeFailure(expectedMessage);
-        }
-
-        // Another example: Viewing non-existent orders using the same helper pattern
-        [Theory]
-        [MemberData(nameof(ShouldNotBeAbleToViewNonExistentOrderUsingHelperData))]
-        public void ShouldNotBeAbleToViewNonExistentOrderUsingHelper(Channel channel, string orderNumber, string expectedMessage)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.ViewOrder(orderNumber)
-                .ShouldBeFailure(expectedMessage);
-        }
-
-        public static TheoryData<Channel, string, string> ShouldNotBeAbleToViewNonExistentOrderUsingHelperData()
-        {
-            return GenerateChannelTestData(
-                [ChannelType.UI, ChannelType.API], // Both channels work for viewing orders
-                [
-                    ("NON-EXISTENT-ORDER-12345", "Order NON-EXISTENT-ORDER-12345 does not exist."),
-                    ("INVALID-ORD-99999", "Order INVALID-ORD-99999 does not exist."),
-                    ("MISSING-ORDER-00000", "Order MISSING-ORDER-00000 does not exist.")
-                ]
-            );
-        }
-
-        // Another example: Viewing non-existent orders using the same helper pattern
-        [Theory]
-        [MemberData(nameof(ShouldNotBeAbleToViewNonExistentOrderUsingHelperData2))]
-        public void ShouldNotBeAbleToViewNonExistentOrderUsingHelper2(Channel channel, string orderNumber, string expectedMessage)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.ViewOrder(orderNumber)
-                .ShouldBeFailure(expectedMessage);
-        }
-
-        public static IEnumerable<object[]> ShouldNotBeAbleToViewNonExistentOrderUsingHelperData2()
-        {
-            return GenerateChannelTestDataEnumerable(
-                [ChannelType.UI, ChannelType.API], // Both channels work for viewing orders
-                [
-                    ("NON-EXISTENT-ORDER-12345", "Order NON-EXISTENT-ORDER-12345 does not exist."),
-                    ("INVALID-ORD-99999", "Order INVALID-ORD-99999 does not exist."),
-                    ("MISSING-ORDER-00000", "Order MISSING-ORDER-00000 does not exist.")
-                ]
-            );
-        }
-
-
-        // Reusable helper method for any channel + (string, string) test data combination
-        private static TheoryData<Channel, string, string> GenerateChannelTestData(
-            string[] channels,
-            (string value, string message)[] testCases)
-        {
-            var data = new TheoryData<Channel, string, string>();
-
-            foreach (var channelType in channels)
-            {
-                foreach (var (value, message) in testCases)
-                {
-                    data.Add(new Channel(channelType), value, message);
-                }
-            }
-
-            return data;
         }
 
         // IEnumerable version - same functionality but returns IEnumerable<object[]>
