@@ -3,31 +3,11 @@ using Xunit.Sdk;
 
 namespace Optivem.EShop.SystemTest.Core.Channels;
 
-/// <summary>
-/// Creates a Cartesian product of channels with multiple data rows.
-/// 
-/// Example usage:
-/// [Theory]
-/// [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
-/// [CombinatorialDataRow("", "Country must not be empty")]
-/// [CombinatorialDataRow("   ", "Country must not be empty")]
-/// public void Test(Channel channel, string value, string message) { }
-/// 
-/// This generates: 
-/// - (UI, "", "Country must not be empty")
-/// - (UI, "   ", "Country must not be empty")
-/// - (API, "", "Country must not be empty")
-/// - (API, "   ", "Country must not be empty")
-/// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public class CombinatorialChannelDataAttribute : DataAttribute
 {
     private readonly string[] _channels;
 
-    /// <summary>
-    /// Creates test cases for multiple channels. Use with [CombinatorialDataRow] attributes.
-    /// </summary>
-    /// <param name="channels">Channel types (e.g., ChannelType.UI, ChannelType.API)</param>
     public CombinatorialChannelDataAttribute(params string[] channels)
     {
         _channels = channels ?? throw new ArgumentNullException(nameof(channels));
@@ -63,9 +43,6 @@ public class CombinatorialChannelDataAttribute : DataAttribute
     }
 }
 
-/// <summary>
-/// Specifies a data row for use with [CombinatorialChannelData].
-/// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class CombinatorialDataRowAttribute : Attribute
 {

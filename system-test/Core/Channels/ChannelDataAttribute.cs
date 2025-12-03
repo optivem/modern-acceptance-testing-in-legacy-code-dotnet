@@ -7,9 +7,6 @@ using Xunit.Sdk;
 
 namespace Optivem.EShop.SystemTest.Core.Channels;
 
-/// <summary>
-/// Provides channel test data with automatic setup and teardown.
-/// </summary>
 public class ChannelDataAttribute : DataAttribute
 {
     private readonly string[] _channels;
@@ -28,10 +25,6 @@ public class ChannelDataAttribute : DataAttribute
     }
 }
 
-/// <summary>
-/// Represents a test case for a specific channel.
-/// Automatically initializes the shopDriver field in the test class.
-/// </summary>
 public class Channel
 {
     private readonly string _channel;

@@ -153,7 +153,9 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ChannelInlineData([ChannelType.UI, ChannelType.API], "", "   ")]
+        [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
+        [CombinatorialDataRow("")]
+        [CombinatorialDataRow("   ")]
         public void ShouldRejectOrderWithEmptySku(Channel channel, string sku)
         {
             _shopDriver = channel.CreateDriver();
@@ -163,7 +165,9 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ChannelInlineData([ChannelType.UI, ChannelType.API], "", "   ")]
+        [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
+        [CombinatorialDataRow("")]
+        [CombinatorialDataRow("   ")]
         public void ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
         {
             _shopDriver = channel.CreateDriver();
@@ -173,7 +177,9 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ChannelInlineData([ChannelType.UI, ChannelType.API], "3.5", "lala")]
+        [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
+        [CombinatorialDataRow("3.5")]
+        [CombinatorialDataRow("lala")]
         public void ShouldRejectOrderWithNonIntegerQuantity(Channel channel, string nonIntegerQuantity)
         {
             _shopDriver = channel.CreateDriver();
@@ -183,7 +189,9 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ChannelInlineData([ChannelType.UI, ChannelType.API], "", "   ")]
+        [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
+        [CombinatorialDataRow("")]
+        [CombinatorialDataRow("   ")]
         public void ShouldRejectOrderWithEmptyCountry(Channel channel, string emptyCountry)
         {
             _shopDriver = channel.CreateDriver();
@@ -398,136 +406,6 @@ namespace Optivem.EShop.SystemTest.E2eTests
             // Try to cancel the same order again - should fail
             _shopDriver.CancelOrder(orderNumber)
                 .ShouldBeFailure("Order has already been cancelled");
-        }
-
-        // Uses ChannelInlineData multiple times - this works but is more verbose
-        [Theory]
-        [ChannelInlineData([ChannelType.UI, ChannelType.API], "", "Country must not be empty")]
-        [ChannelInlineData([ChannelType.UI, ChannelType.API], "   ", "Country must not be empty")]
-        public void ExperimentalShouldRejectOrderWithEmptyCountryMultipleParams(Channel channel, string emptyCountry, string message)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
-                .ShouldBeFailure(message);
-        }
-
-        // Uses ChannelInlineData multiple times - this works but is more verbose
-        [Theory]
-        [ChannelInlineData([ChannelType.UI, ChannelType.API], "", "Country must not be empty")]
-        [ChannelInlineData([ChannelType.UI, ChannelType.API], "   ", "Country must not be empty")]
-        public void ExperimentalShouldRejectOrderWithEmptyCountryMultipleParams2(Channel channel, string emptyCountry, string message)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
-                .ShouldBeFailure(message);
-        }
-
-        // Uses CombinatorialChannelData - cleanest syntax for combinatorial testing!
-        [Theory]
-        [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
-        [CombinatorialDataRow("", "Country must not be empty")]
-        [CombinatorialDataRow("   ", "Country must not be empty")]
-        public void ExperimentalShouldRejectOrderWithEmptyCountryUsingCombinatorial(Channel channel, string emptyCountry, string message)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
-                .ShouldBeFailure(message);
-        }
-
-        // Uses MemberData - cleaner approach for reusable test data
-        [Theory]
-        [MemberData(nameof(GetEmptyCountryTestData))]
-        public void ExperimentalShouldRejectOrderWithEmptyCountryUsingMemberData(Channel channel, string emptyCountry, string message)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
-                .ShouldBeFailure(message);
-        }
-
-        public static IEnumerable<object[]> GetEmptyCountryTestData()
-        {
-            var channels = new[] { ChannelType.UI, ChannelType.API };
-            var testCases = new[]
-            {
-                ("", "Country must not be empty"),
-                ("   ", "Country must not be empty")
-            };
-
-            foreach (var channelType in channels)
-            {
-                foreach (var (country, errorMessage) in testCases)
-                {
-                    yield return new object[] { new Channel(channelType), country, errorMessage };
-                }
-            }
-        }
-
-        // APPROACH 2: Using TheoryData for type-safe combinatorial test data
-        [Theory]
-        [MemberData(nameof(EmptyCountryCombinatorialData))]
-        public void ExperimentalShouldRejectOrderWithEmptyCountryUsingTheoryData(Channel channel, string emptyCountry, string message)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
-                .ShouldBeFailure(message);
-        }
-
-        public static TheoryData<Channel, string, string> EmptyCountryCombinatorialData
-        {
-            get
-            {
-                var data = new TheoryData<Channel, string, string>();
-                var channels = new[] { ChannelType.UI, ChannelType.API };
-                var testCases = new[]
-                {
-                    ("", "Country must not be empty"),
-                    ("   ", "Country must not be empty")
-                };
-
-                // Cartesian product: channels × test cases
-                foreach (var channelType in channels)
-                {
-                    foreach (var (country, errorMessage) in testCases)
-                    {
-                        data.Add(new Channel(channelType), country, errorMessage);
-                    }
-                }
-
-                return data;
-            }
-        }
-
-        // APPROACH 3: Using a helper method for cleaner combinatorial data generation
-        [Theory]
-        [MemberData(nameof(GetCombinedChannelTestData), parameters: new object[] { 
-            new[] { "", "   " }, 
-            "Country must not be empty" 
-        })]
-        public void ExperimentalShouldRejectOrderWithEmptyCountryUsingHelper(Channel channel, string emptyCountry, string message)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
-                .ShouldBeFailure(message);
-        }
-
-        // Reusable helper method for channel + data combinations
-        public static IEnumerable<object[]> GetCombinedChannelTestData(string[] testValues, string expectedMessage)
-        {
-            var channels = new[] { ChannelType.UI, ChannelType.API };
-            
-            foreach (var channelType in channels)
-            {
-                foreach (var testValue in testValues)
-                {
-                    yield return new object[] { new Channel(channelType), testValue, expectedMessage };
-                }
-            }
         }
     }
 }
