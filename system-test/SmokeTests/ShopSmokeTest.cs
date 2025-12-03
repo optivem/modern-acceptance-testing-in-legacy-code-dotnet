@@ -12,19 +12,20 @@ namespace Optivem.EShop.SystemTest.SmokeTests;
 /// </summary>
 public class ShopSmokeTest : IDisposable
 {
-    private IShopDriver? shopDriver;
+    private IShopDriver? _shopDriver;
 
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldBeAbleToGoToShop(Channel channel)
     {
-        shopDriver = channel.CreateDriver();
+        _shopDriver = channel.CreateDriver();
 
-        shopDriver.GoToShop().ShouldBeSuccess();
+        _shopDriver.GoToShop().ShouldBeSuccess();
     }
 
     public void Dispose()
     {
-        shopDriver?.Dispose();
+        _shopDriver?.Dispose();
+        ChannelContext.Clear();
     }
 }
