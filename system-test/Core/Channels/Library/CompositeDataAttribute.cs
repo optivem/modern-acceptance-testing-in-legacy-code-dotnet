@@ -2,7 +2,7 @@ using System.Reflection;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace Optivem.EShop.SystemTest.Core.Channels;
+namespace Optivem.EShop.SystemTest.Core.Channels.Library;
 
 /// <summary>
 /// Custom data discoverer that combines ChannelData and InlineData attributes

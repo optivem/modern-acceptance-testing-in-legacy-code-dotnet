@@ -1,4 +1,4 @@
-namespace Optivem.EShop.SystemTest.Core.Channels;
+namespace Optivem.EShop.SystemTest.Core.Channels.Library;
 
 public static class ChannelContext
 {

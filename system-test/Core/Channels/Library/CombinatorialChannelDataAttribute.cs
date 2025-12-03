@@ -1,7 +1,7 @@
 using System.Reflection;
 using Xunit.Sdk;
 
-namespace Optivem.EShop.SystemTest.Core.Channels;
+namespace Optivem.EShop.SystemTest.Core.Channels.Library;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public class CombinatorialChannelDataAttribute : DataAttribute

@@ -1,4 +1,5 @@
 ﻿using Optivem.EShop.SystemTest.Core.Channels;
+using Optivem.EShop.SystemTest.Core.Channels.Library;
 using Optivem.EShop.SystemTest.Core.Drivers;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
@@ -13,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using Channel = Optivem.EShop.SystemTest.Core.Channels.Channel;
+using Channel = Optivem.EShop.SystemTest.Core.Channels.Library.Channel;
 
 namespace Optivem.EShop.SystemTest.E2eTests
 {
