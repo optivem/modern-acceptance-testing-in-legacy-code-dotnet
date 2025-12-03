@@ -246,6 +246,38 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
+        [MemberData(nameof(GetNonExistentOrderTestData))]
+        public void ShouldNotCancelNonExistentOrderParameterized(Channel channel, string orderNumber, string expectedMessage)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.CancelOrder(orderNumber)
+                .ShouldBeFailure(expectedMessage);
+        }
+
+        public static TheoryData<Channel, string, string> GetNonExistentOrderTestData()
+        {
+            var data = new TheoryData<Channel, string, string>();
+            var channels = new[] { ChannelType.API };
+            var testCases = new[]
+            {
+                ("NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist."),
+                ("INVALID-ORDER-12345", "Order INVALID-ORDER-12345 does not exist."),
+                ("FAKE-ORDER-00000", "Order FAKE-ORDER-00000 does not exist.")
+            };
+
+            foreach (var channelType in channels)
+            {
+                foreach (var (orderNum, message) in testCases)
+                {
+                    data.Add(new Channel(channelType), orderNum, message);
+                }
+            }
+
+            return data;
+        }
+
+        [Theory]
         [ChannelData(ChannelType.API)]
         public void ShouldNotCancelAlreadyCancelledOrder(Channel channel)
         {
