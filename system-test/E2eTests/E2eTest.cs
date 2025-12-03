@@ -5,12 +5,15 @@ using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Enums;
+using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Ui;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using Channel = Optivem.EShop.SystemTest.Core.Channels.Channel;
 
 namespace Optivem.EShop.SystemTest.E2eTests
 {
@@ -149,43 +152,57 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .ShouldBeFailure("Quantity must be positive");
         }
 
-        // TODO: VJ: Process this
+        [Theory]
+        [ChannelInlineData(ChannelType.UI, ChannelType.API, "", "   ")]
+        public void ShouldRejectOrderWithEmptySku(Channel channel, string sku)
+        {
+            _shopDriver = channel.CreateDriver();
 
-        //[Theory]
-        //[InlineData("")]
-        //[InlineData("   ")]
-        //public void ShouldRejectOrderWithEmptySku(string sku)
-        //{
-        //    _shopDriver.PlaceOrder(sku, "5", "US")
-        //        .ShouldBeFailure("SKU must not be empty");
-        //}
+            _shopDriver.PlaceOrder(sku, "5", "US")
+                .ShouldBeFailure("SKU must not be empty");
+        }
 
-        //[Theory]
-        //[InlineData("")]
-        //[InlineData("   ")]
-        //public void ShouldRejectOrderWithEmptyQuantity(string emptyQuantity)
-        //{
-        //    _shopDriver.PlaceOrder("some-sku", emptyQuantity, "US")
-        //        .ShouldBeFailure("Quantity must not be empty");
-        //}
+        [Theory]
+        [ChannelInlineData(ChannelType.UI, ChannelType.API, "", "Country must not be empty")]
+        [ChannelInlineData(ChannelType.UI, ChannelType.API, "   ", "Country must not be empty")]
+        public void ExperimentalShouldRejectOrderWithEmptyCountryMultipleParams(Channel channel, string emptyCountry, string message)
+        {
+            _shopDriver = channel.CreateDriver();
 
-        //[Theory]
-        //[InlineData("3.5")]
-        //[InlineData("lala")]
-        //public void ShouldRejectOrderWithNonIntegerQuantity(string nonIntegerQuantity)
-        //{
-        //    _shopDriver.PlaceOrder("some-sku", nonIntegerQuantity, "US")
-        //        .ShouldBeFailure("Quantity must be an integer");
-        //}
+            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
+                .ShouldBeFailure(message);
+        }
 
-        //[Theory]
-        //[InlineData("")]
-        //[InlineData("   ")]
-        //public void ShouldRejectOrderWithEmptyCountry(string emptyCountry)
-        //{
-        //    _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
-        //        .ShouldBeFailure("Country must not be empty");
-        //}
+
+        [Theory]
+        [ChannelInlineData(ChannelType.UI, ChannelType.API, "", "   ")]
+        public void ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.PlaceOrder("some-sku", emptyQuantity, "US")
+                .ShouldBeFailure("Quantity must not be empty");
+        }
+
+        [Theory]
+        [ChannelInlineData(ChannelType.UI, ChannelType.API, "3.5", "lala")]
+        public void ShouldRejectOrderWithNonIntegerQuantity(Channel channel, string nonIntegerQuantity)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.PlaceOrder("some-sku", nonIntegerQuantity, "US")
+                .ShouldBeFailure("Quantity must be an integer");
+        }
+
+        [Theory]
+        [ChannelInlineData(ChannelType.UI, ChannelType.API, "", "   ")]
+        public void ShouldRejectOrderWithEmptyCountry(Channel channel, string emptyCountry)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
+                .ShouldBeFailure("Country must not be empty");
+        }
 
         [Theory]
         [ChannelData(ChannelType.UI, ChannelType.API)]
@@ -198,6 +215,67 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
             _shopDriver.PlaceOrder(sku, "3", "XX")
                 .ShouldBeFailure("Country does not exist: XX");
+        }
+
+        [Theory]
+        [ChannelData(ChannelType.API)]
+        public void ShouldRejectOrderWithNullQuantity(Channel channel)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.PlaceOrder("some-sku", null, "US")
+            .ShouldBeFailure("Quantity must not be empty");
+        }
+
+        [Theory]
+        [ChannelData(ChannelType.API)]
+        public void ShouldRejectOrderWithNullSku(Channel channel)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.PlaceOrder(null, "5", "US")
+                .ShouldBeFailure("SKU must not be empty");
+        }
+
+        [Theory]
+        [ChannelData(ChannelType.API)]
+        public void ShouldRejectOrderWithNullCountry(Channel channel)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.PlaceOrder("some-sku", "5", null)
+                .ShouldBeFailure("Country must not be empty");
+        }
+
+        [Theory]
+        [ChannelData(ChannelType.API)]
+        public void ShouldNotCancelNonExistentOrder(Channel channel)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.CancelOrder("NON-EXISTENT-ORDER-99999")
+                .ShouldBeFailure("Order NON-EXISTENT-ORDER-99999 does not exist.");
+        }
+
+        [Theory]
+        [ChannelData(ChannelType.API)]
+        public void ShouldNotCancelAlreadyCancelledOrder(Channel channel)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            var sku = "MNO-" + Guid.NewGuid();
+            _erpApiDriver.CreateProduct(sku, "35.00").ShouldBeSuccess();
+
+            var placeOrderResult = _shopDriver.PlaceOrder(sku, "3", "US").ShouldBeSuccess();
+
+            var orderNumber = placeOrderResult.GetValue().OrderNumber;
+
+            // Cancel the order first time - should succeed
+            _shopDriver.CancelOrder(orderNumber).ShouldBeSuccess();
+
+            // Try to cancel the same order again - should fail
+            _shopDriver.CancelOrder(orderNumber)
+                .ShouldBeFailure("Order has already been cancelled");
         }
     }
 }
