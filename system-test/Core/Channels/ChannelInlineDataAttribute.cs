@@ -5,8 +5,13 @@ namespace Optivem.EShop.SystemTest.Core.Channels;
 
 /// <summary>
 /// Combines ChannelData with InlineData to create a Cartesian product of test cases.
-/// Example: [ChannelInlineData(new[] { ChannelType.UI, ChannelType.API }, "", "   ")]
-/// Will generate: (UI, ""), (UI, "   "), (API, ""), (API, "   ")
+/// 
+/// Examples:
+/// - Single channel: [ChannelInlineData(new[] { ChannelType.UI }, "", "   ")]
+/// - Two channels: [ChannelInlineData(new[] { ChannelType.UI, ChannelType.API }, "", "   ")]
+/// - Three channels: [ChannelInlineData(new[] { ChannelType.UI, ChannelType.API, ChannelType.Mobile }, "", "   ")]
+/// 
+/// For two channels, generates: (UI, ""), (UI, "   "), (API, ""), (API, "   ")
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class ChannelInlineDataAttribute : DataAttribute
