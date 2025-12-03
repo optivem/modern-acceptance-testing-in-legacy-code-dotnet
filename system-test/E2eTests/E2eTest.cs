@@ -336,21 +336,14 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         public static IEnumerable<object[]> ShouldNotBeAbleToViewNonExistentOrderUsingHelperData2()
         {
-            var channels = new[] { ChannelType.UI, ChannelType.API }; // Both channels work for viewing orders
-            var testCases = new[]
-            {
-                ("NON-EXISTENT-ORDER-12345", "Order NON-EXISTENT-ORDER-12345 does not exist."),
-                ("INVALID-ORD-99999", "Order INVALID-ORD-99999 does not exist."),
-                ("MISSING-ORDER-00000", "Order MISSING-ORDER-00000 does not exist.")
-            };
-
-            foreach (var channelType in channels)
-            {
-                foreach (var (orderNumber, message) in testCases)
-                {
-                    yield return new object[] { new Channel(channelType), orderNumber, message };
-                }
-            }
+            return GenerateChannelTestDataEnumerable(
+                [ChannelType.UI, ChannelType.API], // Both channels work for viewing orders
+                [
+                    ("NON-EXISTENT-ORDER-12345", "Order NON-EXISTENT-ORDER-12345 does not exist."),
+                    ("INVALID-ORD-99999", "Order INVALID-ORD-99999 does not exist."),
+                    ("MISSING-ORDER-00000", "Order MISSING-ORDER-00000 does not exist.")
+                ]
+            );
         }
 
 
@@ -370,6 +363,20 @@ namespace Optivem.EShop.SystemTest.E2eTests
             }
 
             return data;
+        }
+
+        // IEnumerable version - same functionality but returns IEnumerable<object[]>
+        private static IEnumerable<object[]> GenerateChannelTestDataEnumerable(
+            string[] channels,
+            (string value, string message)[] testCases)
+        {
+            foreach (var channelType in channels)
+            {
+                foreach (var (value, message) in testCases)
+                {
+                    yield return new object[] { new Channel(channelType), value, message };
+                }
+            }
         }
 
         [Theory]
