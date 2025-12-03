@@ -5,7 +5,7 @@ namespace Optivem.EShop.SystemTest.Core.Channels;
 
 /// <summary>
 /// Combines ChannelData with InlineData to create a Cartesian product of test cases.
-/// Example: [ChannelInlineData(ChannelType.UI, ChannelType.API, "", "   ")]
+/// Example: [ChannelInlineData(new[] { ChannelType.UI, ChannelType.API }, "", "   ")]
 /// Will generate: (UI, ""), (UI, "   "), (API, ""), (API, "   ")
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
@@ -15,12 +15,14 @@ public class ChannelInlineDataAttribute : DataAttribute
     private readonly object[] _data;
 
     /// <summary>
-    /// Creates test cases for multiple channels with a single data value.
+    /// Creates test cases for multiple channels with data parameters.
     /// </summary>
-    public ChannelInlineDataAttribute(string channel1, string channel2, params object[] data)
+    /// <param name="channels">Array of channel types (e.g., new[] { ChannelType.UI, ChannelType.API })</param>
+    /// <param name="data">Data parameters for the test</param>
+    public ChannelInlineDataAttribute(string[] channels, params object[] data)
     {
-        _channels = new[] { channel1, channel2 };
-        _data = data;
+        _channels = channels ?? throw new ArgumentNullException(nameof(channels));
+        _data = data ?? throw new ArgumentNullException(nameof(data));
     }
 
     public override IEnumerable<object[]> GetData(MethodInfo testMethod)
@@ -53,4 +55,5 @@ public class ChannelInlineDataAttribute : DataAttribute
         }
     }
 }
+
 
