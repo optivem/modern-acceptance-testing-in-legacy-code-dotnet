@@ -163,18 +163,6 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ChannelInlineData(ChannelType.UI, ChannelType.API, "", "Country must not be empty")]
-        [ChannelInlineData(ChannelType.UI, ChannelType.API, "   ", "Country must not be empty")]
-        public void ExperimentalShouldRejectOrderWithEmptyCountryMultipleParams(Channel channel, string emptyCountry, string message)
-        {
-            _shopDriver = channel.CreateDriver();
-
-            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
-                .ShouldBeFailure(message);
-        }
-
-
-        [Theory]
         [ChannelInlineData(ChannelType.UI, ChannelType.API, "", "   ")]
         public void ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
         {
@@ -276,6 +264,17 @@ namespace Optivem.EShop.SystemTest.E2eTests
             // Try to cancel the same order again - should fail
             _shopDriver.CancelOrder(orderNumber)
                 .ShouldBeFailure("Order has already been cancelled");
+        }
+
+        [Theory]
+        [ChannelInlineData(ChannelType.UI, ChannelType.API, "", "Country must not be empty")]
+        [ChannelInlineData(ChannelType.UI, ChannelType.API, "   ", "Country must not be empty")]
+        public void ExperimentalShouldRejectOrderWithEmptyCountryMultipleParams(Channel channel, string emptyCountry, string message)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
+                .ShouldBeFailure(message);
         }
     }
 }
