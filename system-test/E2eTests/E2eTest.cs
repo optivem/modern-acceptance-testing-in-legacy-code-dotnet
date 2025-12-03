@@ -424,6 +424,19 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .ShouldBeFailure(message);
         }
 
+        // Uses CombinatorialChannelData - cleanest syntax for combinatorial testing!
+        [Theory]
+        [CombinatorialChannelData(ChannelType.UI, ChannelType.API)]
+        [CombinatorialDataRow("", "Country must not be empty")]
+        [CombinatorialDataRow("   ", "Country must not be empty")]
+        public void ExperimentalShouldRejectOrderWithEmptyCountryUsingCombinatorial(Channel channel, string emptyCountry, string message)
+        {
+            _shopDriver = channel.CreateDriver();
+
+            _shopDriver.PlaceOrder("some-sku", "5", emptyCountry)
+                .ShouldBeFailure(message);
+        }
+
         // Uses MemberData - cleaner approach for reusable test data
         [Theory]
         [MemberData(nameof(GetEmptyCountryTestData))]
