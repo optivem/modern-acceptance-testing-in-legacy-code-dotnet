@@ -1,6 +1,5 @@
 using Shouldly;
 using Optivem.EShop.SystemTest.Core.Channels;
-using Optivem.EShop.SystemTest.Core.Drivers;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Xunit;
@@ -19,25 +18,13 @@ public class ShopSmokeTest : IDisposable
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldBeAbleToGoToShop(Channel channel)
     {
-        ChannelContext.Set(channel.Value);
-        ShopDriver.GoToShop().ShouldBeSuccess();
-    }
+        shopDriver = channel.CreateDriver();
 
-    private IShopDriver ShopDriver
-    {
-        get
-        {
-            if (shopDriver == null)
-            {
-                shopDriver = DriverFactory.CreateShopDriver();
-            }
-            return shopDriver;
-        }
+        shopDriver.GoToShop().ShouldBeSuccess();
     }
 
     public void Dispose()
     {
         shopDriver?.Dispose();
-        ChannelContext.Clear();
     }
 }

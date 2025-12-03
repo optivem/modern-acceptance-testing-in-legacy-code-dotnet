@@ -1,11 +1,14 @@
 using System.Reflection;
+using Optivem.EShop.SystemTest.Core.Drivers;
+using Optivem.EShop.SystemTest.Core.Drivers.System;
+using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Api;
+using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Ui;
 using Xunit.Sdk;
 
 namespace Optivem.EShop.SystemTest.Core.Channels;
 
 /// <summary>
-/// Provides channel test data for parameterized tests.
-/// This is a generic attribute that can be used with any channel type.
+/// Provides channel test data with automatic setup and teardown.
 /// </summary>
 public class ChannelDataAttribute : DataAttribute
 {
@@ -26,19 +29,27 @@ public class ChannelDataAttribute : DataAttribute
 }
 
 /// <summary>
-/// Represents a test channel (e.g., UI, API).
-/// This is a generic class that holds the channel name and can be extended with factory methods.
+/// Represents a test case for a specific channel.
+/// Automatically initializes the shopDriver field in the test class.
 /// </summary>
 public class Channel
 {
-    private readonly string _value;
+    private readonly string _channel;
 
-    public Channel(string value)
+    public Channel(string channel)
     {
-        _value = value ?? throw new ArgumentNullException(nameof(value));
+        _channel = channel;
     }
 
-    public string Value => _value;
+    public IShopDriver CreateDriver()
+    {
+        return _channel switch
+            {
+                ChannelType.UI => new ShopUiDriver(TestConfiguration.GetShopUiBaseUrl()),
+                ChannelType.API => new ShopApiDriver(TestConfiguration.GetShopApiBaseUrl()),
+                _ => throw new InvalidOperationException($"Unknown channel: {_channel}")
+            };
+    }
 
-    public override string ToString() => _value;
+    public override string ToString() => $"Channel: {_channel}";
 }
