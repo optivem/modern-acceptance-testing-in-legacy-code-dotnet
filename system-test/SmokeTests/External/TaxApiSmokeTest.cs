@@ -1,5 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Drivers;
-using Optivem.EShop.SystemTest.Core.Drivers.Commons;
+using Optivem.Results;
+using Optivem.Testing.Assertions;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
 using Xunit;
 

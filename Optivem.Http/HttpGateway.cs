@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
+namespace Optivem.Http;
 
 public class HttpGateway
 {

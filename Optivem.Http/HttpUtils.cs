@@ -1,9 +1,9 @@
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Optivem.EShop.SystemTest.Core.Drivers.Commons.Dtos;
+using Optivem.Results;
 
-namespace Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
+namespace Optivem.Http;
 
 public static class HttpUtils
 {

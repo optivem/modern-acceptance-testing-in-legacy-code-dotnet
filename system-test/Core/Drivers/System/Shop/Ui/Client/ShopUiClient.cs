@@ -1,8 +1,9 @@
 using Microsoft.Playwright;
-using Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
+using Optivem.Http;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Ui.Client.Pages;
 using Shouldly;
 using System.Net;
+using PlaywrightGateway = Optivem.Playwright.PageGateway;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Ui.Client;
 
@@ -25,11 +26,11 @@ public class ShopUiClient : IDisposable
     public ShopUiClient(string baseUrl)
     {
         _baseUrl = baseUrl;
-        _playwright = Playwright.CreateAsync().Result;
+        _playwright = Microsoft.Playwright.Playwright.CreateAsync().Result;
         _browser = _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true }).Result;
         _context = _browser.NewContextAsync().Result;
         _page = _browser.NewPageAsync().Result;
-        var pageClient = new PageGateway(_page, baseUrl);
+        var pageClient = new PlaywrightGateway(_page, baseUrl);
         _homePage = new HomePage(pageClient);
     }
 

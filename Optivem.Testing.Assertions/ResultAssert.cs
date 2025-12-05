@@ -1,6 +1,7 @@
 using Shouldly;
+using Optivem.Results;
 
-namespace Optivem.EShop.SystemTest.Core.Drivers.Commons;
+namespace Optivem.Testing.Assertions;
 
 public static class ResultExtensions
 {

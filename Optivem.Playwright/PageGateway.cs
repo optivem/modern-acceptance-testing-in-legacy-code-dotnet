@@ -1,7 +1,7 @@
 using System.Globalization;
 using Microsoft.Playwright;
 
-namespace Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
+namespace Optivem.Playwright;
 
 public class PageGateway
 {

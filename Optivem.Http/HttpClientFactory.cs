@@ -1,4 +1,4 @@
-namespace Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
+namespace Optivem.Http;
 
 public static class HttpClientFactory
 {

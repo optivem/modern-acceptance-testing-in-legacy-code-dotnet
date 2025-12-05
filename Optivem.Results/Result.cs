@@ -1,4 +1,4 @@
-namespace Optivem.EShop.SystemTest.Core.Drivers.Commons;
+namespace Optivem.Results;
 
 public class Result<T>
 {

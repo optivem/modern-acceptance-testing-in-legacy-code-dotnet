@@ -1,4 +1,4 @@
-namespace Optivem.EShop.SystemTest.Core.Drivers.Commons.Dtos;
+namespace Optivem.Http;
 
 public class ProblemDetailsFieldErrorResponse
 {
