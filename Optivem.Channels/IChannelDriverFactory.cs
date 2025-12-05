@@ -1,4 +1,4 @@
-namespace Optivem.Commons.Channels;
+namespace Optivem.Channels;
 
 /// <summary>
 /// Factory interface for creating channel-specific drivers.

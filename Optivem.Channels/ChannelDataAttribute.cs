@@ -1,7 +1,7 @@
 using System.Reflection;
 using Xunit.Sdk;
 
-namespace Optivem.Commons.Channels;
+namespace Optivem.Channels;
 
 /// <summary>
 /// Creates test cases for one or more channels, optionally combined with inline data.
