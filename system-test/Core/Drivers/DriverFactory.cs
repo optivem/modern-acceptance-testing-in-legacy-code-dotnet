@@ -4,7 +4,7 @@ using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Channels;
-using Optivem.EShop.SystemTest.Core.Channels.Library;
+using Optivem.Commons.Channels;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers;
 
