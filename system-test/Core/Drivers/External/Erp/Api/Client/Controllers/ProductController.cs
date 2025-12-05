@@ -8,9 +8,9 @@ namespace Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Client.Controll
 public class ProductController
 {
     private const string Endpoint = "/api/products";
-    private readonly TestHttpClient _testHttpClient;
+    private readonly HttpGateway _testHttpClient;
 
-    public ProductController(TestHttpClient testHttpClient)
+    public ProductController(HttpGateway testHttpClient)
     {
         _testHttpClient = testHttpClient;
     }
@@ -29,6 +29,6 @@ public class ProductController
 
         var response = _testHttpClient.Post(Endpoint, request);
 
-        return TestHttpUtils.GetCreatedResultOrFailure(response);
+        return HttpUtils.GetCreatedResultOrFailure(response);
     }
 }

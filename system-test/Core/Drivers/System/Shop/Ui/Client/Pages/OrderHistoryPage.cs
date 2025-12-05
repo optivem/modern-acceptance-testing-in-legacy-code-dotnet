@@ -24,7 +24,7 @@ public class OrderHistoryPage : BasePage
     private const string CancelOrderOutputSelector = "[aria-label='Cancel Order']";
     private const string OrderDetailsHeadingText = "Order Details";
 
-    public OrderHistoryPage(TestPageClient pageClient) : base(pageClient)
+    public OrderHistoryPage(PageGateway pageClient) : base(pageClient)
     {
     }
 

@@ -29,7 +29,7 @@ public class ShopUiClient : IDisposable
         _browser = _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true }).Result;
         _context = _browser.NewContextAsync().Result;
         _page = _browser.NewPageAsync().Result;
-        var pageClient = new TestPageClient(_page, baseUrl);
+        var pageClient = new PageGateway(_page, baseUrl);
         _homePage = new HomePage(pageClient);
     }
 

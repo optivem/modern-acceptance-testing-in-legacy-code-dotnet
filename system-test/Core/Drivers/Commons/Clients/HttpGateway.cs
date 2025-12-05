@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
 
-public class TestHttpClient
+public class HttpGateway
 {
     private const string ContentType = "Content-Type";
     private const string ApplicationJson = "application/json";
@@ -11,7 +11,7 @@ public class TestHttpClient
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
 
-    public TestHttpClient(HttpClient httpClient, string baseUrl)
+    public HttpGateway(HttpClient httpClient, string baseUrl)
     {
         _httpClient = httpClient;
         _baseUrl = baseUrl;
@@ -27,7 +27,7 @@ public class TestHttpClient
     public HttpResponseMessage Post(string path, object requestBody)
     {
         var uri = GetUri(path);
-        var jsonBody = TestHttpUtils.SerializeRequest(requestBody);
+        var jsonBody = HttpUtils.SerializeRequest(requestBody);
 
         var request = new HttpRequestMessage(HttpMethod.Post, uri)
         {
@@ -51,7 +51,7 @@ public class TestHttpClient
 
     private Uri GetUri(string path)
     {
-        return TestHttpUtils.GetUri(_baseUrl, path);
+        return HttpUtils.GetUri(_baseUrl, path);
     }
 
     private HttpResponseMessage SendRequest(HttpRequestMessage httpRequest)

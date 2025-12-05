@@ -7,7 +7,7 @@ public class TaxApiClient
 {
     private readonly HealthController _healthController;
 
-    public TaxApiClient(TestHttpClient testHttpClient)
+    public TaxApiClient(HttpGateway testHttpClient)
     {
         _healthController = new HealthController(testHttpClient);
     }

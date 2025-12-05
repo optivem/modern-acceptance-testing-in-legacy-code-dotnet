@@ -8,7 +8,7 @@ public class ErpApiClient
     private readonly HealthController _healthController;
     private readonly ProductController _productController;
 
-    public ErpApiClient(TestHttpClient testHttpClient)
+    public ErpApiClient(HttpGateway testHttpClient)
     {
         _healthController = new HealthController(testHttpClient);
         _productController = new ProductController(testHttpClient);

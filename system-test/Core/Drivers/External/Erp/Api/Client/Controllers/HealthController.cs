@@ -12,9 +12,9 @@ namespace Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Client.Controll
     {
         private static readonly string Endpoint = "/health";
 
-        private readonly TestHttpClient _testHttpClient;
+        private readonly HttpGateway _testHttpClient;
 
-        public HealthController(TestHttpClient testHttpClient)
+        public HealthController(HttpGateway testHttpClient)
         {
             _testHttpClient = testHttpClient;
         }
@@ -22,7 +22,7 @@ namespace Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api.Client.Controll
         public Result<VoidResult> CheckHealth()
         {
             var response = _testHttpClient.Get(Endpoint);
-            return TestHttpUtils.GetOkResultOrFailure(response);
+            return HttpUtils.GetOkResultOrFailure(response);
         }
     }
 }

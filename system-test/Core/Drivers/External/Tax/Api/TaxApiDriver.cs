@@ -12,7 +12,7 @@ public class TaxApiDriver : IDisposable
     public TaxApiDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
-        var testHttpClient = new TestHttpClient(_httpClient, baseUrl);
+        var testHttpClient = new HttpGateway(_httpClient, baseUrl);
         _taxApiClient = new TaxApiClient(testHttpClient);
     }
 

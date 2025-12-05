@@ -7,9 +7,9 @@ public class HealthController
 {
     private const string Endpoint = "/health";
 
-    private readonly TestHttpClient _httpClient;
+    private readonly HttpGateway _httpClient;
 
-    public HealthController(TestHttpClient httpClient)
+    public HealthController(HttpGateway httpClient)
     {
         _httpClient = httpClient;
     }
@@ -17,6 +17,6 @@ public class HealthController
     public Result<VoidResult> CheckHealth()
     {
         var httpResponse = _httpClient.Get(Endpoint);
-        return TestHttpUtils.GetOkResultOrFailure(httpResponse);
+        return HttpUtils.GetOkResultOrFailure(httpResponse);
     }
 }

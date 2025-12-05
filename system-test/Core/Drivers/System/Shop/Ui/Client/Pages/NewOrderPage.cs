@@ -12,7 +12,7 @@ public class NewOrderPage : BasePage
     private const string OrderNumberRegex = @"Success! Order has been created with Order Number ([\w-]+)";
     private const int OrderNumberMatcherGroup = 1;
 
-    public NewOrderPage(TestPageClient pageClient) : base(pageClient)
+    public NewOrderPage(PageGateway pageClient) : base(pageClient)
     {
     }
 

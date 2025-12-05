@@ -12,7 +12,7 @@ public class ErpApiDriver : IDisposable
     public ErpApiDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
-        var testHttpClient = new TestHttpClient(_httpClient, baseUrl);
+        var testHttpClient = new HttpGateway(_httpClient, baseUrl);
         _erpApiClient = new ErpApiClient(testHttpClient);
     }
 

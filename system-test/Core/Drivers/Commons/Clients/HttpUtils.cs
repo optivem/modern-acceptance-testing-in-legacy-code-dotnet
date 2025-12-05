@@ -5,7 +5,7 @@ using Optivem.EShop.SystemTest.Core.Drivers.Commons.Dtos;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
 
-public static class TestHttpUtils
+public static class HttpUtils
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {

@@ -8,9 +8,9 @@ public class OrderController
 {
     private const string Endpoint = "/api/orders";
 
-    private readonly TestHttpClient _httpClient;
+    private readonly HttpGateway _httpClient;
 
-    public OrderController(TestHttpClient httpClient)
+    public OrderController(HttpGateway httpClient)
     {
         _httpClient = httpClient;
     }
@@ -25,18 +25,18 @@ public class OrderController
         };
 
         var httpResponse = _httpClient.Post(Endpoint, request);
-        return TestHttpUtils.GetCreatedResultOrFailure<PlaceOrderResponse>(httpResponse);
+        return HttpUtils.GetCreatedResultOrFailure<PlaceOrderResponse>(httpResponse);
     }
 
     public Result<GetOrderResponse> ViewOrder(string orderNumber)
     {
         var httpResponse = _httpClient.Get($"{Endpoint}/{orderNumber}");
-        return TestHttpUtils.GetOkResultOrFailure<GetOrderResponse>(httpResponse);
+        return HttpUtils.GetOkResultOrFailure<GetOrderResponse>(httpResponse);
     }
 
     public Result<VoidResult> CancelOrder(string orderNumber)
     {
         var httpResponse = _httpClient.Post($"{Endpoint}/{orderNumber}/cancel");
-        return TestHttpUtils.GetNoContentResultOrFailure(httpResponse);
+        return HttpUtils.GetNoContentResultOrFailure(httpResponse);
     }
 }

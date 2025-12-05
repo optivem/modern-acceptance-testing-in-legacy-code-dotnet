@@ -8,9 +8,9 @@ public abstract class BasePage
     private const string SuccessNotificationSelector = "[role='alert'].success";
     private const string ErrorNotificationSelector = "[role='alert'].error";
 
-    protected readonly TestPageClient PageClient;
+    protected readonly PageGateway PageClient;
 
-    protected BasePage(TestPageClient pageClient)
+    protected BasePage(PageGateway pageClient)
     {
         PageClient = pageClient;
     }

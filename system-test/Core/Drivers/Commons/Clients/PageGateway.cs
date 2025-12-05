@@ -3,7 +3,7 @@ using Microsoft.Playwright;
 
 namespace Optivem.EShop.SystemTest.Core.Drivers.Commons.Clients;
 
-public class TestPageClient
+public class PageGateway
 {
     private readonly IPage _page;
     private readonly string _baseUrl;
@@ -12,14 +12,14 @@ public class TestPageClient
     private const int DefaultTimeoutSeconds = 10;
     private const int DefaultTimeoutMilliseconds = DefaultTimeoutSeconds * 1000;
 
-    private TestPageClient(IPage page, string baseUrl, float timeoutMilliseconds)
+    private PageGateway(IPage page, string baseUrl, float timeoutMilliseconds)
     {
         _page = page;
         _baseUrl = baseUrl;
         _timeoutMilliseconds = timeoutMilliseconds;
     }
 
-    public TestPageClient(IPage page, string baseUrl) 
+    public PageGateway(IPage page, string baseUrl) 
         : this(page, baseUrl, DefaultTimeoutMilliseconds)
     {
     }

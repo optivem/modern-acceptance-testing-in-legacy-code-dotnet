@@ -8,7 +8,7 @@ public class ShopApiClient
     private readonly HealthController _healthController;
     private readonly OrderController _orderController;
 
-    public ShopApiClient(TestHttpClient testHttpClient)
+    public ShopApiClient(HttpGateway testHttpClient)
     {
         _healthController = new HealthController(testHttpClient);
         _orderController = new OrderController(testHttpClient);
