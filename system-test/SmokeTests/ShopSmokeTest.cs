@@ -1,28 +1,29 @@
-using Shouldly;
 using Optivem.EShop.SystemTest.Core.Channels;
-using Optivem.Results;
-using Optivem.Testing.Assertions;
+using Optivem.EShop.SystemTest.Core.Drivers;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
-using Xunit;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Shop;
 using Optivem.Testing.Channels;
+using Xunit;
 
 namespace Optivem.EShop.SystemTest.SmokeTests;
 
-/// <summary>
-/// Channel-based smoke test that runs across multiple channels (UI and API).
-/// This approach is similar to Java's @Channel annotation pattern.
-/// </summary>
 public class ShopSmokeTest : IDisposable
 {
     private IShopDriver? _shopDriver;
+    private ShopDsl? _shop;
 
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldBeAbleToGoToShop(Channel channel)
     {
         _shopDriver = channel.CreateDriver();
+        var context = new TestContext();
+        _shop = new ShopDsl(_shopDriver, context);
 
-        _shopDriver.GoToShop().ShouldBeSuccess();
+        _shop.GoToShop()
+            .Execute()
+            .ShouldSucceed();
     }
 
     public void Dispose()

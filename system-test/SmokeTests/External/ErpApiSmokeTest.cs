@@ -1,7 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Drivers;
-using Optivem.Results;
-using Optivem.Testing.Assertions;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
+using Optivem.Testing.Assertions;
 using Xunit;
 
 namespace Optivem.EShop.SystemTest.SmokeTests.External;
