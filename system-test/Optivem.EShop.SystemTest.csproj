@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Optivem.Http\Optivem.Http.csproj" />
+    <ProjectReference Include="..\Optivem.Result\Optivem.Result.csproj" />
     <ProjectReference Include="..\Optivem.Testing.Channel\Optivem.Testing.Channel.csproj" />
   </ItemGroup>
 
