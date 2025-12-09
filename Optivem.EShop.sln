@@ -33,6 +33,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Result", "Optivem.R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Http", "Optivem.Http\Optivem.Http.csproj", "{4BB9B5A4-45F8-43DA-AE3F-7A9CB7B2F4B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Playwright", "Optivem.Playwright\Optivem.Playwright.csproj", "{89B5B889-3192-4219-827B-C80EA66736CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Testing.Assertion", "Optivem.Testing.Assertion\Optivem.Testing.Assertion.csproj", "{97FD1949-0F26-4F5B-9D6B-0A021658F2F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +59,14 @@ Global
 		{4BB9B5A4-45F8-43DA-AE3F-7A9CB7B2F4B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BB9B5A4-45F8-43DA-AE3F-7A9CB7B2F4B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BB9B5A4-45F8-43DA-AE3F-7A9CB7B2F4B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89B5B889-3192-4219-827B-C80EA66736CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89B5B889-3192-4219-827B-C80EA66736CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89B5B889-3192-4219-827B-C80EA66736CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89B5B889-3192-4219-827B-C80EA66736CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97FD1949-0F26-4F5B-9D6B-0A021658F2F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97FD1949-0F26-4F5B-9D6B-0A021658F2F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97FD1949-0F26-4F5B-9D6B-0A021658F2F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97FD1949-0F26-4F5B-9D6B-0A021658F2F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
