@@ -1,4 +1,4 @@
-﻿namespace Optivem.Channels
+﻿namespace Optivem.Testing.Channels
 {
     /// <summary>
     /// Represents a test execution channel (e.g., UI, API).

@@ -1,5 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Channels;
-using Optivem.Channels;
+using Optivem.Testing.Channels;
 using Optivem.EShop.SystemTest.Core.Drivers;
 using Optivem.Results;
 using Optivem.Testing.Assertions;
@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using Channel = Optivem.Channels.Channel;
+using Channel = Optivem.Testing.Channels.Channel;
 
 namespace Optivem.EShop.SystemTest.E2eTests
 {

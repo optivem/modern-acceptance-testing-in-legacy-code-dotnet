@@ -1,8 +1,8 @@
-namespace Optivem.Channels;
+namespace Optivem.Testing.Channels;
 
 /// <summary>
 /// Specifies inline test data for use with [ChannelData].
-/// When combined with [ChannelData], creates a Cartesian product of channels × data rows.
+/// When combined with [ChannelData], creates a Cartesian product of channels ï¿½ data rows.
 /// Follows xUnit's [InlineData] naming convention.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]

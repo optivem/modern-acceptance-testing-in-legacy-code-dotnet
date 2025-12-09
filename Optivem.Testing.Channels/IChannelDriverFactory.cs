@@ -1,4 +1,4 @@
-namespace Optivem.Channels;
+namespace Optivem.Testing.Channels;
 
 /// <summary>
 /// Factory interface for creating channel-specific drivers.

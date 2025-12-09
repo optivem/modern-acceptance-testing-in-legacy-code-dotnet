@@ -4,7 +4,7 @@ using Optivem.Results;
 using Optivem.Testing.Assertions;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Xunit;
-using Optivem.Channels;
+using Optivem.Testing.Channels;
 
 namespace Optivem.EShop.SystemTest.SmokeTests;
 

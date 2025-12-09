@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy-docker-images", "dep
 		.github\actions\deploy-docker-images\action.yml = .github\actions\deploy-docker-images\action.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Channels", "Optivem.Channels\Optivem.Channels.csproj", "{FFB1E01C-6DF1-42BC-BC4B-3B01DDF0E0B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Testing.Channels", "Optivem.Testing.Channels\Optivem.Testing.Channels.csproj", "{FFB1E01C-6DF1-42BC-BC4B-3B01DDF0E0B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Http", "Optivem.Http\Optivem.Http.csproj", "{571B119C-0710-4467-92AB-DB9A142A01B1}"
 EndProject

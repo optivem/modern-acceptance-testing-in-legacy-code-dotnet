@@ -1,7 +1,7 @@
 using System.Reflection;
 using Xunit.Sdk;
 
-namespace Optivem.Channels;
+namespace Optivem.Testing.Channels;
 
 /// <summary>
 /// Creates test cases for one or more channels, optionally combined with inline data.
@@ -18,7 +18,7 @@ namespace Optivem.Channels;
 /// [ChannelInlineData("   ", "Country must not be empty")]
 /// public void Test(Channel channel, string value, string message) { }
 /// 
-/// Generates: 2 channels × 2 data rows = 4 test cases.
+/// Generates: 2 channels ï¿½ 2 data rows = 4 test cases.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public class ChannelDataAttribute : DataAttribute
@@ -51,7 +51,7 @@ public class ChannelDataAttribute : DataAttribute
         }
         else
         {
-            // Create Cartesian product: channels × inline data (combinatorial mode)
+            // Create Cartesian product: channels ï¿½ inline data (combinatorial mode)
             foreach (var channel in _channels)
             {
                 foreach (var inlineDataAttr in inlineDataAttributes)
