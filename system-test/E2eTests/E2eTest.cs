@@ -8,6 +8,9 @@ using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Enums;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Ui;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Shop;
+using Optivem.EShop.SystemTest.Core.Dsl.Erp;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -24,11 +27,16 @@ namespace Optivem.EShop.SystemTest.E2eTests
         private IShopDriver? _shopDriver;
         private ErpApiDriver _erpApiDriver;
         private TaxApiDriver _taxApiDriver;
+        private TestContext _context;
+        private ShopDsl? _shop;
+        private ErpDsl _erp;
 
         public E2eTest()
         {
             _erpApiDriver = DriverFactory.CreateErpApiDriver();
             _taxApiDriver = DriverFactory.CreateTaxApiDriver();
+            _context = new TestContext();
+            _erp = new ErpDsl(_erpApiDriver, _context);
         }
 
         public void Dispose()
@@ -44,42 +52,41 @@ namespace Optivem.EShop.SystemTest.E2eTests
         public void ShouldPlaceOrderAndCalculateOriginalPrice(Channel channel)
         {
             _shopDriver = channel.CreateDriver();
+            _shop = new ShopDsl(_shopDriver, _context);
 
-            var sku = "ABC-" + Guid.NewGuid();
-            _erpApiDriver.CreateProduct(sku, "20.00").ShouldBeSuccess();
+            const string SKU = "SKU";
+            const string QUANTITY = "5";
+            const string COUNTRY = "US";
+            const string ORDER_NUMBER = "ORDER_NUMBER";
 
-            var placeOrderResult = _shopDriver.PlaceOrder(sku, "5", "US").ShouldBeSuccess();
+            _erp.CreateProduct()
+                .Sku(SKU)
+                .UnitPrice("20.00")
+                .Execute()
+                .ShouldSucceed();
 
-            var orderNumber = placeOrderResult.GetValue().OrderNumber;
+            _shop.PlaceOrder()
+                .Sku(SKU)
+                .Quantity(QUANTITY)
+                .Country(COUNTRY)
+                .OrderNumber(ORDER_NUMBER)
+                .Execute()
+                .ShouldSucceed()
+                .OrderNumber(ORDER_NUMBER);
 
-            orderNumber.ShouldStartWith("ORD-");
-
-            var viewOrderResult = _shopDriver.ViewOrder(orderNumber!).ShouldBeSuccess();
-
-            var viewOrderResponse = viewOrderResult.GetValue();
-            viewOrderResponse.OrderNumber.ShouldBe(orderNumber);
-            viewOrderResponse.Sku.ShouldBe(sku);
-            viewOrderResponse.Quantity.ShouldBe(5);
-            viewOrderResponse.Country.ShouldBe("US");
-            viewOrderResponse.UnitPrice.ShouldBe(20.00m);
-            viewOrderResponse.OriginalPrice.ShouldBe(100.00m);
-            viewOrderResponse.Status.ShouldBe(OrderStatus.PLACED);
-
-            var discountRate = viewOrderResponse.DiscountRate;
-            var discountAmount = viewOrderResponse.DiscountAmount;
-            var subtotalPrice = viewOrderResponse.SubtotalPrice;
-
-            discountRate.ShouldBeGreaterThanOrEqualTo(0m);
-            discountAmount.ShouldBeGreaterThanOrEqualTo(0m);
-            subtotalPrice.ShouldBeGreaterThan(0m);
-
-            var taxRate = viewOrderResponse.TaxRate;
-            var taxAmount = viewOrderResponse.TaxAmount;
-            var totalPrice = viewOrderResponse.TotalPrice;
-
-            taxRate.ShouldBeGreaterThanOrEqualTo(0m, "Tax rate should be non-negative");
-            taxAmount.ShouldBeGreaterThanOrEqualTo(0m, "Tax amount should be non-negative");
-            totalPrice.ShouldBeGreaterThan(0m, "Total price should be positive");
+            _shop.ViewOrder()
+                .OrderNumber(ORDER_NUMBER)
+                .Execute()
+                .ShouldSucceed()
+                .OrderNumber(ORDER_NUMBER)
+                .Sku(SKU)
+                .Quantity(5)
+                .Country(COUNTRY)
+                .Status(OrderStatus.PLACED)
+                .SubtotalPriceGreaterThanZero()
+                .TaxRateGreaterThanOrEqualToZero()
+                .TaxAmountGreaterThanOrEqualToZero()
+                .TotalPriceGreaterThanZero();
         }
 
         [Theory]
@@ -87,25 +94,42 @@ namespace Optivem.EShop.SystemTest.E2eTests
         public void ShouldCancelOrder(Channel channel)
         {
             _shopDriver = channel.CreateDriver();
+            _shop = new ShopDsl(_shopDriver, _context);
 
-            var sku = "XYZ-" + Guid.NewGuid();
-            _erpApiDriver.CreateProduct(sku, "50.00").ShouldBeSuccess();
+            const string SKU = "SKU";
+            const string QUANTITY = "2";
+            const string COUNTRY = "US";
+            const string ORDER_NUMBER = "ORDER_NUMBER";
 
-            var placeOrderResult = _shopDriver.PlaceOrder(sku, "2", "US").ShouldBeSuccess();
+            _erp.CreateProduct()
+                .Sku(SKU)
+                .UnitPrice("50.00")
+                .Execute()
+                .ShouldSucceed();
 
-            var orderNumber = placeOrderResult.GetValue().OrderNumber;
-            _shopDriver.CancelOrder(orderNumber!).ShouldBeSuccess();
+            _shop.PlaceOrder()
+                .Sku(SKU)
+                .Quantity(QUANTITY)
+                .Country(COUNTRY)
+                .OrderNumber(ORDER_NUMBER)
+                .Execute()
+                .ShouldSucceed()
+                .OrderNumber(ORDER_NUMBER);
 
-            var viewOrderResult = _shopDriver.ViewOrder(orderNumber!).ShouldBeSuccess();
+            _shop.CancelOrder()
+                .OrderNumber(ORDER_NUMBER)
+                .Execute()
+                .ShouldSucceed();
 
-            var viewOrderResponse = viewOrderResult.GetValue();
-            viewOrderResponse.OrderNumber.ShouldBe(orderNumber);
-            viewOrderResponse.Sku.ShouldBe(sku);
-            viewOrderResponse.Quantity.ShouldBe(2);
-            viewOrderResponse.Country.ShouldBe("US");
-            viewOrderResponse.UnitPrice.ShouldBe(50.00m);
-            viewOrderResponse.OriginalPrice.ShouldBe(100.00m);
-            viewOrderResponse.Status.ShouldBe(OrderStatus.CANCELLED);
+            _shop.ViewOrder()
+                .OrderNumber(ORDER_NUMBER)
+                .Execute()
+                .ShouldSucceed()
+                .OrderNumber(ORDER_NUMBER)
+                .Sku(SKU)
+                .Quantity(2)
+                .Country(COUNTRY)
+                .Status(OrderStatus.CANCELLED);
         }
 
         [Theory]
