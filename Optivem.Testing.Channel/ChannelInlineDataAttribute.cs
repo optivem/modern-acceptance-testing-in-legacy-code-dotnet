@@ -1,4 +1,4 @@
-namespace Optivem.Channels;
+namespace Optivem.Testing.Channel;
 
 /// <summary>
 /// Specifies inline test data for use with [ChannelData].

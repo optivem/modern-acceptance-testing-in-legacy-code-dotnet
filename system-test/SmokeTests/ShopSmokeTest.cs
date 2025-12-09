@@ -3,7 +3,7 @@ using Optivem.EShop.SystemTest.Core.Channels;
 using Optivem.EShop.SystemTest.Core.Drivers.Commons;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Xunit;
-using Optivem.Channels;
+using Optivem.Testing.Channel;
 
 namespace Optivem.EShop.SystemTest.SmokeTests;
 

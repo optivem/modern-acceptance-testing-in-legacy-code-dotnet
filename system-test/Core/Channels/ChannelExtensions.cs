@@ -1,4 +1,4 @@
-using Optivem.Channels;
+using Optivem.Testing.Channel;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 
 namespace Optivem.EShop.SystemTest.Core.Channels;
