@@ -8,12 +8,15 @@ namespace Optivem.EShop.SystemTest.Core.Dsl.Erp.Commands;
 
 public class CreateProduct : BaseErpCommand<object, VoidVerification>
 {
+    private const string DEFAULT_UNIT_PRICE = "20.00";
+
     private string? _skuParamAlias;
-    private string _unitPrice = "20.00";
+    private string? _unitPrice;
 
     public CreateProduct(ErpApiDriver driver, Context context) 
         : base(driver, context)
     {
+        UnitPrice(DEFAULT_UNIT_PRICE);
     }
 
     public CreateProduct Sku(string skuParamAlias)
@@ -31,7 +34,7 @@ public class CreateProduct : BaseErpCommand<object, VoidVerification>
     public override CommandResult<object, VoidVerification> Execute()
     {
         var sku = Context.GetParamValue(_skuParamAlias!);
-        var result = Driver.CreateProduct(sku, _unitPrice);
+        var result = Driver.CreateProduct(sku, _unitPrice!);
         
         var objectResult = result.Success 
             ? Results.Result<object>.SuccessResult(new object()) 

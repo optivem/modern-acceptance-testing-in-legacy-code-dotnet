@@ -1,3 +1,4 @@
+using System.Globalization;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Dtos;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Enums;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons;
@@ -47,6 +48,50 @@ public class ViewOrderVerification : BaseSuccessVerification<GetOrderResponse>
     {
         Response.Country.ShouldBe(expectedCountry, 
             $"Expected country: '{expectedCountry}', but got: '{Response.Country}'");
+        return this;
+    }
+
+    public ViewOrderVerification UnitPrice(string expectedUnitPrice)
+    {
+        var expectedValue = decimal.Parse(expectedUnitPrice, CultureInfo.InvariantCulture);
+        Response.UnitPrice.ShouldBe(expectedValue, 
+            $"Expected unit price: {expectedValue}, but got: {Response.UnitPrice}");
+        return this;
+    }
+
+    public ViewOrderVerification UnitPriceGreaterThanZero()
+    {
+        Response.UnitPrice.ShouldBeGreaterThan(0m, 
+            $"Unit price should be positive, but was: {Response.UnitPrice}");
+        return this;
+    }
+
+    public ViewOrderVerification OriginalPrice(string expectedOriginalPrice)
+    {
+        var expectedValue = decimal.Parse(expectedOriginalPrice, CultureInfo.InvariantCulture);
+        Response.OriginalPrice.ShouldBe(expectedValue, 
+            $"Expected original price: {expectedValue}, but got: {Response.OriginalPrice}");
+        return this;
+    }
+
+    public ViewOrderVerification OriginalPriceGreaterThanZero()
+    {
+        Response.OriginalPrice.ShouldBeGreaterThan(0m, 
+            $"Original price should be positive, but was: {Response.OriginalPrice}");
+        return this;
+    }
+
+    public ViewOrderVerification DiscountRateGreaterThanOrEqualToZero()
+    {
+        Response.DiscountRate.ShouldBeGreaterThanOrEqualTo(0m, 
+            $"Discount rate should be non-negative, but was: {Response.DiscountRate}");
+        return this;
+    }
+
+    public ViewOrderVerification DiscountAmountGreaterThanOrEqualToZero()
+    {
+        Response.DiscountAmount.ShouldBeGreaterThanOrEqualTo(0m, 
+            $"Discount amount should be non-negative, but was: {Response.DiscountAmount}");
         return this;
     }
 

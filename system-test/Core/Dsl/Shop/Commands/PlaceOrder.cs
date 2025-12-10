@@ -9,14 +9,21 @@ namespace Optivem.EShop.SystemTest.Core.Dsl.Shop.Commands;
 
 public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerification>
 {
+    private const string DEFAULT_SKU = "DEFAULT_SKU";
+    private const string DEFAULT_QUANTITY = "1";
+    private const string DEFAULT_COUNTRY = "US";
+
     private string? _orderNumberResultAlias;
     private string? _skuParamAlias;
-    private string _quantity = "1";
-    private string _country = "US";
+    private string? _quantity;
+    private string? _country;
 
     public PlaceOrder(IShopDriver driver, Context context) 
         : base(driver, context)
     {
+        Sku(DEFAULT_SKU);
+        Quantity(DEFAULT_QUANTITY);
+        Country(DEFAULT_COUNTRY);
     }
 
     public PlaceOrder OrderNumber(string orderNumberResultAlias)
@@ -46,7 +53,7 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
     public override CommandResult<PlaceOrderResponse, PlaceOrderVerification> Execute()
     {
         var sku = Context.GetParamValue(_skuParamAlias!);
-        var result = Driver.PlaceOrder(sku, _quantity, _country);
+        var result = Driver.PlaceOrder(sku, _quantity!, _country!);
 
         if (result.Success && _orderNumberResultAlias != null)
         {

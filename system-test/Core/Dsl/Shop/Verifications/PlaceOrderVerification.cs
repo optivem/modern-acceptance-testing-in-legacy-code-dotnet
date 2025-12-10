@@ -15,8 +15,16 @@ public class PlaceOrderVerification : BaseSuccessVerification<PlaceOrderResponse
     public PlaceOrderVerification OrderNumber(string orderNumberResultAlias)
     {
         var expectedOrderNumber = Context.GetResultValue(orderNumberResultAlias);
-        Response.OrderNumber.ShouldBe(expectedOrderNumber, 
-            $"Expected order number to be '{expectedOrderNumber}', but was '{Response.OrderNumber}'");
+        var actualOrderNumber = Response.OrderNumber;
+        
+        actualOrderNumber.ShouldBe(expectedOrderNumber, $"Expected order number to be '{expectedOrderNumber}', but was '{actualOrderNumber}'");
+        
+        return this;
+    }
+
+    public PlaceOrderVerification OrderNumberStartsWith(string prefix)
+    {
+        Response.OrderNumber.ShouldStartWith(prefix);
         return this;
     }
 }

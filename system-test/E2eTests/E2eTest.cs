@@ -12,6 +12,9 @@ namespace Optivem.EShop.SystemTest.E2eTests
     {
         private readonly Dsl _dsl;
 
+        private const string SKU = "SKU";
+        private const string ORDER_NUMBER = "ORDER_NUMBER";
+
         public E2eTest()
         {
             _dsl = new Dsl();
@@ -26,11 +29,6 @@ namespace Optivem.EShop.SystemTest.E2eTests
         [ChannelData(ChannelType.UI, ChannelType.API)]
         public void ShouldPlaceOrderAndCalculateOriginalPrice(Channel channel)
         {
-            const string SKU = "SKU";
-            const string QUANTITY = "5";
-            const string COUNTRY = "US";
-            const string ORDER_NUMBER = "ORDER_NUMBER";
-
             _dsl.Erp.CreateProduct()
                 .Sku(SKU)
                 .UnitPrice("20.00")
@@ -38,13 +36,14 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .ShouldSucceed();
 
             _dsl.Shop(channel).PlaceOrder()
-                .Sku(SKU)
-                .Quantity(QUANTITY)
-                .Country(COUNTRY)
                 .OrderNumber(ORDER_NUMBER)
+                .Sku(SKU)
+                .Quantity("5")
+                .Country("US")
                 .Execute()
                 .ShouldSucceed()
-                .OrderNumber(ORDER_NUMBER);
+                .OrderNumber(ORDER_NUMBER)
+                .OrderNumberStartsWith("ORD-");
 
             _dsl.Shop(channel).ViewOrder()
                 .OrderNumber(ORDER_NUMBER)
@@ -53,8 +52,12 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .OrderNumber(ORDER_NUMBER)
                 .Sku(SKU)
                 .Quantity(5)
-                .Country(COUNTRY)
+                .Country("US")
+                .UnitPrice("20.00")
+                .OriginalPrice("100.00")
                 .Status(OrderStatus.PLACED)
+                .DiscountRateGreaterThanOrEqualToZero()
+                .DiscountAmountGreaterThanOrEqualToZero()
                 .SubtotalPriceGreaterThanZero()
                 .TaxRateGreaterThanOrEqualToZero()
                 .TaxAmountGreaterThanOrEqualToZero()
@@ -65,25 +68,16 @@ namespace Optivem.EShop.SystemTest.E2eTests
         [ChannelData(ChannelType.UI, ChannelType.API)]
         public void ShouldCancelOrder(Channel channel)
         {
-            const string SKU = "SKU";
-            const string QUANTITY = "2";
-            const string COUNTRY = "US";
-            const string ORDER_NUMBER = "ORDER_NUMBER";
-
             _dsl.Erp.CreateProduct()
                 .Sku(SKU)
-                .UnitPrice("50.00")
                 .Execute()
                 .ShouldSucceed();
 
             _dsl.Shop(channel).PlaceOrder()
-                .Sku(SKU)
-                .Quantity(QUANTITY)
-                .Country(COUNTRY)
                 .OrderNumber(ORDER_NUMBER)
+                .Sku(SKU)
                 .Execute()
-                .ShouldSucceed()
-                .OrderNumber(ORDER_NUMBER);
+                .ShouldSucceed();
 
             _dsl.Shop(channel).CancelOrder()
                 .OrderNumber(ORDER_NUMBER)
@@ -96,8 +90,6 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .ShouldSucceed()
                 .OrderNumber(ORDER_NUMBER)
                 .Sku(SKU)
-                .Quantity(2)
-                .Country(COUNTRY)
                 .Status(OrderStatus.CANCELLED);
         }
 
@@ -107,8 +99,6 @@ namespace Optivem.EShop.SystemTest.E2eTests
         {
             _dsl.Shop(channel).PlaceOrder()
                 .Sku("NON-EXISTENT-SKU-12345")
-                .Quantity("5")
-                .Country("US")
                 .Execute()
                 .ShouldFail()
                 .ErrorMessage("Product does not exist for SKU: NON-EXISTENT-SKU-12345");
@@ -141,17 +131,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
         [ChannelData(ChannelType.UI, ChannelType.API)]
         public void ShouldRejectOrderWithNegativeQuantity(Channel channel)
         {
-            var sku = "DEF-" + Guid.NewGuid();
-            _dsl.Erp.CreateProduct()
-                .Sku(sku)
-                .UnitPrice("30.00")
-                .Execute()
-                .ShouldSucceed();
-
             _dsl.Shop(channel).PlaceOrder()
-                .Sku(sku)
                 .Quantity("-3")
-                .Country("US")
                 .Execute()
                 .ShouldFail()
                 .ErrorMessage("Quantity must be positive");
@@ -161,17 +142,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
         [ChannelData(ChannelType.UI, ChannelType.API)]
         public void ShouldRejectOrderWithZeroQuantity(Channel channel)
         {
-            var sku = "GHI-" + Guid.NewGuid();
-            _dsl.Erp.CreateProduct()
-                .Sku(sku)
-                .UnitPrice("40.00")
-                .Execute()
-                .ShouldSucceed();
-
             _dsl.Shop(channel).PlaceOrder()
-                .Sku(sku)
                 .Quantity("0")
-                .Country("US")
                 .Execute()
                 .ShouldFail()
                 .ErrorMessage("Quantity must be positive");
@@ -185,8 +157,6 @@ namespace Optivem.EShop.SystemTest.E2eTests
         {
             _dsl.Shop(channel).PlaceOrder()
                 .Sku(sku)
-                .Quantity("5")
-                .Country("US")
                 .Execute()
                 .ShouldFail()
                 .ErrorMessage("SKU must not be empty");
@@ -199,9 +169,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         public void ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
         {
             _dsl.Shop(channel).PlaceOrder()
-                .Sku("some-sku")
                 .Quantity(emptyQuantity)
-                .Country("US")
                 .Execute()
                 .ShouldFail()
                 .ErrorMessage("Quantity must not be empty");
@@ -214,9 +182,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         public void ShouldRejectOrderWithNonIntegerQuantity(Channel channel, string nonIntegerQuantity)
         {
             _dsl.Shop(channel).PlaceOrder()
-                .Sku("some-sku")
                 .Quantity(nonIntegerQuantity)
-                .Country("US")
                 .Execute()
                 .ShouldFail()
                 .ErrorMessage("Quantity must be an integer");
@@ -229,8 +195,6 @@ namespace Optivem.EShop.SystemTest.E2eTests
         public void ShouldRejectOrderWithEmptyCountry(Channel channel, string emptyCountry)
         {
             _dsl.Shop(channel).PlaceOrder()
-                .Sku("some-sku")
-                .Quantity("5")
                 .Country(emptyCountry)
                 .Execute()
                 .ShouldFail()
@@ -241,16 +205,13 @@ namespace Optivem.EShop.SystemTest.E2eTests
         [ChannelData(ChannelType.UI, ChannelType.API)]
         public void ShouldRejectOrderWithUnsupportedCountry(Channel channel)
         {
-            var sku = "JKL-" + Guid.NewGuid();
             _dsl.Erp.CreateProduct()
-                .Sku(sku)
-                .UnitPrice("25.00")
+                .Sku(SKU)
                 .Execute()
                 .ShouldSucceed();
 
             _dsl.Shop(channel).PlaceOrder()
-                .Sku(sku)
-                .Quantity("3")
+                .Sku(SKU)
                 .Country("XX")
                 .Execute()
                 .ShouldFail()
@@ -262,9 +223,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         public void ShouldRejectOrderWithNullQuantity(Channel channel)
         {
             _dsl.Shop(channel).PlaceOrder()
-                .Sku("some-sku")
                 .Quantity(null!)
-                .Country("US")
                 .Execute()
                 .ShouldFail()
                 .ErrorMessage("Quantity must not be empty");
@@ -276,8 +235,6 @@ namespace Optivem.EShop.SystemTest.E2eTests
         {
             _dsl.Shop(channel).PlaceOrder()
                 .Sku(null!)
-                .Quantity("5")
-                .Country("US")
                 .Execute()
                 .ShouldFail()
                 .ErrorMessage("SKU must not be empty");
@@ -288,8 +245,6 @@ namespace Optivem.EShop.SystemTest.E2eTests
         public void ShouldRejectOrderWithNullCountry(Channel channel)
         {
             _dsl.Shop(channel).PlaceOrder()
-                .Sku("some-sku")
-                .Quantity("5")
                 .Country(null!)
                 .Execute()
                 .ShouldFail()
@@ -328,20 +283,14 @@ namespace Optivem.EShop.SystemTest.E2eTests
         [ChannelData(ChannelType.API)]
         public void ShouldNotCancelAlreadyCancelledOrder(Channel channel)
         {
-            const string SKU = "SKU";
-            const string ORDER_NUMBER = "ORDER_NUMBER";
-
             _dsl.Erp.CreateProduct()
                 .Sku(SKU)
-                .UnitPrice("35.00")
                 .Execute()
                 .ShouldSucceed();
 
             _dsl.Shop(channel).PlaceOrder()
-                .Sku(SKU)
-                .Quantity("3")
-                .Country("US")
                 .OrderNumber(ORDER_NUMBER)
+                .Sku(SKU)
                 .Execute()
                 .ShouldSucceed();
 
