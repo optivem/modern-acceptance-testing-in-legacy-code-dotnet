@@ -1,30 +1,27 @@
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
-using Optivem.EShop.SystemTest.Core.Dsl.Erp;
+using Optivem.EShop.SystemTest.Core.Dsl;
 using Xunit;
 
 namespace Optivem.EShop.SystemTest.SmokeTests.External;
 
 public class ErpApiSmokeTest : IDisposable
 {
-    private readonly Context _context;
-    private readonly ErpDsl _erp;
+    private readonly Dsl _dsl;
 
     public ErpApiSmokeTest()
     {
-        _context = new Context();
-        _erp = new ErpDsl(_context);
+        _dsl = new Dsl();
+    }
+
+    public void Dispose()
+    {
+        _dsl.Dispose();
     }
 
     [Fact]
     public void ShouldBeAbleToGoToErp()
     {
-        _erp.GoToErp()
+        _dsl.Erp.GoToErp()
             .Execute()
             .ShouldSucceed();
-    }
-
-    public void Dispose()
-    {
-        _erp?.Dispose();
     }
 }

@@ -1,9 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Channels;
-using Optivem.EShop.SystemTest.Core.Drivers;
-using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Dsl;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
-using Optivem.EShop.SystemTest.Core.Dsl.Shop;
 using Optivem.Testing.Channels;
 using Xunit;
 
@@ -11,28 +7,24 @@ namespace Optivem.EShop.SystemTest.SmokeTests;
 
 public class ShopSmokeTest : IDisposable
 {
-    private readonly DslFactory _dslFactory;
-    private ShopDsl? _shop;
+    private readonly Dsl _dsl;
 
     public ShopSmokeTest()
     {
-        _dslFactory = new DslFactory();
+        _dsl = new Dsl();
+    }
+
+    public void Dispose()
+    {
+        _dsl.Dispose();
     }
 
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldBeAbleToGoToShop(Channel channel)
     {
-        _shop = _dslFactory.CreateShopDsl(channel);
-
-        _shop.GoToShop()
+        _dsl.Shop(channel).GoToShop()
             .Execute()
             .ShouldSucceed();
-    }
-
-    public void Dispose()
-    {
-        _shop?.Dispose();
-        ChannelContext.Clear();
     }
 }

@@ -1,30 +1,28 @@
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
-using Optivem.EShop.SystemTest.Core.Dsl.Tax;
+using Optivem.EShop.SystemTest.Core.Dsl;
 using Xunit;
 
 namespace Optivem.EShop.SystemTest.SmokeTests.External;
 
 public class TaxApiSmokeTest : IDisposable
 {
-    private readonly Context _context;
-    private readonly TaxDsl _tax;
+    private readonly Dsl _dsl;
     
     public TaxApiSmokeTest()
     {
-        _context = new Context();
-        _tax = new TaxDsl(_context);
-    }
-    
-    [Fact]
-    public void ShouldBeAbleToGoToTax()
-    {
-        _tax.GoToTax()
-            .Execute()
-            .ShouldSucceed();
+        _dsl = new Dsl();
     }
 
     public void Dispose()
     {
-        _tax?.Dispose();
+        _dsl.Dispose();
     }
+
+    [Fact]
+    public void ShouldBeAbleToGoToTax()
+    {
+        _dsl.Tax.GoToTax()
+            .Execute()
+            .ShouldSucceed();
+    }
+
 }
