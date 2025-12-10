@@ -1,27 +1,30 @@
-using Optivem.EShop.SystemTest.Core.Drivers;
-using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
-using Optivem.Testing.Assertions;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
+using Optivem.EShop.SystemTest.Core.Dsl.Erp;
 using Xunit;
 
 namespace Optivem.EShop.SystemTest.SmokeTests.External;
 
 public class ErpApiSmokeTest : IDisposable
 {
-    private readonly ErpApiDriver _erpApiDriver;
+    private readonly Context _context;
+    private readonly ErpDsl _erp;
 
     public ErpApiSmokeTest()
     {
-        _erpApiDriver = DriverFactory.CreateErpApiDriver();
+        _context = new Context();
+        _erp = new ErpDsl(_context);
     }
 
     [Fact]
     public void ShouldBeAbleToGoToErp()
     {
-        _erpApiDriver.GoToErp().ShouldBeSuccess();
+        _erp.GoToErp()
+            .Execute()
+            .ShouldSucceed();
     }
 
     public void Dispose()
     {
-        _erpApiDriver?.Dispose();
+        _erp?.Dispose();
     }
 }

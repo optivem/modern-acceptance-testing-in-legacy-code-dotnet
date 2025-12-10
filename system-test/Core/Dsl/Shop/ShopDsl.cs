@@ -1,17 +1,19 @@
+using Optivem.EShop.SystemTest.Core.Channels;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Shop.Commands;
+using Optivem.Testing.Channels;
 
 namespace Optivem.EShop.SystemTest.Core.Dsl.Shop;
 
-public class ShopDsl
+public class ShopDsl : IDisposable
 {
     private readonly IShopDriver _driver;
     private readonly Context _context;
 
-    public ShopDsl(IShopDriver driver, Context context)
+    public ShopDsl(Channel channel, Context context)
     {
-        _driver = driver;
+        _driver = channel.CreateShopDriver();
         _context = context;
     }
 
@@ -22,4 +24,9 @@ public class ShopDsl
     public CancelOrder CancelOrder() => new(_driver, _context);
 
     public ViewOrder ViewOrder() => new(_driver, _context);
+
+    public void Dispose()
+    {
+        _driver?.Dispose();
+    }
 }

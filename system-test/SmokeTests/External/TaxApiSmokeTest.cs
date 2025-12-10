@@ -1,27 +1,30 @@
-using Optivem.EShop.SystemTest.Core.Drivers;
-using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
-using Optivem.Testing.Assertions;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
+using Optivem.EShop.SystemTest.Core.Dsl.Tax;
 using Xunit;
 
 namespace Optivem.EShop.SystemTest.SmokeTests.External;
 
 public class TaxApiSmokeTest : IDisposable
 {
-    private readonly TaxApiDriver _taxApiDriver;
+    private readonly Context _context;
+    private readonly TaxDsl _tax;
     
     public TaxApiSmokeTest()
     {
-        _taxApiDriver = DriverFactory.CreateTaxApiDriver();
+        _context = new Context();
+        _tax = new TaxDsl(_context);
     }
     
     [Fact]
     public void ShouldBeAbleToGoToTax()
     {
-        _taxApiDriver.GoToTax().ShouldBeSuccess();
+        _tax.GoToTax()
+            .Execute()
+            .ShouldSucceed();
     }
 
     public void Dispose()
     {
-        _taxApiDriver?.Dispose();
+        _tax?.Dispose();
     }
 }

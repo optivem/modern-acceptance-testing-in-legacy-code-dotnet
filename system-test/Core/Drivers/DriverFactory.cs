@@ -21,16 +21,6 @@ public static class DriverFactory
         };
     }
 
-    public static ShopUiDriver CreateShopUiDriver()
-    {
-        return new ShopUiDriver(TestConfiguration.GetShopUiBaseUrl());
-    }
-
-    public static ShopApiDriver CreateShopApiDriver()
-    {
-        return new ShopApiDriver(TestConfiguration.GetShopApiBaseUrl());
-    }
-
     public static ErpApiDriver CreateErpApiDriver()
     {
         return new ErpApiDriver(TestConfiguration.GetErpApiBaseUrl());
