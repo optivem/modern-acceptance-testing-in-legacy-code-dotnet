@@ -44,6 +44,11 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
         return this;
     }
 
+    public PlaceOrder Quantity(int quantity)
+    {
+        return Quantity(quantity.ToString());
+    }
+
     public PlaceOrder Country(string country)
     {
         _country = country;

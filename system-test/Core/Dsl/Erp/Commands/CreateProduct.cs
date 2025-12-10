@@ -1,3 +1,4 @@
+using System.Globalization;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Commands;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons;
@@ -29,6 +30,11 @@ public class CreateProduct : BaseErpCommand<object, VoidVerification>
     {
         _unitPrice = unitPrice;
         return this;
+    }
+
+    public CreateProduct UnitPrice(decimal unitPrice)
+    {
+        return UnitPrice(unitPrice.ToString(CultureInfo.InvariantCulture));
     }
 
     public override CommandResult<object, VoidVerification> Execute()

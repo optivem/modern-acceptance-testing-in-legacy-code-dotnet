@@ -51,11 +51,10 @@ public class ViewOrderVerification : BaseSuccessVerification<GetOrderResponse>
         return this;
     }
 
-    public ViewOrderVerification UnitPrice(string expectedUnitPrice)
+    public ViewOrderVerification UnitPrice(decimal expectedUnitPrice)
     {
-        var expectedValue = decimal.Parse(expectedUnitPrice, CultureInfo.InvariantCulture);
-        Response.UnitPrice.ShouldBe(expectedValue, 
-            $"Expected unit price: {expectedValue}, but got: {Response.UnitPrice}");
+        Response.UnitPrice.ShouldBe(expectedUnitPrice,
+            $"Expected unit price: {expectedUnitPrice}, but got: {Response.UnitPrice}");
         return this;
     }
 
@@ -66,11 +65,10 @@ public class ViewOrderVerification : BaseSuccessVerification<GetOrderResponse>
         return this;
     }
 
-    public ViewOrderVerification OriginalPrice(string expectedOriginalPrice)
+    public ViewOrderVerification OriginalPrice(decimal expectedOriginalPrice)
     {
-        var expectedValue = decimal.Parse(expectedOriginalPrice, CultureInfo.InvariantCulture);
-        Response.OriginalPrice.ShouldBe(expectedValue, 
-            $"Expected original price: {expectedValue}, but got: {Response.OriginalPrice}");
+        Response.OriginalPrice.ShouldBe(expectedOriginalPrice,
+            $"Expected original price: {expectedOriginalPrice}, but got: {Response.OriginalPrice}");
         return this;
     }
 

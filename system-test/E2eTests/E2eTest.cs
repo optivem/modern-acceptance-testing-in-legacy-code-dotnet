@@ -31,14 +31,14 @@ namespace Optivem.EShop.SystemTest.E2eTests
         {
             _dsl.Erp.CreateProduct()
                 .Sku(SKU)
-                .UnitPrice("20.00")
+                .UnitPrice(20.00m)
                 .Execute()
                 .ShouldSucceed();
 
             _dsl.Shop(channel).PlaceOrder()
                 .OrderNumber(ORDER_NUMBER)
                 .Sku(SKU)
-                .Quantity("5")
+                .Quantity(5)
                 .Country("US")
                 .Execute()
                 .ShouldSucceed()
@@ -53,8 +53,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Sku(SKU)
                 .Quantity(5)
                 .Country("US")
-                .UnitPrice("20.00")
-                .OriginalPrice("100.00")
+                .UnitPrice(20.00m)
+                .OriginalPrice(100.00m)
                 .Status(OrderStatus.PLACED)
                 .DiscountRateGreaterThanOrEqualToZero()
                 .DiscountAmountGreaterThanOrEqualToZero()
