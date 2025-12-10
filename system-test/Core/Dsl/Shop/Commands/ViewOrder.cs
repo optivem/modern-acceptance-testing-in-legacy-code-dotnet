@@ -1,7 +1,7 @@
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Dtos;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Commands;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Shop.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Dsl.Shop.Verifications;
 
@@ -11,7 +11,7 @@ public class ViewOrder : BaseShopCommand<GetOrderResponse, ViewOrderVerification
 {
     private string? _orderNumberResultAlias;
 
-    public ViewOrder(IShopDriver driver, TestContext context) 
+    public ViewOrder(IShopDriver driver, Context context) 
         : base(driver, context)
     {
     }

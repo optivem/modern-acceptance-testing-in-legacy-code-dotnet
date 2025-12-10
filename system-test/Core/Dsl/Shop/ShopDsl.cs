@@ -1,5 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Drivers.System;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Shop.Commands;
 
 namespace Optivem.EShop.SystemTest.Core.Dsl.Shop;
@@ -7,9 +7,9 @@ namespace Optivem.EShop.SystemTest.Core.Dsl.Shop;
 public class ShopDsl
 {
     private readonly IShopDriver _driver;
-    private readonly TestContext _context;
+    private readonly Context _context;
 
-    public ShopDsl(IShopDriver driver, TestContext context)
+    public ShopDsl(IShopDriver driver, Context context)
     {
         _driver = driver;
         _context = context;

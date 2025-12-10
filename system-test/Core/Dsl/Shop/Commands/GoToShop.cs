@@ -1,6 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Commands;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications;
 using Optivem.EShop.SystemTest.Core.Dsl.Shop.Commands.Base;
 
@@ -8,7 +8,7 @@ namespace Optivem.EShop.SystemTest.Core.Dsl.Shop.Commands;
 
 public class GoToShop : BaseShopCommand<object, VoidVerification>
 {
-    public GoToShop(IShopDriver driver, TestContext context) 
+    public GoToShop(IShopDriver driver, Context context) 
         : base(driver, context)
     {
     }

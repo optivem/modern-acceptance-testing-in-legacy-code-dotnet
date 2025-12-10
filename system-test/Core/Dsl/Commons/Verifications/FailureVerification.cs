@@ -1,4 +1,4 @@
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.Results;
 using Shouldly;
 
@@ -7,9 +7,9 @@ namespace Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications;
 public class FailureVerification
 {
     private readonly Result<object> _result;
-    private readonly TestContext _context;
+    private readonly Context _context;
 
-    public FailureVerification(Result<object> result, TestContext context)
+    public FailureVerification(Result<object> result, Context context)
     {
         _result = result;
         _context = context;

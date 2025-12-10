@@ -1,7 +1,7 @@
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Dtos;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Commands;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Shop.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Dsl.Shop.Verifications;
 
@@ -14,7 +14,7 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
     private string _quantity = "1";
     private string _country = "US";
 
-    public PlaceOrder(IShopDriver driver, TestContext context) 
+    public PlaceOrder(IShopDriver driver, Context context) 
         : base(driver, context)
     {
     }

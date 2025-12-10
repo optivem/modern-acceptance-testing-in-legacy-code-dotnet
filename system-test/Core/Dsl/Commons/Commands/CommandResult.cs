@@ -1,4 +1,4 @@
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications;
 using Optivem.Results;
 
@@ -7,10 +7,10 @@ namespace Optivem.EShop.SystemTest.Core.Dsl.Commons.Commands;
 public class CommandResult<TResponse, TVerification>
 {
     private readonly Result<TResponse> _result;
-    private readonly TestContext _context;
-    private readonly Func<TResponse, TestContext, TVerification> _verificationFactory;
+    private readonly Context _context;
+    private readonly Func<TResponse, Context, TVerification> _verificationFactory;
 
-    public CommandResult(Result<TResponse> result, TestContext context, Func<TResponse, TestContext, TVerification> verificationFactory)
+    public CommandResult(Result<TResponse> result, Context context, Func<TResponse, Context, TVerification> verificationFactory)
     {
         _result = result;
         _context = context;

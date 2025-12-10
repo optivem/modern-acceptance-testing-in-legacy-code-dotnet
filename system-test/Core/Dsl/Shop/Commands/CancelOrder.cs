@@ -1,6 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Commands;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications;
 using Optivem.EShop.SystemTest.Core.Dsl.Shop.Commands.Base;
 
@@ -10,7 +10,7 @@ public class CancelOrder : BaseShopCommand<object, VoidVerification>
 {
     private string? _orderNumberResultAlias;
 
-    public CancelOrder(IShopDriver driver, TestContext context) 
+    public CancelOrder(IShopDriver driver, Context context) 
         : base(driver, context)
     {
     }

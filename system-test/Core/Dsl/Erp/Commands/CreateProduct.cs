@@ -1,6 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Commands;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications;
 using Optivem.EShop.SystemTest.Core.Dsl.Erp.Commands.Base;
 
@@ -11,7 +11,7 @@ public class CreateProduct : BaseErpCommand<object, VoidVerification>
     private string? _skuParamAlias;
     private string _unitPrice = "20.00";
 
-    public CreateProduct(ErpApiDriver driver, TestContext context) 
+    public CreateProduct(ErpApiDriver driver, Context context) 
         : base(driver, context)
     {
     }

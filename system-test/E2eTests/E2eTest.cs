@@ -8,7 +8,7 @@ using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
 using Optivem.EShop.SystemTest.Core.Drivers.System;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Enums;
 using Optivem.EShop.SystemTest.Core.Drivers.System.Shop.Ui;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Shop;
 using Optivem.EShop.SystemTest.Core.Dsl.Erp;
 using Shouldly;
@@ -27,7 +27,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         private IShopDriver? _shopDriver;
         private ErpApiDriver _erpApiDriver;
         private TaxApiDriver _taxApiDriver;
-        private TestContext _context;
+        private Context _context;
         private ShopDsl? _shop;
         private ErpDsl _erp;
 
@@ -35,7 +35,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         {
             _erpApiDriver = DriverFactory.CreateErpApiDriver();
             _taxApiDriver = DriverFactory.CreateTaxApiDriver();
-            _context = new TestContext();
+            _context = new Context();
             _erp = new ErpDsl(_erpApiDriver, _context);
         }
 

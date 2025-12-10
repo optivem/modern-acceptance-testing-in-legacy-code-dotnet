@@ -1,5 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Dtos;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications.Base;
 using Shouldly;
 
@@ -7,7 +7,7 @@ namespace Optivem.EShop.SystemTest.Core.Dsl.Shop.Verifications;
 
 public class PlaceOrderVerification : BaseSuccessVerification<PlaceOrderResponse>
 {
-    public PlaceOrderVerification(PlaceOrderResponse response, TestContext context) 
+    public PlaceOrderVerification(PlaceOrderResponse response, Context context) 
         : base(response, context)
     {
     }

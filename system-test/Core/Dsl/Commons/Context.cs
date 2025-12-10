@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace Optivem.EShop.SystemTest.Core.Dsl.Commons.Context;
+namespace Optivem.EShop.SystemTest.Core.Dsl.Commons;
 
-public class TestContext
+public class Context
 {
     private readonly Dictionary<string, string> _paramMap = new();
     private readonly Dictionary<string, string> _resultMap = new();
