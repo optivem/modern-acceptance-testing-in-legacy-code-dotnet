@@ -15,7 +15,7 @@ public static class ChannelExtensions
     /// Creates a shop driver for this channel.
     /// Convenience method that uses the default ShopDriverFactory.
     /// </summary>
-    public static IShopDriver CreateDriver(this Channel channel)
+    public static IShopDriver CreateShopDriver(this Channel channel)
     {
         return channel.CreateDriver(_shopDriverFactory);
     }
