@@ -1,8 +1,7 @@
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.Results;
 using Shouldly;
 
-namespace Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications;
+namespace Optivem.Testing.Dsl;
 
 public class FailureVerification
 {

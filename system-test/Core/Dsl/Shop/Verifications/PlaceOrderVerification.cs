@@ -1,6 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Dtos;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications.Base;
+using Optivem.Testing.Dsl;
 using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Dsl.Shop.Verifications;

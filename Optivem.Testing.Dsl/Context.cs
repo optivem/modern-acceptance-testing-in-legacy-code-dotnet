@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Optivem.EShop.SystemTest.Core.Dsl.Commons;
+namespace Optivem.Testing.Dsl;
 
 public class Context
 {

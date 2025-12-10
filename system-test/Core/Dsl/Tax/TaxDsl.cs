@@ -1,7 +1,7 @@
 using Optivem.EShop.SystemTest.Core.Drivers;
 using Optivem.EShop.SystemTest.Core.Drivers.External.Tax.Api;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Tax.Commands;
+using Optivem.Testing.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Dsl.Tax;
 

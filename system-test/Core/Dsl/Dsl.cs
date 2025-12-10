@@ -1,8 +1,8 @@
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
 using Optivem.EShop.SystemTest.Core.Dsl.Erp;
 using Optivem.EShop.SystemTest.Core.Dsl.Shop;
 using Optivem.EShop.SystemTest.Core.Dsl.Tax;
 using Optivem.Testing.Channels;
+using Optivem.Testing.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Dsl;
 

@@ -1,8 +1,7 @@
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications;
 using Optivem.Results;
+using Optivem.Testing.Dsl;
 
-namespace Optivem.EShop.SystemTest.Core.Dsl.Commons.Commands;
+namespace Optivem.Testing.Dsl;
 
 public class CommandResult<TResponse, TVerification>
 {

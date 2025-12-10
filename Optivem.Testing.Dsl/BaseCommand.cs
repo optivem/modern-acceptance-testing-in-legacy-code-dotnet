@@ -1,6 +1,6 @@
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
+using Optivem.Testing.Dsl;
 
-namespace Optivem.EShop.SystemTest.Core.Dsl.Commons.Commands.Base;
+namespace Optivem.Testing.Dsl;
 
 public abstract class BaseCommand<TDriver, TResponse, TVerification> : ICommand<CommandResult<TResponse, TVerification>>
 {

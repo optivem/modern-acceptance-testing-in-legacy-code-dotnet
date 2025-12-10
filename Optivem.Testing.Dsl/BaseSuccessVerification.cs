@@ -1,6 +1,4 @@
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
-
-namespace Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications.Base;
+namespace Optivem.Testing.Dsl;
 
 public abstract class BaseSuccessVerification<TResponse>
 {

@@ -1,8 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Drivers.External.Erp.Api;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Commands;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons;
-using Optivem.EShop.SystemTest.Core.Dsl.Commons.Verifications;
 using Optivem.EShop.SystemTest.Core.Dsl.Erp.Commands.Base;
+using Optivem.Testing.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Dsl.Erp.Commands;
 
