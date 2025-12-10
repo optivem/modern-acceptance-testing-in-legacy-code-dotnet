@@ -10,7 +10,7 @@ namespace Optivem.EShop.SystemTest.Core.Dsl.Shop.Commands;
 public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerification>
 {
     private const string DEFAULT_SKU = "DEFAULT_SKU";
-    private const string DEFAULT_QUANTITY = "1";
+    private const int DEFAULT_QUANTITY = 1;
     private const string DEFAULT_COUNTRY = "US";
 
     private string? _orderNumberResultAlias;

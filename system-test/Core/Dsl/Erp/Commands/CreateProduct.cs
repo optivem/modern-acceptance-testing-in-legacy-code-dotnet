@@ -9,7 +9,7 @@ namespace Optivem.EShop.SystemTest.Core.Dsl.Erp.Commands;
 
 public class CreateProduct : BaseErpCommand<object, VoidVerification>
 {
-    private const string DEFAULT_UNIT_PRICE = "20.00";
+    private const decimal DEFAULT_UNIT_PRICE = 20.00m;
 
     private string? _skuParamAlias;
     private string? _unitPrice;
