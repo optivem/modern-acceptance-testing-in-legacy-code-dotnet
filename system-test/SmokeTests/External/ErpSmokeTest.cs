@@ -3,11 +3,11 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.SmokeTests.External;
 
-public class TaxApiSmokeTest : IDisposable
+public class ErpSmokeTest : IDisposable
 {
     private readonly Dsl _dsl;
-    
-    public TaxApiSmokeTest()
+
+    public ErpSmokeTest()
     {
         _dsl = new Dsl();
     }
@@ -18,11 +18,10 @@ public class TaxApiSmokeTest : IDisposable
     }
 
     [Fact]
-    public void ShouldBeAbleToGoToTax()
+    public void ShouldBeAbleToGoToErp()
     {
-        _dsl.Tax.GoToTax()
+        _dsl.Erp.GoToErp()
             .Execute()
             .ShouldSucceed();
     }
-
 }
