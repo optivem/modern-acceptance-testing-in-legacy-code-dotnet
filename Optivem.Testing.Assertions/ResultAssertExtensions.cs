@@ -3,7 +3,7 @@ using Optivem.Results;
 
 namespace Optivem.Testing.Assertions;
 
-public static class ResultExtensions
+public static class ResultAssertExtensions
 {
     public static Result<T> ShouldBeSuccess<T>(this Result<T> result)
     {
