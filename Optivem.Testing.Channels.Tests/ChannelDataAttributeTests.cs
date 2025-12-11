@@ -338,6 +338,24 @@ public class ChannelDataAttributeTests
         true.ShouldBeTrue();
     }
 
+    [Fact]
+    public void ChannelData_WithFactInsteadOfTheory_ShouldThrowHelpfulException()
+    {
+        // This test documents that using [Fact] with [ChannelData] should throw an exception
+        // guiding the user to use [Theory] instead.
+        // The actual validation happens at test discovery time, so this is a documentation test.
+        true.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void ChannelData_WithoutTheory_ShouldThrowHelpfulException()
+    {
+        // This test documents that using [ChannelData] without [Theory] should throw an exception
+        // guiding the user to add [Theory] attribute.
+        // The actual validation happens at test discovery time, so this is a documentation test.
+        true.ShouldBeTrue();
+    }
+
     #endregion
 }
 

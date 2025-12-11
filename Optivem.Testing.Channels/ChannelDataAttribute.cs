@@ -47,6 +47,9 @@ public class ChannelDataAttribute : DataAttribute
 
     public override IEnumerable<object[]> GetData(MethodInfo testMethod)
     {
+        // Check for correct Theory attribute usage
+        ValidateTheoryAttributePresent(testMethod);
+        
         // Check for incorrect usage of standard xUnit attributes
         ValidateNoStandardXUnitAttributes(testMethod);
 
@@ -154,6 +157,31 @@ public class ChannelDataAttribute : DataAttribute
                     yield return testCase.ToArray();
                 }
             }
+        }
+    }
+
+    private static void ValidateTheoryAttributePresent(MethodInfo testMethod)
+    {
+        // Check for [Theory] attribute
+        var theoryAttribute = testMethod.GetCustomAttribute(Type.GetType("Xunit.TheoryAttribute, xunit.core"));
+        
+        // Check for [Fact] attribute
+        var factAttribute = testMethod.GetCustomAttribute(Type.GetType("Xunit.FactAttribute, xunit.core"));
+        
+        if (theoryAttribute == null && factAttribute != null)
+        {
+            throw new InvalidOperationException(
+                $"[ChannelData] requires [Theory], not [Fact]. " +
+                $"Change [Fact] to [Theory]. " +
+                $"Example: [Theory] [ChannelData(\"UI\", \"API\")] public void Test(Channel channel) {{ }}");
+        }
+        
+        if (theoryAttribute == null && factAttribute == null)
+        {
+            throw new InvalidOperationException(
+                $"[ChannelData] requires [Theory] attribute. " +
+                $"Add [Theory] before [ChannelData]. " +
+                $"Example: [Theory] [ChannelData(\"UI\", \"API\")] public void Test(Channel channel) {{ }}");
         }
     }
 

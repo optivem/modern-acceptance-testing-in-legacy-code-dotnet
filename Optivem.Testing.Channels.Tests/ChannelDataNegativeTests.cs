@@ -73,6 +73,33 @@ public class ChannelDataNegativeTests
     }
     */
 
+    /*
+    // NEGATIVE TEST 4: Using [Fact] instead of [Theory] with [ChannelData]
+    // Expected Error: "[ChannelData] requires [Theory], not [Fact]. Change [Fact] to [Theory].
+    // Example: [Theory] [ChannelData("UI", "API")] public void Test(Channel channel) { }"
+    
+    [Fact]
+    [ChannelData("UI", "API")]
+    public void ShouldFail_WhenUsingFactInsteadOfTheory(Channel channel)
+    {
+        // This test should never execute - it should fail at test discovery
+        Assert.True(false, "This test should have failed during test discovery");
+    }
+    */
+
+    /*
+    // NEGATIVE TEST 5: Missing [Theory] attribute with [ChannelData]
+    // Expected Error: "[ChannelData] requires [Theory] attribute. Add [Theory] before [ChannelData].
+    // Example: [Theory] [ChannelData("UI", "API")] public void Test(Channel channel) { }"
+    
+    [ChannelData("UI", "API")]
+    public void ShouldFail_WhenMissingTheoryAttribute(Channel channel)
+    {
+        // This test should never execute - it should fail at test discovery
+        Assert.True(false, "This test should have failed during test discovery");
+    }
+    */
+
     [Fact]
     public void Documentation_NegativeTestsAreCommentedOut()
     {
