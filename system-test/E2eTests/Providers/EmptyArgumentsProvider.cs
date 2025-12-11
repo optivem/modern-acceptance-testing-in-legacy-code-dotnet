@@ -1,31 +1,22 @@
-using Optivem.EShop.SystemTest.Core.Channels;
-using Optivem.Testing.Channels;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Optivem.EShop.SystemTest.E2eTests.Providers;
 
+/// <summary>
+/// Provides test data for empty value scenarios.
+/// Returns data rows (excluding channel) to be combined with [ChannelData].
+/// </summary>
 public class EmptyArgumentsProvider : IEnumerable<object[]>
 {
     public IEnumerator<object[]> GetEnumerator()
     {
-        var channels = new[] { ChannelType.UI, ChannelType.API };
-        var testCases = new[]
-        {
-            "",
-            "   "
-        };
-
-        foreach (var channelType in channels)
-        {
-            foreach (var quantity in testCases)
-            {
-                yield return new object[] { new Channel(channelType), quantity };
-            }
-        }
+        yield return new object[] { "" };
+        yield return new object[] { "   " };
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
+
 
 

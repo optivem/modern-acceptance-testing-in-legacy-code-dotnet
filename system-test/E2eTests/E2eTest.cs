@@ -163,7 +163,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ClassData(typeof(EmptyArgumentsProvider))]
+        [ChannelData(ChannelType.UI, ChannelType.API)]
+        [ChannelClassData(typeof(EmptyArgumentsProvider))]
         public void ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
         {
             _dsl.Shop(channel).PlaceOrder()
