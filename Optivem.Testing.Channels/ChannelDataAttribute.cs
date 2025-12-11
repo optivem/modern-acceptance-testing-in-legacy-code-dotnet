@@ -47,6 +47,9 @@ public class ChannelDataAttribute : DataAttribute
 
     public override IEnumerable<object[]> GetData(MethodInfo testMethod)
     {
+        // Check for incorrect usage of standard xUnit attributes
+        ValidateNoStandardXUnitAttributes(testMethod);
+
         // Check for ChannelInlineData attributes
         var inlineDataAttributes = testMethod
             .GetCustomAttributes(typeof(ChannelInlineDataAttribute), false)
@@ -151,6 +154,39 @@ public class ChannelDataAttribute : DataAttribute
                     yield return testCase.ToArray();
                 }
             }
+        }
+    }
+
+    private static void ValidateNoStandardXUnitAttributes(MethodInfo testMethod)
+    {
+        // Check for [InlineData]
+        var inlineData = testMethod.GetCustomAttribute(Type.GetType("Xunit.InlineDataAttribute, xunit.core"));
+        if (inlineData != null)
+        {
+            throw new InvalidOperationException(
+                $"Cannot use [InlineData] with [ChannelData]. " +
+                $"Use [ChannelInlineData] instead. " +
+                $"Example: [ChannelData(\"UI\", \"API\")] [ChannelInlineData(\"value1\", \"message1\")]");
+        }
+
+        // Check for [ClassData]
+        var classData = testMethod.GetCustomAttribute(Type.GetType("Xunit.ClassDataAttribute, xunit.core"));
+        if (classData != null)
+        {
+            throw new InvalidOperationException(
+                $"Cannot use [ClassData] with [ChannelData]. " +
+                $"Use [ChannelClassData] instead. " +
+                $"Example: [ChannelData(\"UI\", \"API\")] [ChannelClassData(typeof(YourDataProvider))]");
+        }
+
+        // Check for [MemberData]
+        var memberData = testMethod.GetCustomAttribute(Type.GetType("Xunit.MemberDataAttribute, xunit.core"));
+        if (memberData != null)
+        {
+            throw new InvalidOperationException(
+                $"Cannot use [MemberData] with [ChannelData]. " +
+                $"Use [ChannelMemberData] instead. " +
+                $"Example: [ChannelData(\"UI\", \"API\")] [ChannelMemberData(nameof(YourMethod))]");
         }
     }
 }
