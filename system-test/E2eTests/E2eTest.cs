@@ -5,6 +5,7 @@ using Optivem.EShop.SystemTest.Core.Dsl;
 using System;
 using System.Collections.Generic;
 using Channel = Optivem.Testing.Channels.Channel;
+using Optivem.EShop.SystemTest.E2eTests.Providers;
 
 namespace Optivem.EShop.SystemTest.E2eTests
 {
@@ -162,9 +163,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
         }
 
         [Theory]
-        [ChannelData(ChannelType.UI, ChannelType.API)]
-        [ChannelInlineData("")]
-        [ChannelInlineData("   ")]
+        [ClassData(typeof(EmptyArgumentsProvider))]
         public void ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
         {
             _dsl.Shop(channel).PlaceOrder()
