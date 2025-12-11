@@ -36,11 +36,21 @@ public class ViewOrderVerification : BaseSuccessVerification<GetOrderResponse>
         return this;
     }
 
+    public ViewOrderVerification Quantity(string expectedQuantity)
+    {
+        return Quantity(int.Parse(expectedQuantity));
+    }
+
     public ViewOrderVerification Status(OrderStatus expectedStatus)
     {
         Response.Status.ShouldBe(expectedStatus, 
             $"Expected status: {expectedStatus}, but got: {Response.Status}");
         return this;
+    }
+
+    public ViewOrderVerification Status(string expectedStatus)
+    {
+        return Status(Enum.Parse<OrderStatus>(expectedStatus));
     }
 
     public ViewOrderVerification Country(string expectedCountry)
@@ -57,6 +67,11 @@ public class ViewOrderVerification : BaseSuccessVerification<GetOrderResponse>
         return this;
     }
 
+    public ViewOrderVerification UnitPrice(string expectedUnitPrice)
+    {
+        return UnitPrice(decimal.Parse(expectedUnitPrice, CultureInfo.InvariantCulture));
+    }
+
     public ViewOrderVerification UnitPriceGreaterThanZero()
     {
         Response.UnitPrice.ShouldBeGreaterThan(0m, 
@@ -69,6 +84,11 @@ public class ViewOrderVerification : BaseSuccessVerification<GetOrderResponse>
         Response.OriginalPrice.ShouldBe(expectedOriginalPrice,
             $"Expected original price: {expectedOriginalPrice}, but got: {Response.OriginalPrice}");
         return this;
+    }
+
+    public ViewOrderVerification OriginalPrice(string expectedOriginalPrice)
+    {
+        return OriginalPrice(decimal.Parse(expectedOriginalPrice, CultureInfo.InvariantCulture));
     }
 
     public ViewOrderVerification OriginalPriceGreaterThanZero()

@@ -28,7 +28,69 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         [Theory]
         [ChannelData(ChannelType.UI, ChannelType.API)]
-        public void ShouldPlaceOrderAndCalculateAllPrices(Channel channel)
+        public void ShouldPlaceOrderWithCorrectOriginalPrice(Channel channel)
+        {
+            _dsl.Erp.CreateProduct()
+                .Sku("ABC")
+                .UnitPrice(20.00m)
+                .Execute()
+                .ShouldSucceed();
+
+            _dsl.Shop(channel).PlaceOrder()
+                .OrderNumber("ORDER-1001")
+                .Sku("ABC")
+                .Quantity(5)
+                .Execute()
+                .ShouldSucceed();
+
+            _dsl.Shop(channel).ViewOrder()
+                .OrderNumber("ORDER-1001")
+                .Execute()
+                .ShouldSucceed()
+                .OriginalPrice(100.00m);
+        }
+
+        [Theory]
+        [ChannelData(ChannelType.UI, ChannelType.API)]
+        [ChannelInlineData("20.00", "5", "100.00")]
+        [ChannelInlineData("10.00", "3", "30.00")]
+        [ChannelInlineData("15.50", "2", "31.00")]
+        public void ShouldPlaceOrderWithCorrectOriginalPriceParameterized(Channel channel, string unitPrice, string quantity, string originalPrice)
+        {
+            _dsl.Erp.CreateProduct()
+                .Sku("ABC")
+                .UnitPrice(unitPrice)
+                .Execute()
+                .ShouldSucceed();
+
+            _dsl.Shop(channel).PlaceOrder()
+                .OrderNumber("ORDER-1001")
+                .Sku("ABC")
+                .Quantity(quantity)
+                .Execute()
+                .ShouldSucceed();
+
+            _dsl.Shop(channel).ViewOrder()
+                .OrderNumber("ORDER-1001")
+                .Execute()
+                .ShouldSucceed()
+                .OriginalPrice(originalPrice);
+        }
+
+        [Theory]
+        [ChannelData(ChannelType.UI, ChannelType.API)]
+        public void ShouldRejectOrderWithInvalidQuantity(Channel channel)
+        {
+            _dsl.Shop(channel).PlaceOrder()
+                .Quantity("invalid-quantity")
+                .Execute()
+                .ShouldFail()
+                .ErrorMessage("Quantity must be an integer");
+        }
+
+        [Theory]
+        [ChannelData(ChannelType.UI, ChannelType.API)]
+        public void ShouldPlaceOrder(Channel channel)
         {
             _dsl.Erp.CreateProduct()
                 .Sku(SKU)
