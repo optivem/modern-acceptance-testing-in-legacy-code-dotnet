@@ -348,11 +348,16 @@ public class ChannelDataAttributeTests
     }
 
     [Fact]
-    public void ChannelData_WithoutTheory_ShouldThrowHelpfulException()
+    public void ChannelData_WithoutTheory_CannotBeDetected()
     {
-        // This test documents that using [ChannelData] without [Theory] should throw an exception
-        // guiding the user to add [Theory] attribute.
-        // The actual validation happens at test discovery time, so this is a documentation test.
+        // LIMITATION: xUnit does not call GetData() without [Theory] attribute present.
+        // Without [Theory], xUnit doesn't recognize the method as a theory test,
+        // so it never calls ChannelDataAttribute.GetData() where our validation lives.
+        //
+        // Result: The method is simply ignored during test discovery (silently skipped).
+        // This is a limitation of xUnit's architecture, not our validation.
+        //
+        // BEST PRACTICE: Always use [Theory] with [ChannelData]
         true.ShouldBeTrue();
     }
 

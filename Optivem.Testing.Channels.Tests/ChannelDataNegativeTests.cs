@@ -89,14 +89,25 @@ public class ChannelDataNegativeTests
 
     /*
     // NEGATIVE TEST 5: Missing [Theory] attribute with [ChannelData]
-    // Expected Error: "[ChannelData] requires [Theory] attribute. Add [Theory] before [ChannelData].
-    // Example: [Theory] [ChannelData("UI", "API")] public void Test(Channel channel) { }"
+    // LIMITATION: This cannot be detected at test discovery time!
+    // 
+    // Without [Theory], xUnit doesn't recognize this as a theory test,
+    // so it never calls ChannelDataAttribute.GetData() where our validation lives.
+    // 
+    // Result: xUnit will ignore this method entirely (not discover it as a test).
+    // This is a limitation of xUnit's architecture, not our validation.
+    // 
+    // The test will simply be silently skipped during test discovery.
+    // You won't see it in your test runner at all.
+    //
+    // BEST PRACTICE: Always use [Theory] with [ChannelData]
     
     [ChannelData("UI", "API")]
-    public void ShouldFail_WhenMissingTheoryAttribute(Channel channel)
+    public void ShouldFail_WhenMissingTheoryAttribute_ButWont(Channel channel)
     {
-        // This test should never execute - it should fail at test discovery
-        Assert.True(false, "This test should have failed during test discovery");
+        // This method is never discovered as a test because it lacks [Theory]
+        // xUnit ignores methods with only DataAttributes and no [Theory]
+        Assert.True(false, "This will never execute - method is not discovered");
     }
     */
 
