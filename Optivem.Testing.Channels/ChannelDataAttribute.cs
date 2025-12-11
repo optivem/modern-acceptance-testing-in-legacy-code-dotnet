@@ -4,7 +4,7 @@ using Xunit.Sdk;
 namespace Optivem.Testing.Channels;
 
 /// <summary>
-/// Creates test cases for one or more channels, optionally combined with inline data.
+/// Creates test cases for one or more channels, optionally combined with inline data, class data, or member data.
 /// 
 /// Simple usage (generates one test per channel):
 /// [Theory]
@@ -18,7 +18,19 @@ namespace Optivem.Testing.Channels;
 /// [ChannelInlineData("   ", "Country must not be empty")]
 /// public void Test(Channel channel, string value, string message) { }
 /// 
-/// Generates: 2 channels ï¿½ 2 data rows = 4 test cases.
+/// Combined with class data:
+/// [Theory]
+/// [ChannelData(ChannelType.UI, ChannelType.API)]
+/// [ChannelClassData(typeof(EmptyArgumentsProvider))]
+/// public void Test(Channel channel, string value) { }
+/// 
+/// Combined with member data:
+/// [Theory]
+/// [ChannelData(ChannelType.UI, ChannelType.API)]
+/// [ChannelMemberData(nameof(GetTestData))]
+/// public void Test(Channel channel, string value, string message) { }
+/// 
+/// Generates: 2 channels × N data rows = 2N test cases.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public class ChannelDataAttribute : DataAttribute
@@ -45,8 +57,12 @@ public class ChannelDataAttribute : DataAttribute
         var classDataAttribute = testMethod
             .GetCustomAttribute<ChannelClassDataAttribute>();
 
-        // If no inline data or class data, just return channels (simple mode)
-        if (inlineDataAttributes.Length == 0 && classDataAttribute == null)
+        // Check for ChannelMemberData attribute
+        var memberDataAttribute = testMethod
+            .GetCustomAttribute<ChannelMemberDataAttribute>();
+
+        // If no inline data, class data, or member data, just return channels (simple mode)
+        if (inlineDataAttributes.Length == 0 && classDataAttribute == null && memberDataAttribute == null)
         {
             foreach (var channel in _channels)
             {
@@ -56,7 +72,7 @@ public class ChannelDataAttribute : DataAttribute
         // If ChannelInlineData is present
         else if (inlineDataAttributes.Length > 0)
         {
-            // Create Cartesian product: channels Ã— inline data (combinatorial mode)
+            // Create Cartesian product: channels × inline data (combinatorial mode)
             foreach (var channel in _channels)
             {
                 foreach (var inlineDataAttr in inlineDataAttributes)
@@ -78,7 +94,54 @@ public class ChannelDataAttribute : DataAttribute
                     $"Type {classDataAttribute.ProviderType.Name} must implement IEnumerable<object[]>");
             }
 
-            // Create Cartesian product: channels Ã— class data
+            // Create Cartesian product: channels × class data
+            foreach (var channel in _channels)
+            {
+                foreach (var dataRow in dataProvider)
+                {
+                    var testCase = new List<object> { new Channel(channel) };
+                    testCase.AddRange(dataRow);
+                    yield return testCase.ToArray();
+                }
+            }
+        }
+        // If ChannelMemberData is present
+        else if (memberDataAttribute != null)
+        {
+            // Get data from the member
+            var memberType = memberDataAttribute.MemberType ?? testMethod.DeclaringType;
+            if (memberType == null)
+            {
+                throw new InvalidOperationException("Cannot determine the type containing the member.");
+            }
+
+            var member = memberType.GetMember(memberDataAttribute.MemberName,
+                BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance |
+                BindingFlags.FlattenHierarchy)
+                .FirstOrDefault();
+
+            if (member == null)
+            {
+                throw new InvalidOperationException(
+                    $"Could not find member '{memberDataAttribute.MemberName}' on type '{memberType.Name}'");
+            }
+
+            object? memberValue = member switch
+            {
+                MethodInfo method => method.Invoke(null, null),
+                PropertyInfo property => property.GetValue(null),
+                FieldInfo field => field.GetValue(null),
+                _ => throw new InvalidOperationException(
+                    $"Member '{memberDataAttribute.MemberName}' must be a method, property, or field")
+            };
+
+            if (memberValue is not IEnumerable<object[]> dataProvider)
+            {
+                throw new InvalidOperationException(
+                    $"Member '{memberDataAttribute.MemberName}' must return IEnumerable<object[]>");
+            }
+
+            // Create Cartesian product: channels × member data
             foreach (var channel in _channels)
             {
                 foreach (var dataRow in dataProvider)
@@ -91,6 +154,3 @@ public class ChannelDataAttribute : DataAttribute
         }
     }
 }
-
-
-

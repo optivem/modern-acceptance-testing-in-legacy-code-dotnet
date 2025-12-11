@@ -28,7 +28,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         [Theory]
         [ChannelData(ChannelType.UI, ChannelType.API)]
-        public void ShouldPlaceOrderAndCalculateOriginalPrice(Channel channel)
+        public void ShouldPlaceOrderAndCalculateAllPrices(Channel channel)
         {
             _dsl.Erp.CreateProduct()
                 .Sku(SKU)
@@ -107,17 +107,14 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         public static IEnumerable<object[]> ShouldNotBeAbleToViewNonExistentOrderData()
         {
-            return ChannelDataGenerator.Generate([ChannelType.UI, ChannelType.API],
-                [
-                    ("NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist."),
-                    ("NON-EXISTENT-ORDER-88888", "Order NON-EXISTENT-ORDER-88888 does not exist."),
-                    ("NON-EXISTENT-ORDER-77777", "Order NON-EXISTENT-ORDER-77777 does not exist."),
-                ]
-            );
+            yield return new object[] { "NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist." };
+            yield return new object[] { "NON-EXISTENT-ORDER-88888", "Order NON-EXISTENT-ORDER-88888 does not exist." };
+            yield return new object[] { "NON-EXISTENT-ORDER-77777", "Order NON-EXISTENT-ORDER-77777 does not exist." };
         }
 
         [Theory]
-        [MemberData(nameof(ShouldNotBeAbleToViewNonExistentOrderData))]
+        [ChannelData(ChannelType.UI, ChannelType.API)]
+        [ChannelMemberData(nameof(ShouldNotBeAbleToViewNonExistentOrderData))]
         public void ShouldNotBeAbleToViewNonExistentOrder(Channel channel, string orderNumber, string expectedErrorMessage)
         {
             _dsl.Shop(channel).ViewOrder()
@@ -151,8 +148,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         [Theory]
         [ChannelData(ChannelType.UI, ChannelType.API)]
-        [ChannelInlineData("")]
-        [ChannelInlineData("   ")]
+        [ChannelClassData(typeof(EmptyArgumentsProvider))]
         public void ShouldRejectOrderWithEmptySku(Channel channel, string sku)
         {
             _dsl.Shop(channel).PlaceOrder()
@@ -189,8 +185,7 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         [Theory]
         [ChannelData(ChannelType.UI, ChannelType.API)]
-        [ChannelInlineData("")]
-        [ChannelInlineData("   ")]
+        [ChannelClassData(typeof(EmptyArgumentsProvider))]
         public void ShouldRejectOrderWithEmptyCountry(Channel channel, string emptyCountry)
         {
             _dsl.Shop(channel).PlaceOrder()
