@@ -106,25 +106,24 @@ namespace Optivem.EShop.SystemTest.E2eTests
 
         public static IEnumerable<object[]> ShouldNotBeAbleToViewNonExistentOrderData()
         {
-            return GenerateChannelTestDataEnumerable(
-                [ChannelType.UI, ChannelType.API],
+            return ChannelDataGenerator.Generate([ChannelType.UI, ChannelType.API],
                 [
-                    ("NON-EXISTENT-ORDER-12345", "Order NON-EXISTENT-ORDER-12345 does not exist."),
-                    ("INVALID-ORD-99999", "Order INVALID-ORD-99999 does not exist."),
-                    ("MISSING-ORDER-00000", "Order MISSING-ORDER-00000 does not exist.")
+                    ("NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist."),
+                    ("NON-EXISTENT-ORDER-88888", "Order NON-EXISTENT-ORDER-88888 does not exist."),
+                    ("NON-EXISTENT-ORDER-77777", "Order NON-EXISTENT-ORDER-77777 does not exist."),
                 ]
             );
         }
 
         [Theory]
         [MemberData(nameof(ShouldNotBeAbleToViewNonExistentOrderData))]
-        public void ShouldNotBeAbleToViewNonExistentOrder(Channel channel, string orderNumber, string expectedMessage)
+        public void ShouldNotBeAbleToViewNonExistentOrder(Channel channel, string orderNumber, string expectedErrorMessage)
         {
             _dsl.Shop(channel).ViewOrder()
                 .OrderNumber(orderNumber)
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage(expectedMessage);
+                .ErrorMessage(expectedErrorMessage);
         }
 
         [Theory]
@@ -254,8 +253,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
         [Theory]
         [ChannelData(ChannelType.API)]
         [ChannelInlineData("NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist.")]
-        [ChannelInlineData("INVALID-ORDER-12345", "Order INVALID-ORDER-12345 does not exist.")]
-        [ChannelInlineData("FAKE-ORDER-00000", "Order FAKE-ORDER-00000 does not exist.")]
+        [ChannelInlineData("NON-EXISTENT-ORDER-88888", "Order NON-EXISTENT-ORDER-88888 does not exist.")]
+        [ChannelInlineData("NON-EXISTENT-ORDER-77777", "Order NON-EXISTENT-ORDER-77777 does not exist.")]
         public void ShouldNotCancelNonExistentOrder(Channel channel, string orderNumber, string expectedMessage)
         {
             _dsl.Shop(channel).CancelOrder()
@@ -263,20 +262,6 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Execute()
                 .ShouldFail()
                 .ErrorMessage(expectedMessage);
-        }
-
-        // IEnumerable version - same functionality but returns IEnumerable<object[]>
-        private static IEnumerable<object[]> GenerateChannelTestDataEnumerable(
-            string[] channels,
-            (string value, string message)[] testCases)
-        {
-            foreach (var channelType in channels)
-            {
-                foreach (var (value, message) in testCases)
-                {
-                    yield return new object[] { new Channel(channelType), value, message };
-                }
-            }
         }
 
         [Theory]
