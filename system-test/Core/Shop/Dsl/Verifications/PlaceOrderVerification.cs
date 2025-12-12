@@ -23,7 +23,7 @@ public class PlaceOrderVerification : BaseSuccessVerification<PlaceOrderResponse
 
     public PlaceOrderVerification OrderNumberStartsWith(string prefix)
     {
-        Response.OrderNumber.ShouldStartWith(prefix);
+        Response.OrderNumber.ShouldStartWith(prefix, Case.Sensitive, $"Expected order number to start with '{prefix}', but was '{Response.OrderNumber}'");
         return this;
     }
 }

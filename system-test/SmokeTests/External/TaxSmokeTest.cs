@@ -5,22 +5,22 @@ namespace Optivem.EShop.SystemTest.SmokeTests.External;
 
 public class TaxSmokeTest : IDisposable
 {
-    private readonly SystemDsl _dsl;
+    private readonly SystemDsl _app;
 
     public TaxSmokeTest()
     {
-        _dsl = SystemDslFactory.Create();
+        _app = SystemDslFactory.Create();
     }
 
     public void Dispose()
     {
-        _dsl.Dispose();
+        _app.Dispose();
     }
 
     [Fact]
     public void ShouldBeAbleToGoToTax()
     {
-        _dsl.Tax.GoToTax()
+        _app.Tax.GoToTax()
             .Execute()
             .ShouldSucceed();
     }

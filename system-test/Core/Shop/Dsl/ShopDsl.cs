@@ -30,6 +30,11 @@ public class ShopDsl : IDisposable
         };
     }
 
+    public void Dispose()
+    {
+        _driver?.Dispose();
+    }
+
     public GoToShop GoToShop() => new(_driver, _context);
 
     public PlaceOrder PlaceOrder() => new(_driver, _context);
@@ -37,9 +42,4 @@ public class ShopDsl : IDisposable
     public CancelOrder CancelOrder() => new(_driver, _context);
 
     public ViewOrder ViewOrder() => new(_driver, _context);
-
-    public void Dispose()
-    {
-        _driver?.Dispose();
-    }
 }

@@ -20,10 +20,10 @@ public class TaxDsl : IDisposable
         return new TaxDriver(configuration.TaxBaseUrl);
     }
 
-    public GoToTax GoToTax() => new(_driver, _context);
-
     public void Dispose()
     {
         _driver?.Dispose();
     }
+
+    public GoToTax GoToTax() => new(_driver, _context);
 }

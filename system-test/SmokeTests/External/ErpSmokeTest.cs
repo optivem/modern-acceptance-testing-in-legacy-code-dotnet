@@ -5,22 +5,22 @@ namespace Optivem.EShop.SystemTest.SmokeTests.External;
 
 public class ErpSmokeTest : IDisposable
 {
-    private readonly SystemDsl _dsl;
+    private readonly SystemDsl _app;
 
     public ErpSmokeTest()
     {
-        _dsl = SystemDslFactory.Create();
+        _app = SystemDslFactory.Create();
     }
 
     public void Dispose()
     {
-        _dsl.Dispose();
+        _app.Dispose();
     }
 
     [Fact]
     public void ShouldBeAbleToGoToErp()
     {
-        _dsl.Erp.GoToErp()
+        _app.Erp.GoToErp()
             .Execute()
             .ShouldSucceed();
     }

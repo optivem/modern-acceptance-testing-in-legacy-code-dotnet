@@ -8,23 +8,23 @@ namespace Optivem.EShop.SystemTest.SmokeTests;
 
 public class ShopSmokeTest : IDisposable
 {
-    private readonly SystemDsl _dsl;
+    private readonly SystemDsl _app;
 
     public ShopSmokeTest()
     {
-        _dsl = SystemDslFactory.Create();
+        _app = SystemDslFactory.Create();
     }
 
     public void Dispose()
     {
-        _dsl.Dispose();
+        _app.Dispose();
     }
 
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldBeAbleToGoToShop(Channel channel)
     {
-        _dsl.Shop(channel).GoToShop()
+        _app.Shop(channel).GoToShop()
             .Execute()
             .ShouldSucceed();
     }

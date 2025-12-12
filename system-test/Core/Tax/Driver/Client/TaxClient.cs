@@ -4,13 +4,13 @@ using Optivem.EShop.SystemTest.Core.Tax.Driver.Client.Controllers;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Driver.Client;
 
-public class TaxApiClient
+public class TaxClient
 {
     private readonly HealthController _healthController;
 
-    public TaxApiClient(HttpGateway testHttpClient)
+    public TaxClient(HttpGateway httpGateway)
     {
-        _healthController = new HealthController(testHttpClient);
+        _healthController = new HealthController(httpGateway);
     }
 
     public HealthController Health => _healthController;

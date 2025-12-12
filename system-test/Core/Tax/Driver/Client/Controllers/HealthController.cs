@@ -15,16 +15,16 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Driver.Client.Controllers
     {
         public static readonly string Endpoint = "/health";
 
-        private readonly HttpGateway _testHttpClient;
+        private readonly HttpGateway _httpClient;
 
-        public HealthController(HttpGateway testHttpClient)
+        public HealthController(HttpGateway httpGateway)
         {
-            _testHttpClient = testHttpClient;
+            _httpClient = httpGateway;
         }
 
-        public Result<Results.VoidValue> CheckHealth()
+        public Result<VoidValue> CheckHealth()
         {
-            var response = _testHttpClient.Get(Endpoint);
+            var response = _httpClient.Get(Endpoint);
             return HttpUtils.GetOkResultOrFailure(response);
         }
     }
