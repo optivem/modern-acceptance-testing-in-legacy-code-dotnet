@@ -5,7 +5,7 @@ using Channel = Optivem.Testing.Channels.Channel;
 using Optivem.EShop.SystemTest.E2eTests.Providers;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
 using Optivem.EShop.SystemTest.Core.Shop.Channels;
-using TestDsl = global::Optivem.EShop.SystemTest.Dsl.Dsl;
+using TestDsl = global::Optivem.EShop.SystemTest.Core.Dsl;
 
 namespace Optivem.EShop.SystemTest.E2eTests
 {

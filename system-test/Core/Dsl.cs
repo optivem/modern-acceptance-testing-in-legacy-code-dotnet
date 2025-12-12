@@ -4,7 +4,7 @@ using Optivem.EShop.SystemTest.Core.Tax.Dsl;
 using Optivem.Testing.Channels;
 using Optivem.Testing.Dsl;
 
-namespace Optivem.EShop.SystemTest.Dsl;
+namespace Optivem.EShop.SystemTest.Core;
 
 public class Dsl : IDisposable
 {

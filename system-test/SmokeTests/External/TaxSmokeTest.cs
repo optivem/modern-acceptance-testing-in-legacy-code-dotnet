@@ -1,5 +1,5 @@
 using Xunit;
-using TestDsl = global::Optivem.EShop.SystemTest.Dsl.Dsl;
+using TestDsl = global::Optivem.EShop.SystemTest.Core.Dsl;
 
 namespace Optivem.EShop.SystemTest.SmokeTests.External;
 

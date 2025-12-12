@@ -1,7 +1,7 @@
 using Optivem.Testing.Channels;
 using Optivem.EShop.SystemTest.Core.Shop.Channels;
 using Channel = Optivem.Testing.Channels.Channel;
-using TestDsl = global::Optivem.EShop.SystemTest.Dsl.Dsl;
+using TestDsl = global::Optivem.EShop.SystemTest.Core.Dsl;
 using Xunit;
 
 namespace Optivem.EShop.SystemTest.SmokeTests;
