@@ -1,28 +1,28 @@
 namespace Optivem.Results;
 
-public class Result<T>
+public class Result<TResponse>
 {
     public bool Success { get; }
-    private readonly T? _value;
+    private readonly TResponse? _value;
     private readonly IReadOnlyCollection<string>? _errors;
 
-    private Result(bool success, T? value, IReadOnlyCollection<string>? errors)
+    private Result(bool success, TResponse? value, IReadOnlyCollection<string>? errors)
     {
         Success = success;
         _value = value;
         _errors = errors;
     }
 
-    public static Result<T> SuccessResult(T value) => new(true, value, null);
+    public static Result<TResponse> SuccessResult(TResponse value) => new(true, value, null);
 
-    public static Result<T> FailureResult(IEnumerable<string> errors) => 
+    public static Result<TResponse> FailureResult(IEnumerable<string> errors) => 
         new(false, default, errors.ToList().AsReadOnly());
 
-    public static Result<T> FailureResult(string error) => FailureResult(new List<string> { error });
+    public static Result<TResponse> FailureResult(string error) => FailureResult(new List<string> { error });
 
     public bool IsFailure() => !Success;
 
-    public T GetValue()
+    public TResponse GetValue()
     {
         if (!Success)
             throw new InvalidOperationException("Cannot get value from a failed result");
@@ -39,9 +39,7 @@ public class Result<T>
 
 public static class Result
 {
-    public static Result<VoidResult> Success() => Result<VoidResult>.SuccessResult(new VoidResult());
-    public static Result<VoidResult> Failure(IEnumerable<string> errors) => Result<VoidResult>.FailureResult(errors);
-    public static Result<VoidResult> Failure(string error) => Result<VoidResult>.FailureResult(error);
+    public static Result<VoidValue> Success() => Result<VoidValue>.SuccessResult(VoidValue.Empty);
+    public static Result<VoidValue> Failure(IEnumerable<string> errors) => Result<VoidValue>.FailureResult(errors);
+    public static Result<VoidValue> Failure(string error) => Result<VoidValue>.FailureResult(error);
 }
-
-public record VoidResult;

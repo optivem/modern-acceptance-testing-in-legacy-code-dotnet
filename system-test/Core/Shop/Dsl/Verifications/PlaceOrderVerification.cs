@@ -1,4 +1,4 @@
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
 using Optivem.Testing.Dsl;
 using Shouldly;
 

@@ -16,7 +16,7 @@ public class HealthController
         _httpClient = httpClient;
     }
 
-    public Result<VoidResult> CheckHealth()
+    public Result<Results.VoidValue> CheckHealth()
     {
         var httpResponse = _httpClient.Get(Endpoint);
         return HttpUtils.GetOkResultOrFailure(httpResponse);

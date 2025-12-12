@@ -1,8 +1,8 @@
 using Optivem.Testing.Channels;
-using Optivem.EShop.SystemTest.Core.Shop.Channels;
 using Channel = Optivem.Testing.Channels.Channel;
 using Optivem.EShop.SystemTest.Core;
 using Xunit;
+using Optivem.EShop.SystemTest.Core.Shop;
 
 namespace Optivem.EShop.SystemTest.SmokeTests;
 

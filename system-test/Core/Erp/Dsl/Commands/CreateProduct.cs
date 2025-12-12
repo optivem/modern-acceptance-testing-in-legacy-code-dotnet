@@ -1,21 +1,39 @@
-using System.Globalization;
 using Optivem.EShop.SystemTest.Core.Erp.Driver;
+using Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Dtos;
+using Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Dtos.Requests;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands.Base;
+using Optivem.Results;
 using Optivem.Testing.Dsl;
+using System.CodeDom;
+using System.Globalization;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands;
 
-public class CreateProduct : BaseErpCommand<object, VoidVerification>
+public class CreateProduct : BaseErpCommand<VoidValue, VoidVerification>
 {
+    private const string DEFAULT_SKU = "DEFAULT_SKU";
     private const decimal DEFAULT_UNIT_PRICE = 20.00m;
+    private const string DEFAULT_TITLE = "Test Product Title";
+    private const string DEFAULT_DESCRIPTION = "Test Product Description";
+    private const string DEFAULT_CATEGORY = "Test Category";
+    private const string DEFAULT_BRAND = "Test Brand";
 
     private string? _skuParamAlias;
     private string? _unitPrice;
+    private string? _title;
+    private string? _description;
+    private string? _category;
+    private string? _brand;
 
     public CreateProduct(ErpDriver driver, Context context) 
         : base(driver, context)
     {
-        UnitPrice(DEFAULT_UNIT_PRICE);
+        Sku(DEFAULT_SKU)
+        .UnitPrice(DEFAULT_UNIT_PRICE)
+        .Title(DEFAULT_TITLE)
+        .Description(DEFAULT_DESCRIPTION)
+        .Category(DEFAULT_CATEGORY)
+        .Brand(DEFAULT_BRAND);
     }
 
     public CreateProduct Sku(string skuParamAlias)
@@ -35,18 +53,49 @@ public class CreateProduct : BaseErpCommand<object, VoidVerification>
         return UnitPrice(unitPrice.ToString(CultureInfo.InvariantCulture));
     }
 
-    public override CommandResult<object, VoidVerification> Execute()
+    public CreateProduct Title(string title)
     {
-        var sku = Context.GetParamValue(_skuParamAlias!);
-        var result = Driver.CreateProduct(sku, _unitPrice!);
-        
-        var objectResult = result.Success 
-            ? Results.Result<object>.SuccessResult(new object()) 
-            : Results.Result<object>.FailureResult(result.GetErrors());
+        _title = title;
+        return this;
+    }
+
+    public CreateProduct Description(string description)
+    {
+        _description = description;
+        return this;
+    }
+
+    public CreateProduct Category(string category)
+    {
+        _category = category;
+        return this;
+    }
+
+    public CreateProduct Brand(string brand)
+    {
+        _brand = brand;
+        return this;
+    }
+
+    public override CommandResult<VoidValue, VoidVerification> Execute()
+    {
+        var sku = _context.GetParamValue(_skuParamAlias!);
+
+        var request = new CreateProductRequest
+        {
+            Id = sku,
+            Title = _title,
+            Description = _description,
+            Price = _unitPrice,
+            Category = _category,
+            Brand = _brand
+        };
+
+        var result = _driver.CreateProduct(request);
             
-        return new CommandResult<object, VoidVerification>(
-            objectResult, 
-            Context, 
-            (_, ctx) => new VoidVerification(null, ctx));
+        return new CommandResult<VoidValue, VoidVerification>(
+            result, 
+            _context, 
+            (_, ctx) => new VoidVerification(ctx));
     }
 }

@@ -4,7 +4,8 @@ using Optivem.Http;
 using Optivem.Playwright;
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Api.Client;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Requests;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Api;
 
@@ -20,17 +21,17 @@ public class ShopApiDriver : IShopDriver
         _apiClient = new ShopApiClient(testHttpClient);
     }
 
-    public Result<VoidResult> GoToShop()
+    public Result<VoidValue> GoToShop()
     {
         return _apiClient.Health().CheckHealth();
     }
 
-    public Result<PlaceOrderResponse> PlaceOrder(string? sku, string? quantity, string? country)
+    public Result<PlaceOrderResponse> PlaceOrder(PlaceOrderRequest request)
     {
-        return _apiClient.Orders().PlaceOrder(sku, quantity, country);
+        return _apiClient.Orders().PlaceOrder(request);
     }
 
-    public Result<VoidResult> CancelOrder(string orderNumber)
+    public Result<VoidValue> CancelOrder(string orderNumber)
     {
         return _apiClient.Orders().CancelOrder(orderNumber);
     }

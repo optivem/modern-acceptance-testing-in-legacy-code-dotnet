@@ -1,5 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Requests;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
 using Optivem.Testing.Dsl;
@@ -56,18 +57,26 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
 
     public override CommandResult<PlaceOrderResponse, PlaceOrderVerification> Execute()
     {
-        var sku = Context.GetParamValue(_skuParamAlias!);
-        var result = Driver.PlaceOrder(sku, _quantity!, _country!);
+        var sku = _context.GetParamValue(_skuParamAlias!);
+
+        var request = new PlaceOrderRequest
+        {
+            Sku = sku,
+            Quantity = _quantity!,
+            Country = _country!
+        };
+
+        var result = _driver.PlaceOrder(request);
 
         if (result.Success && _orderNumberResultAlias != null)
         {
             var orderNumber = result.GetValue().OrderNumber;
-            Context.SetResultEntry(_orderNumberResultAlias, orderNumber);
+            _context.SetResultEntry(_orderNumberResultAlias, orderNumber);
         }
 
         return new CommandResult<PlaceOrderResponse, PlaceOrderVerification>(
             result, 
-            Context, 
+            _context, 
             (response, ctx) => new PlaceOrderVerification(response, ctx));
     }
 }

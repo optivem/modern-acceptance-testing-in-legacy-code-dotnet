@@ -1,9 +1,16 @@
+using Optivem.Results;
+
 namespace Optivem.Testing.Dsl;
 
-public class VoidVerification : BaseSuccessVerification<object>
+public class VoidVerification : BaseSuccessVerification<VoidValue>
 {
-    public VoidVerification(object response, Context context) 
+    private VoidVerification(VoidValue response, Context context) 
         : base(response, context)
+    {
+    }
+
+    public VoidVerification(Context context)
+        : this(VoidValue.Empty, context)
     {
     }
 }

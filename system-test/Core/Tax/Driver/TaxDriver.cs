@@ -18,7 +18,7 @@ public class TaxDriver : IDisposable
         _taxApiClient = new TaxApiClient(testHttpClient);
     }
 
-    public Result<VoidResult> GoToTax()
+    public Result<VoidValue> GoToTax()
     {
         return _taxApiClient.Health.CheckHealth();
     }

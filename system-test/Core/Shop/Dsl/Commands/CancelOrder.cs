@@ -1,10 +1,11 @@
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands.Base;
+using Optivem.Results;
 using Optivem.Testing.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;
 
-public class CancelOrder : BaseShopCommand<object, VoidVerification>
+public class CancelOrder : BaseShopCommand<VoidValue, VoidVerification>
 {
     private string? _orderNumberResultAlias;
 
@@ -19,18 +20,14 @@ public class CancelOrder : BaseShopCommand<object, VoidVerification>
         return this;
     }
 
-    public override CommandResult<object, VoidVerification> Execute()
+    public override CommandResult<VoidValue, VoidVerification> Execute()
     {
-        var orderNumber = Context.GetResultValue(_orderNumberResultAlias!);
-        var result = Driver.CancelOrder(orderNumber);
-        
-        var objectResult = result.Success 
-            ? Results.Result<object>.SuccessResult(new object()) 
-            : Results.Result<object>.FailureResult(result.GetErrors());
+        var orderNumber = _context.GetResultValue(_orderNumberResultAlias!);
+        var result = _driver.CancelOrder(orderNumber);
             
-        return new CommandResult<object, VoidVerification>(
-            objectResult, 
-            Context, 
-            (_, ctx) => new VoidVerification(null, ctx));
+        return new CommandResult<VoidValue, VoidVerification>(
+            result, 
+            _context, 
+            (_, ctx) => new VoidVerification(ctx));
     }
 }

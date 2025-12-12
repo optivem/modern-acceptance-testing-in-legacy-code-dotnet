@@ -22,7 +22,7 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Driver.Client.Controllers
             _testHttpClient = testHttpClient;
         }
 
-        public Result<VoidResult> CheckHealth()
+        public Result<Results.VoidValue> CheckHealth()
         {
             var response = _testHttpClient.Get(Endpoint);
             return HttpUtils.GetOkResultOrFailure(response);

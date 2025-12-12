@@ -68,7 +68,7 @@ public static class HttpUtils
         return GetResultOrFailure<T>(httpResponse, HttpStatusCode.OK);
     }
 
-    public static Result<VoidResult> GetOkResultOrFailure(HttpResponseMessage httpResponse)
+    public static Result<VoidValue> GetOkResultOrFailure(HttpResponseMessage httpResponse)
     {
         return GetResultOrFailure(httpResponse, HttpStatusCode.OK);
     }
@@ -78,12 +78,12 @@ public static class HttpUtils
         return GetResultOrFailure<T>(httpResponse, HttpStatusCode.Created);
     }
 
-    public static Result<VoidResult> GetCreatedResultOrFailure(HttpResponseMessage httpResponse)
+    public static Result<VoidValue> GetCreatedResultOrFailure(HttpResponseMessage httpResponse)
     {
         return GetResultOrFailure(httpResponse, HttpStatusCode.Created);
     }
 
-    public static Result<VoidResult> GetNoContentResultOrFailure(HttpResponseMessage httpResponse)
+    public static Result<VoidValue> GetNoContentResultOrFailure(HttpResponseMessage httpResponse)
     {
         var isSuccess = HasStatusCode(httpResponse, HttpStatusCode.NoContent);
 
@@ -127,7 +127,7 @@ public static class HttpUtils
         return Result<T>.SuccessResult(response);
     }
 
-    private static Result<VoidResult> GetResultOrFailure(HttpResponseMessage httpResponse, HttpStatusCode successStatus)
+    private static Result<VoidValue> GetResultOrFailure(HttpResponseMessage httpResponse, HttpStatusCode successStatus)
     {
         var isSuccess = HasStatusCode(httpResponse, successStatus);
 

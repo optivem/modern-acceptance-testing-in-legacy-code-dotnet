@@ -1,5 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
 using Optivem.Testing.Dsl;
@@ -23,12 +23,12 @@ public class ViewOrder : BaseShopCommand<GetOrderResponse, ViewOrderVerification
 
     public override CommandResult<GetOrderResponse, ViewOrderVerification> Execute()
     {
-        var orderNumber = Context.GetResultValue(_orderNumberResultAlias!);
-        var result = Driver.ViewOrder(orderNumber);
+        var orderNumber = _context.GetResultValue(_orderNumberResultAlias!);
+        var result = _driver.ViewOrder(orderNumber);
         
         return new CommandResult<GetOrderResponse, ViewOrderVerification>(
             result, 
-            Context, 
+            _context, 
             (response, ctx) => new ViewOrderVerification(response, ctx));
     }
 }

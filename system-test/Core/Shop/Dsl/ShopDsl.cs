@@ -1,4 +1,3 @@
-using Optivem.EShop.SystemTest.Core.Shop.Channels;
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Api;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui;

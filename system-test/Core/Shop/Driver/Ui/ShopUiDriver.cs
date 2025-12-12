@@ -3,8 +3,9 @@ using Optivem.Testing.Assertions;
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client.Pages;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Requests;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Ui;
 
@@ -31,7 +32,7 @@ public class ShopUiDriver : IShopDriver
         _client = new ShopUiClient(baseUrl);
     }
 
-    public Result<VoidResult> GoToShop()
+    public Result<VoidValue> GoToShop()
     {
         _homePage = _client.OpenHomePage();
 
@@ -52,12 +53,12 @@ public class ShopUiDriver : IShopDriver
         return Result.Success();
     }
 
-    public Result<PlaceOrderResponse> PlaceOrder(string? sku, string? quantity, string? country)
+    public Result<PlaceOrderResponse> PlaceOrder(PlaceOrderRequest request)
     {
         EnsureOnNewOrderPage();
-        _newOrderPage!.InputSku(sku);
-        _newOrderPage!.InputQuantity(quantity);
-        _newOrderPage!.InputCountry(country);
+        _newOrderPage!.InputSku(request.Sku);
+        _newOrderPage!.InputQuantity(request.Quantity);
+        _newOrderPage!.InputCountry(request.Country);
         _newOrderPage!.ClickPlaceOrder();
 
         var isSuccess = _newOrderPage.HasSuccessNotification();
@@ -121,7 +122,7 @@ public class ShopUiDriver : IShopDriver
         return Result<GetOrderResponse>.SuccessResult(response);
     }
 
-    public Result<VoidResult> CancelOrder(string orderNumberAlias)
+    public Result<VoidValue> CancelOrder(string orderNumberAlias)
     {
         ViewOrder(orderNumberAlias);
         _orderHistoryPage!.ClickCancelOrder();

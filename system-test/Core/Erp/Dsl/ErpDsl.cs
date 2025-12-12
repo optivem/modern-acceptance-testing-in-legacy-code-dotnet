@@ -20,12 +20,12 @@ public class ErpDsl : IDisposable
         return new ErpDriver(configuration.ErpBaseUrl);
     }
 
-    public GoToErp GoToErp() => new(_driver, _context);
-
-    public CreateProduct CreateProduct() => new(_driver, _context);
-
     public void Dispose()
     {
         _driver?.Dispose();
     }
+
+    public GoToErp GoToErp() => new(_driver, _context);
+
+    public CreateProduct CreateProduct() => new(_driver, _context);
 }

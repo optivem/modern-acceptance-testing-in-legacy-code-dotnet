@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using Channel = Optivem.Testing.Channels.Channel;
 using Optivem.EShop.SystemTest.E2eTests.Providers;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
-using Optivem.EShop.SystemTest.Core.Shop.Channels;
 using Optivem.EShop.SystemTest.Core;
+using Optivem.EShop.SystemTest.Core.Shop;
 
 namespace Optivem.EShop.SystemTest.E2eTests
 {

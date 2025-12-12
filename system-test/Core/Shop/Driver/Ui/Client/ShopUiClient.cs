@@ -42,7 +42,7 @@ public class ShopUiClient : IDisposable
         return _homePage;
     }
 
-    public Result<VoidResult> CheckStatusOk()
+    public Result<VoidValue> CheckStatusOk()
     {
         if(_response?.Status == ((int)HttpStatusCode.OK))
         {
@@ -52,7 +52,7 @@ public class ShopUiClient : IDisposable
         return Result.Failure("Could not open shop UI at url " + _baseUrl + " due to status code: " + _response?.Status);
     }
 
-    public Result<VoidResult> CheckPageLoaded()
+    public Result<VoidValue> CheckPageLoaded()
     {
         var contentType = _response.Headers.ContainsKey(ContentType) ? _response.Headers[ContentType] : null;
 
@@ -84,21 +84,6 @@ public class ShopUiClient : IDisposable
         }
 
         return Result.Success();
-    }
-
-    public void AssertPageLoaded()
-    {
-        _response.ShouldNotBeNull();
-        _response.Status.ShouldBe((int)HttpStatusCode.OK);
-
-        var contentType = _response.Headers.ContainsKey(ContentType) ? _response.Headers[ContentType] : null;
-        contentType.ShouldNotBeNull();
-        contentType.Equals(TextHtml);
-
-        var pageContent = _page.ContentAsync().Result;
-        pageContent.ShouldNotBeNull();
-        pageContent.ShouldContain(HtmlOpeningTag);
-        pageContent.ShouldContain(HtmlClosingTag);
     }
 
     public void Dispose()

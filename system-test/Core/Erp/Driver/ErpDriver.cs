@@ -1,31 +1,30 @@
 using Optivem.Results;
-using Optivem.Testing.Assertions;
 using Optivem.Http;
-using Optivem.Playwright;
 using Optivem.EShop.SystemTest.Core.Erp.Driver.Client;
+using Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Dtos.Requests;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Driver;
 
 public class ErpDriver : IDisposable
 {
     private readonly HttpClient _httpClient;
-    private readonly ErpClient _erpApiClient;
+    private readonly ErpClient _erpClient;
 
     public ErpDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
-        var testHttpClient = new HttpGateway(_httpClient, baseUrl);
-        _erpApiClient = new ErpClient(testHttpClient);
+        var httpGateway = new HttpGateway(_httpClient, baseUrl);
+        _erpClient = new ErpClient(httpGateway);
     }
 
-    public Result<VoidResult> GoToErp()
+    public Result<VoidValue> GoToErp()
     {
-        return _erpApiClient.Health.CheckHealth();
+        return _erpClient.Health.CheckHealth();
     }
 
-    public Result<VoidResult> CreateProduct(string sku, string price)
+    public Result<VoidValue> CreateProduct(CreateProductRequest request)
     {
-        return _erpApiClient.Products.CreateProduct(sku, price);
+        return _erpClient.Products.CreateProduct(request);
     }
 
     public void Dispose()

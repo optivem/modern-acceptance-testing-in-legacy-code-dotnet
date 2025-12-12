@@ -2,7 +2,8 @@ using Optivem.Results;
 using Optivem.Testing.Assertions;
 using Optivem.Http;
 using Optivem.Playwright;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Requests;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Api.Client.Controllers;
 
@@ -17,15 +18,8 @@ public class OrderController
         _httpClient = httpClient;
     }
 
-    public Result<PlaceOrderResponse> PlaceOrder(string? sku, string? quantity, string? country)
+    public Result<PlaceOrderResponse> PlaceOrder(PlaceOrderRequest request)
     {
-        var request = new PlaceOrderRequest
-        {
-            Sku = sku,
-            Quantity = quantity,
-            Country = country
-        };
-
         var httpResponse = _httpClient.Post(Endpoint, request);
         return HttpUtils.GetCreatedResultOrFailure<PlaceOrderResponse>(httpResponse);
     }
@@ -36,7 +30,7 @@ public class OrderController
         return HttpUtils.GetOkResultOrFailure<GetOrderResponse>(httpResponse);
     }
 
-    public Result<VoidResult> CancelOrder(string orderNumber)
+    public Result<Results.VoidValue> CancelOrder(string orderNumber)
     {
         var httpResponse = _httpClient.Post($"{Endpoint}/{orderNumber}/cancel");
         return HttpUtils.GetNoContentResultOrFailure(httpResponse);

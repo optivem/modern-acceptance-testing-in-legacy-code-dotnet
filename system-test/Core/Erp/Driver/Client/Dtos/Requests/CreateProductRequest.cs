@@ -1,4 +1,4 @@
-namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Dtos;
+namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Dtos.Requests;
 
 public class CreateProductRequest
 {
