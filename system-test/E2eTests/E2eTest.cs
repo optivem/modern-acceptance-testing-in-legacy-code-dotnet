@@ -1,24 +1,24 @@
-using Optivem.EShop.SystemTest.Core.Channels;
 using Optivem.Testing.Channels;
-using Optivem.EShop.SystemTest.Core.Drivers.System.Commons.Enums;
-using Optivem.EShop.SystemTest.Core.Dsl;
 using System;
 using System.Collections.Generic;
 using Channel = Optivem.Testing.Channels.Channel;
 using Optivem.EShop.SystemTest.E2eTests.Providers;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
+using Optivem.EShop.SystemTest.Core.Shop.Channels;
+using TestDsl = global::Optivem.EShop.SystemTest.Dsl.Dsl;
 
 namespace Optivem.EShop.SystemTest.E2eTests
 {
     public class E2eTest : IDisposable
     {
-        private readonly Dsl _dsl;
+        private readonly TestDsl _dsl;
 
         private const string SKU = "SKU";
         private const string ORDER_NUMBER = "ORDER_NUMBER";
 
         public E2eTest()
         {
-            _dsl = new Dsl();
+            _dsl = new TestDsl();
         }
 
         public void Dispose()
