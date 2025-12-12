@@ -6,16 +6,16 @@ using Optivem.EShop.SystemTest.Core.Erp.Driver.Client;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Driver;
 
-public class ErpApiDriver : IDisposable
+public class ErpDriver : IDisposable
 {
     private readonly HttpClient _httpClient;
-    private readonly ErpApiClient _erpApiClient;
+    private readonly ErpClient _erpApiClient;
 
-    public ErpApiDriver(string baseUrl)
+    public ErpDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
         var testHttpClient = new HttpGateway(_httpClient, baseUrl);
-        _erpApiClient = new ErpApiClient(testHttpClient);
+        _erpApiClient = new ErpClient(testHttpClient);
     }
 
     public Result<VoidResult> GoToErp()

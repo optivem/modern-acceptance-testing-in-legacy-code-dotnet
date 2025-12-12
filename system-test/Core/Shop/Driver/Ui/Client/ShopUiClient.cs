@@ -1,9 +1,11 @@
 using Microsoft.Playwright;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client.Pages;
 using Optivem.Http;
+using Optivem.Results;
 using Shouldly;
 using System.Net;
+using System.Net.NetworkInformation;
 using PlaywrightGateway = Optivem.Playwright.PageGateway;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client.Pages;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client;
 
@@ -40,26 +42,48 @@ public class ShopUiClient : IDisposable
         return _homePage;
     }
 
-    public bool IsStatusOk()
+    public Result<VoidResult> CheckStatusOk()
     {
-        return _response?.Status == ((int)HttpStatusCode.OK);
-    }
-
-    public bool IsPageLoaded()
-    {
-        if (_response == null || _response.Status != (int)HttpStatusCode.OK)
+        if(_response?.Status == ((int)HttpStatusCode.OK))
         {
-            return false;
+            return Result.Success();
         }
 
+        return Result.Failure("Could not open shop UI at url " + _baseUrl + " due to status code: " + _response?.Status);
+    }
+
+    public Result<VoidResult> CheckPageLoaded()
+    {
         var contentType = _response.Headers.ContainsKey(ContentType) ? _response.Headers[ContentType] : null;
-        if (contentType == null || !contentType.Equals(TextHtml))
+
+        if(contentType == null)
         {
-            return false;
+            return Result.Failure(ContentType + " is missing or empty");
+        }
+
+        if(!contentType.Equals(TextHtml))
+        {
+            return Result.Failure(ContentType + " is not " + TextHtml + " but instead " + contentType);
         }
 
         var pageContent = _page.ContentAsync().Result;
-        return pageContent != null && pageContent.Contains(HtmlOpeningTag) && pageContent.Contains(HtmlClosingTag);
+
+        if(pageContent == null)
+        {
+            return Result.Failure("Page content is missing");
+        }
+
+        if(!pageContent.Contains(HtmlOpeningTag))
+        {
+            return Result.Failure("Page content " + pageContent + " does not contain " + HtmlOpeningTag);
+        }
+
+        if (!pageContent.Contains(HtmlClosingTag))
+        {
+            return Result.Failure("Page content " + pageContent + " does not contain " + HtmlClosingTag);
+        }
+
+        return Result.Success();
     }
 
     public void AssertPageLoaded()

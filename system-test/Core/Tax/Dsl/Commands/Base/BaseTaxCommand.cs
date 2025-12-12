@@ -3,9 +3,9 @@ using Optivem.Testing.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands.Base;
 
-public abstract class BaseTaxCommand<TResponse, TVerification> : BaseCommand<TaxApiDriver, TResponse, TVerification>
+public abstract class BaseTaxCommand<TResponse, TVerification> : BaseCommand<TaxDriver, TResponse, TVerification>
 {
-    protected BaseTaxCommand(TaxApiDriver driver, Context context) 
+    protected BaseTaxCommand(TaxDriver driver, Context context) 
         : base(driver, context)
     {
     }

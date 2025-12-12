@@ -1,18 +1,18 @@
 using Optivem.Testing.Channels;
 using Optivem.EShop.SystemTest.Core.Shop.Channels;
 using Channel = Optivem.Testing.Channels.Channel;
-using TestDsl = global::Optivem.EShop.SystemTest.Core.Dsl;
+using Optivem.EShop.SystemTest.Core;
 using Xunit;
 
 namespace Optivem.EShop.SystemTest.SmokeTests;
 
 public class ShopSmokeTest : IDisposable
 {
-    private readonly TestDsl _dsl;
+    private readonly SystemDsl _dsl;
 
     public ShopSmokeTest()
     {
-        _dsl = new TestDsl();
+        _dsl = SystemDslFactory.Create();
     }
 
     public void Dispose()

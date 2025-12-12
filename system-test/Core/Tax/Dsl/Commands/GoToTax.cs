@@ -6,7 +6,7 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands;
 
 public class GoToTax : BaseTaxCommand<object, VoidVerification>
 {
-    public GoToTax(TaxApiDriver driver, Context context) 
+    public GoToTax(TaxDriver driver, Context context) 
         : base(driver, context)
     {
     }

@@ -1,5 +1,7 @@
 using Optivem.EShop.SystemTest.Core.Shop.Channels;
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Api;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;
 using Optivem.Testing.Channels;
 using Optivem.Testing.Dsl;
@@ -11,10 +13,22 @@ public class ShopDsl : IDisposable
     private readonly IShopDriver _driver;
     private readonly Context _context;
 
-    public ShopDsl(Channel channel, Context context)
+    public ShopDsl(Channel channel, Context context, SystemConfiguration configuration)
     {
-        _driver = channel.CreateShopDriver();
+        _driver = CreateDriver(channel, configuration);
         _context = context;
+    }
+
+    private static IShopDriver CreateDriver(Channel channel, SystemConfiguration configuration)
+    {
+        // TODO: VJ: Check if we can use this
+        // var channel = ChannelContext.Get();
+        return channel.Type switch
+        {
+            ChannelType.UI => new ShopUiDriver(configuration.ShopUiBaseUrl),
+            ChannelType.API => new ShopApiDriver(configuration.ShopApiBaseUrl),
+            _ => throw new InvalidOperationException($"Unknown channel: {channel}")
+        };
     }
 
     public GoToShop GoToShop() => new(_driver, _context);

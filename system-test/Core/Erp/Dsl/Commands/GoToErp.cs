@@ -6,7 +6,7 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands;
 
 public class GoToErp : BaseErpCommand<object, VoidVerification>
 {
-    public GoToErp(ErpApiDriver driver, Context context) 
+    public GoToErp(ErpDriver driver, Context context) 
         : base(driver, context)
     {
     }

@@ -6,13 +6,18 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Dsl;
 
 public class ErpDsl : IDisposable
 {
-    private readonly ErpApiDriver _driver;
+    private readonly ErpDriver _driver;
     private readonly Context _context;
 
-    public ErpDsl(Context context)
+    public ErpDsl(Context context, SystemConfiguration configuration)
     {
-        _driver = DriverFactory.CreateErpApiDriver();
+        _driver = CreateDriver(configuration);
         _context = context;
+    }
+
+    private static ErpDriver CreateDriver(SystemConfiguration configuration)
+    {
+        return new ErpDriver(configuration.ErpBaseUrl);
     }
 
     public GoToErp GoToErp() => new(_driver, _context);

@@ -18,7 +18,7 @@ public class Result<T>
     public static Result<T> FailureResult(IEnumerable<string> errors) => 
         new(false, default, errors.ToList().AsReadOnly());
 
-    public static Result<T> FailureResult() => FailureResult(new List<string>());
+    public static Result<T> FailureResult(string error) => FailureResult(new List<string> { error });
 
     public bool IsFailure() => !Success;
 
@@ -40,8 +40,8 @@ public class Result<T>
 public static class Result
 {
     public static Result<VoidResult> Success() => Result<VoidResult>.SuccessResult(new VoidResult());
-    public static Result<VoidResult> Failure() => Result<VoidResult>.FailureResult(new List<string>());
     public static Result<VoidResult> Failure(IEnumerable<string> errors) => Result<VoidResult>.FailureResult(errors);
+    public static Result<VoidResult> Failure(string error) => Result<VoidResult>.FailureResult(error);
 }
 
 public record VoidResult;

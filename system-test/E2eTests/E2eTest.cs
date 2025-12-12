@@ -5,20 +5,20 @@ using Channel = Optivem.Testing.Channels.Channel;
 using Optivem.EShop.SystemTest.E2eTests.Providers;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
 using Optivem.EShop.SystemTest.Core.Shop.Channels;
-using TestDsl = global::Optivem.EShop.SystemTest.Core.Dsl;
+using Optivem.EShop.SystemTest.Core;
 
 namespace Optivem.EShop.SystemTest.E2eTests
 {
     public class E2eTest : IDisposable
     {
-        private readonly TestDsl _dsl;
+        private readonly SystemDsl _dsl;
 
         private const string SKU = "SKU";
         private const string ORDER_NUMBER = "ORDER_NUMBER";
 
         public E2eTest()
         {
-            _dsl = new TestDsl();
+            _dsl = SystemDslFactory.Create();
         }
 
         public void Dispose()

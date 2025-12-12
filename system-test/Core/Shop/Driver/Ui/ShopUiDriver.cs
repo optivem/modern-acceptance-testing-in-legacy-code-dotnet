@@ -35,9 +35,17 @@ public class ShopUiDriver : IShopDriver
     {
         _homePage = _client.OpenHomePage();
 
-        if (!_client.IsStatusOk() || !_client.IsPageLoaded())
+        var statusResult = _client.CheckStatusOk();
+
+        if (statusResult.IsFailure()) {
+            return statusResult;
+        }
+
+        var pageLoadedResult = _client.CheckPageLoaded();
+
+        if (pageLoadedResult.IsFailure())
         {
-            return Result.Failure();
+            return pageLoadedResult;
         }
 
         _currentPage = Pages.Home;
@@ -121,17 +129,17 @@ public class ShopUiDriver : IShopDriver
         var cancellationMessage = _orderHistoryPage.ReadSuccessNotification();
         if (cancellationMessage != "Order cancelled successfully!")
         {
-            return Result.Failure();
+            return Result.Failure("Did not see cancellation success message, instead: " + cancellationMessage);
         }
 
         var displayStatusAfterCancel = _orderHistoryPage.GetStatus();
         if (displayStatusAfterCancel != OrderStatus.CANCELLED)
         {
-            return Result.Failure();
+            return Result.Failure("Did not see cancelled status, instead: " + displayStatusAfterCancel);
         }
 
         if(!_orderHistoryPage.IsCancelButtonHidden()) {
-            return Result.Failure();
+            return Result.Failure("Cancel button is not hidden");
         }
 
         return Result.Success();

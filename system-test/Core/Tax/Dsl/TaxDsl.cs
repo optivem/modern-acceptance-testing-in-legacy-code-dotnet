@@ -6,13 +6,18 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Dsl;
 
 public class TaxDsl : IDisposable
 {
-    private readonly TaxApiDriver _driver;
+    private readonly TaxDriver _driver;
     private readonly Context _context;
 
-    public TaxDsl(Context context)
+    public TaxDsl(Context context, SystemConfiguration configuration)
     {
-        _driver = DriverFactory.CreateTaxApiDriver();
+        _driver = CreateDriver(configuration);
         _context = context;
+    }
+
+    private static TaxDriver CreateDriver(SystemConfiguration configuration)
+    {
+        return new TaxDriver(configuration.TaxBaseUrl);
     }
 
     public GoToTax GoToTax() => new(_driver, _context);

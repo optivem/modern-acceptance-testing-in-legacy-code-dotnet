@@ -12,7 +12,7 @@ public class CreateProduct : BaseErpCommand<object, VoidVerification>
     private string? _skuParamAlias;
     private string? _unitPrice;
 
-    public CreateProduct(ErpApiDriver driver, Context context) 
+    public CreateProduct(ErpDriver driver, Context context) 
         : base(driver, context)
     {
         UnitPrice(DEFAULT_UNIT_PRICE);

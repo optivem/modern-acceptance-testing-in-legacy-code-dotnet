@@ -4,12 +4,12 @@ using Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Controllers;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Client;
 
-public class ErpApiClient
+public class ErpClient
 {
     private readonly HealthController _healthController;
     private readonly ProductController _productController;
 
-    public ErpApiClient(HttpGateway testHttpClient)
+    public ErpClient(HttpGateway testHttpClient)
     {
         _healthController = new HealthController(testHttpClient);
         _productController = new ProductController(testHttpClient);

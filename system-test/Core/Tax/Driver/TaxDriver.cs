@@ -6,12 +6,12 @@ using Optivem.EShop.SystemTest.Core.Tax.Driver.Client;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Driver;
 
-public class TaxApiDriver : IDisposable
+public class TaxDriver : IDisposable
 {
     private readonly HttpClient _httpClient;
     private readonly TaxApiClient _taxApiClient;
 
-    public TaxApiDriver(string baseUrl)
+    public TaxDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
         var testHttpClient = new HttpGateway(_httpClient, baseUrl);

@@ -1,15 +1,15 @@
 using Xunit;
-using TestDsl = global::Optivem.EShop.SystemTest.Core.Dsl;
+using Optivem.EShop.SystemTest.Core;
 
 namespace Optivem.EShop.SystemTest.SmokeTests.External;
 
 public class ErpSmokeTest : IDisposable
 {
-    private readonly TestDsl _dsl;
+    private readonly SystemDsl _dsl;
 
     public ErpSmokeTest()
     {
-        _dsl = new TestDsl();
+        _dsl = SystemDslFactory.Create();
     }
 
     public void Dispose()
