@@ -20,8 +20,6 @@ public class ShopDsl : IDisposable
 
     private static IShopDriver CreateDriver(Channel channel, SystemConfiguration configuration)
     {
-        // TODO: VJ: Check if we can use this
-        // var channel = ChannelContext.Get();
         return channel.Type switch
         {
             ChannelType.UI => new ShopUiDriver(configuration.ShopUiBaseUrl),
