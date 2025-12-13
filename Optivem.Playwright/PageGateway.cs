@@ -50,6 +50,20 @@ public class PageGateway
         return locator.TextContentAsync().Result ?? string.Empty;
     }
 
+    public List<string> ReadAllTextContents(string selector)
+    {
+        var locator = _page.Locator(selector);
+        Wait(locator);
+        var count = locator.CountAsync().Result;
+        var texts = new List<string>();
+        for (int i = 0; i < count; i++)
+        {
+            var text = locator.Nth(i).TextContentAsync().Result ?? string.Empty;
+            texts.Add(text);
+        }
+        return texts;
+    }
+
     public bool Exists(string selector)
     {
         var locator = _page.Locator(selector);

@@ -162,7 +162,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Sku("NON-EXISTENT-SKU-12345")
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("Product does not exist for SKU: NON-EXISTENT-SKU-12345");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("sku", "Product does not exist for SKU: NON-EXISTENT-SKU-12345");
         }
 
         public static IEnumerable<object[]> ShouldNotBeAbleToViewNonExistentOrderData()
@@ -275,7 +276,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Country("XX")
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("Country does not exist: XX");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("country", "Country does not exist: XX");
         }
 
         [Theory]

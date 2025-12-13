@@ -8,6 +8,8 @@ public abstract class BasePage
     private const string NotificationSelector = "#notifications .notification";
     private const string SuccessNotificationSelector = "[role='alert'].success";
     private const string ErrorNotificationSelector = "[role='alert'].error";
+    private const string ErrorMessageSelector = "[role='alert'].error .error-message";
+    private const string FieldErrorSelector = "[role='alert'].error .field-error";
 
     protected readonly PageGateway PageClient;
 
@@ -42,5 +44,15 @@ public abstract class BasePage
     {
         var text = PageClient.ReadTextContent(ErrorNotificationSelector);
         return text.Split('\n').ToList();
+    }
+
+    public string ReadGeneralErrorMessage()
+    {
+        return PageClient.ReadTextContent(ErrorMessageSelector);
+    }
+
+    public List<string> ReadFieldErrors()
+    {
+        return PageClient.ReadAllTextContents(FieldErrorSelector);
     }
 }

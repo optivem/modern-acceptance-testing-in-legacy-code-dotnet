@@ -65,30 +65,32 @@ public class ShopUiDriver : IShopDriver
 
         if (!isSuccess)
         {
-            var errorMessages = _newOrderPage.ReadErrorNotification();
-            
-            if (errorMessages.Count == 0)
+            var generalMessage = _newOrderPage.ReadGeneralErrorMessage();
+            var fieldErrorTexts = _newOrderPage.ReadFieldErrors();
+
+            if (fieldErrorTexts.Count == 0)
             {
-                return Results.Failure<PlaceOrderResponse>("Order placement failed");
-            }
-            
-            var firstMessage = errorMessages[0];
-            
-            // Distinguish between validation errors and business logic errors
-            if (IsValidationError(firstMessage))
-            {
-                // Validation errors: return generic message + field errors
-                var fieldErrors = errorMessages
-                    .Select(msg => new Error.FieldError(ExtractFieldName(msg), msg))
-                    .ToList();
-                
-                var error = Error.Of("The request contains one or more validation errors", fieldErrors.AsReadOnly());
-                return Results.Failure<PlaceOrderResponse>(error);
+                // Business logic error - no field errors
+                return Results.Failure<PlaceOrderResponse>(generalMessage);
             }
             else
             {
-                // Business logic errors: return specific message directly
-                return Results.Failure<PlaceOrderResponse>(firstMessage);
+                // Validation error with field errors
+                // Parse "fieldName: message" format
+                var fieldErrors = fieldErrorTexts
+                    .Select(text =>
+                    {
+                        var parts = text.Split(':', 2);
+                        if (parts.Length == 2)
+                        {
+                            return new Error.FieldError(parts[0].Trim(), parts[1].Trim());
+                        }
+                        return new Error.FieldError("unknown", text);
+                    })
+                    .ToList();
+
+                var error = Error.Of(generalMessage, fieldErrors.AsReadOnly());
+                return Results.Failure<PlaceOrderResponse>(error);
             }
         }
 
@@ -168,51 +170,6 @@ public class ShopUiDriver : IShopDriver
         }
 
         return Results.Success();
-    }
-
-    private bool IsValidationError(string errorMessage)
-    {
-        if (string.IsNullOrEmpty(errorMessage))
-        {
-            return false;
-        }
-        
-        var lowerMessage = errorMessage.ToLower();
-        
-        // Validation error patterns
-        return lowerMessage.Contains("must") || 
-               lowerMessage.Contains("required") || 
-               lowerMessage.Contains("cannot") || 
-               lowerMessage.Contains("invalid") ||
-               lowerMessage.Contains("should");
-    }
-    
-    private string ExtractFieldName(string errorMessage)
-    {
-        if (string.IsNullOrEmpty(errorMessage))
-        {
-            return "unknown";
-        }
-        
-        var lowerMessage = errorMessage.ToLower();
-        
-        // Try to match common patterns: "Quantity must...", "SKU must...", etc.
-        if (lowerMessage.StartsWith("quantity"))
-        {
-            return "quantity";
-        }
-        else if (lowerMessage.StartsWith("sku"))
-        {
-            return "sku";
-        }
-        else if (lowerMessage.StartsWith("country"))
-        {
-            return "country";
-        }
-        
-        // Fallback: extract first word and lowercase it
-        var firstWord = errorMessage.Split(' ')[0];
-        return firstWord.ToLower();
     }
 
     public void Dispose()
