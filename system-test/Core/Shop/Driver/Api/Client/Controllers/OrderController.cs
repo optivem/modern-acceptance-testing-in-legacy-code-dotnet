@@ -1,3 +1,4 @@
+using Optivem.Lang;
 using Optivem.Results;
 using Optivem.Testing.Assertions;
 using Optivem.Http;
@@ -30,7 +31,7 @@ public class OrderController
         return HttpUtils.GetOkResultOrFailure<GetOrderResponse>(httpResponse);
     }
 
-    public Result<Results.VoidValue> CancelOrder(string orderNumber)
+    public Result<VoidValue> CancelOrder(string orderNumber)
     {
         var httpResponse = _httpClient.Post($"{Endpoint}/{orderNumber}/cancel");
         return HttpUtils.GetNoContentResultOrFailure(httpResponse);

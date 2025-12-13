@@ -1,3 +1,5 @@
+using Optivem.Lang;
+
 namespace Optivem.Results;
 
 public class Result<TResponse>

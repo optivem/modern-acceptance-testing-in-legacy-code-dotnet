@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Optivem.Results
+namespace Optivem.Lang
 {
     public class VoidValue
     {

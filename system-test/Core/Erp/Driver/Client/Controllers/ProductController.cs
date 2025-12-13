@@ -1,4 +1,5 @@
 using System.Net;
+using Optivem.Lang;
 using Optivem.Results;
 using Optivem.Testing.Assertions;
 using Optivem.Http;
@@ -17,7 +18,7 @@ public class ProductController
         _testHttpClient = testHttpClient;
     }
 
-    public Result<Results.VoidValue> CreateProduct(CreateProductRequest request)
+    public Result<VoidValue> CreateProduct(CreateProductRequest request)
     {
         var response = _testHttpClient.Post(Endpoint, request);
 

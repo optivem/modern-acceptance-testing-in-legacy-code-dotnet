@@ -1,3 +1,4 @@
+using Optivem.Lang;
 using Optivem.Results;
 using Optivem.Testing.Assertions;
 using Optivem.Http;
@@ -16,7 +17,7 @@ public class HealthController
         _httpClient = httpClient;
     }
 
-    public Result<Results.VoidValue> CheckHealth()
+    public Result<VoidValue> CheckHealth()
     {
         var httpResponse = _httpClient.Get(Endpoint);
         return HttpUtils.GetOkResultOrFailure(httpResponse);
