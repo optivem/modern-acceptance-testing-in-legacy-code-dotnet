@@ -32,7 +32,7 @@ public class ShopUiDriver : IShopDriver
         _client = new ShopUiClient(baseUrl);
     }
 
-    public Result<VoidValue> GoToShop()
+    public Result<VoidValue, Error> GoToShop()
     {
         _homePage = _client.OpenHomePage();
 
@@ -50,10 +50,10 @@ public class ShopUiDriver : IShopDriver
         }
 
         _currentPage = Pages.Home;
-        return Result.Success();
+        return Results.Success();
     }
 
-    public Result<PlaceOrderResponse> PlaceOrder(PlaceOrderRequest request)
+    public Result<PlaceOrderResponse, Error> PlaceOrder(PlaceOrderRequest request)
     {
         EnsureOnNewOrderPage();
         _newOrderPage!.InputSku(request.Sku);
@@ -65,16 +65,39 @@ public class ShopUiDriver : IShopDriver
 
         if (!isSuccess)
         {
-            var errorMessage = _newOrderPage.ReadErrorNotification();
-            return Result<PlaceOrderResponse>.FailureResult(errorMessage);
+            var errorMessages = _newOrderPage.ReadErrorNotification();
+            
+            if (errorMessages.Count == 0)
+            {
+                return Results.Failure<PlaceOrderResponse>("Order placement failed");
+            }
+            
+            var firstMessage = errorMessages[0];
+            
+            // Distinguish between validation errors and business logic errors
+            if (IsValidationError(firstMessage))
+            {
+                // Validation errors: return generic message + field errors
+                var fieldErrors = errorMessages
+                    .Select(msg => new Error.FieldError(ExtractFieldName(msg), msg))
+                    .ToList();
+                
+                var error = Error.Of("The request contains one or more validation errors", fieldErrors.AsReadOnly());
+                return Results.Failure<PlaceOrderResponse>(error);
+            }
+            else
+            {
+                // Business logic errors: return specific message directly
+                return Results.Failure<PlaceOrderResponse>(firstMessage);
+            }
         }
 
         var orderNumberValue = _newOrderPage.GetOrderNumber();
         var response = new PlaceOrderResponse { OrderNumber = orderNumberValue };
-        return Result<PlaceOrderResponse>.SuccessResult(response);
+        return Results.Success(response);
     }
 
-    public Result<GetOrderResponse> ViewOrder(string orderNumber)
+    public Result<GetOrderResponse, Error> ViewOrder(string orderNumber)
     {
         EnsureOnOrderHistoryPage();
         _orderHistoryPage!.InputOrderNumber(orderNumber);
@@ -84,8 +107,9 @@ public class ShopUiDriver : IShopDriver
 
         if (!isSuccess)
         {
-            var errorMessage = _orderHistoryPage.ReadErrorNotification();
-            return Result<GetOrderResponse>.FailureResult(errorMessage);
+            var errorMessages = _orderHistoryPage.ReadErrorNotification();
+            var errorMessage = errorMessages.Count > 0 ? errorMessages[0] : "View order failed";
+            return Results.Failure<GetOrderResponse>(errorMessage);
         }
 
         var displayOrderNumber = _orderHistoryPage.GetOrderNumber();
@@ -119,10 +143,10 @@ public class ShopUiDriver : IShopDriver
             Status = status
         };
 
-        return Result<GetOrderResponse>.SuccessResult(response);
+        return Results.Success(response);
     }
 
-    public Result<VoidValue> CancelOrder(string orderNumberAlias)
+    public Result<VoidValue, Error> CancelOrder(string orderNumberAlias)
     {
         ViewOrder(orderNumberAlias);
         _orderHistoryPage!.ClickCancelOrder();
@@ -130,20 +154,65 @@ public class ShopUiDriver : IShopDriver
         var cancellationMessage = _orderHistoryPage.ReadSuccessNotification();
         if (cancellationMessage != "Order cancelled successfully!")
         {
-            return Result.Failure("Did not see cancellation success message, instead: " + cancellationMessage);
+            return Results.Failure<VoidValue>("Did not see cancellation success message, instead: " + cancellationMessage);
         }
 
         var displayStatusAfterCancel = _orderHistoryPage.GetStatus();
         if (displayStatusAfterCancel != OrderStatus.CANCELLED)
         {
-            return Result.Failure("Did not see cancelled status, instead: " + displayStatusAfterCancel);
+            return Results.Failure<VoidValue>("Did not see cancelled status, instead: " + displayStatusAfterCancel);
         }
 
         if(!_orderHistoryPage.IsCancelButtonHidden()) {
-            return Result.Failure("Cancel button is not hidden");
+            return Results.Failure<VoidValue>("Cancel button is not hidden");
         }
 
-        return Result.Success();
+        return Results.Success();
+    }
+
+    private bool IsValidationError(string errorMessage)
+    {
+        if (string.IsNullOrEmpty(errorMessage))
+        {
+            return false;
+        }
+        
+        var lowerMessage = errorMessage.ToLower();
+        
+        // Validation error patterns
+        return lowerMessage.Contains("must") || 
+               lowerMessage.Contains("required") || 
+               lowerMessage.Contains("cannot") || 
+               lowerMessage.Contains("invalid") ||
+               lowerMessage.Contains("should");
+    }
+    
+    private string ExtractFieldName(string errorMessage)
+    {
+        if (string.IsNullOrEmpty(errorMessage))
+        {
+            return "unknown";
+        }
+        
+        var lowerMessage = errorMessage.ToLower();
+        
+        // Try to match common patterns: "Quantity must...", "SKU must...", etc.
+        if (lowerMessage.StartsWith("quantity"))
+        {
+            return "quantity";
+        }
+        else if (lowerMessage.StartsWith("sku"))
+        {
+            return "sku";
+        }
+        else if (lowerMessage.StartsWith("country"))
+        {
+            return "country";
+        }
+        
+        // Fallback: extract first word and lowercase it
+        var firstWord = errorMessage.Split(' ')[0];
+        return firstWord.ToLower();
     }
 
     public void Dispose()

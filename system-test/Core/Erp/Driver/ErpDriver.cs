@@ -17,12 +17,12 @@ public class ErpDriver : IDisposable
         _erpClient = new ErpClient(httpGateway);
     }
 
-    public Result<VoidValue> GoToErp()
+    public Result<VoidValue, Error> GoToErp()
     {
         return _erpClient.Health.CheckHealth();
     }
 
-    public Result<VoidValue> CreateProduct(CreateProductRequest request)
+    public Result<VoidValue, Error> CreateProduct(CreateProductRequest request)
     {
         return _erpClient.Products.CreateProduct(request);
     }

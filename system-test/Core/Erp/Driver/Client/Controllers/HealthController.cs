@@ -21,7 +21,7 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Controllers
             _testHttpClient = testHttpClient;
         }
 
-        public Result<VoidValue> CheckHealth()
+        public Result<VoidValue, Error> CheckHealth()
         {
             var response = _testHttpClient.Get(Endpoint);
             return HttpUtils.GetOkResultOrFailure(response);

@@ -8,8 +8,8 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Driver;
 
 public interface IShopDriver : IDisposable
 {
-    Result<VoidValue> GoToShop();
-    Result<PlaceOrderResponse> PlaceOrder(PlaceOrderRequest request);
-    Result<VoidValue> CancelOrder(string orderNumber);
-    Result<GetOrderResponse> ViewOrder(string orderNumber);
+    Result<VoidValue, Error> GoToShop();
+    Result<PlaceOrderResponse, Error> PlaceOrder(PlaceOrderRequest request);
+    Result<VoidValue, Error> CancelOrder(string orderNumber);
+    Result<GetOrderResponse, Error> ViewOrder(string orderNumber);
 }

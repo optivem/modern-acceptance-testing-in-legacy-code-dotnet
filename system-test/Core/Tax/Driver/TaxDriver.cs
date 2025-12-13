@@ -23,7 +23,7 @@ public class TaxDriver : IDisposable
         _httpClient?.Dispose();
     }
 
-    public Result<VoidValue> GoToTax()
+    public Result<VoidValue, Error> GoToTax()
     {
         return _taxApiClient.Health.CheckHealth();
     }

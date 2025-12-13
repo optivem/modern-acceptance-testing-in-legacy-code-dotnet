@@ -39,61 +39,60 @@ public static class HttpUtils
         }
     }
 
-    public static List<string> GetErrorMessages(HttpResponseMessage httpResponse)
+    public static Error GetError(HttpResponseMessage httpResponse)
     {
         try
         {
             var problemDetail = ReadResponse<ProblemDetailResponse>(httpResponse);
-            var errorMessages = new List<string>();
+            var message = problemDetail.Detail ?? "Request failed";
 
             if (problemDetail.Errors != null && problemDetail.Errors.Any())
             {
-                errorMessages.AddRange(problemDetail.Errors.Select(e => e.Message ?? string.Empty));
-            }
-            else if (!string.IsNullOrEmpty(problemDetail.Detail))
-            {
-                errorMessages.Add(problemDetail.Detail);
+                var fieldErrors = problemDetail.Errors
+                    .Select(e => new Error.FieldError(e.Field ?? "unknown", e.Message ?? string.Empty, e.Code))
+                    .ToList();
+                return Error.Of(message, fieldErrors.AsReadOnly());
             }
 
-            return errorMessages;
+            return Error.Of(message);
         }
         catch
         {
-            return new List<string>();
+            return Error.Of("Request failed");
         }
     }
 
-    public static Result<T> GetOkResultOrFailure<T>(HttpResponseMessage httpResponse)
+    public static Result<T, Error> GetOkResultOrFailure<T>(HttpResponseMessage httpResponse)
     {
         return GetResultOrFailure<T>(httpResponse, HttpStatusCode.OK);
     }
 
-    public static Result<VoidValue> GetOkResultOrFailure(HttpResponseMessage httpResponse)
+    public static Result<VoidValue, Error> GetOkResultOrFailure(HttpResponseMessage httpResponse)
     {
         return GetResultOrFailure(httpResponse, HttpStatusCode.OK);
     }
 
-    public static Result<T> GetCreatedResultOrFailure<T>(HttpResponseMessage httpResponse)
+    public static Result<T, Error> GetCreatedResultOrFailure<T>(HttpResponseMessage httpResponse)
     {
         return GetResultOrFailure<T>(httpResponse, HttpStatusCode.Created);
     }
 
-    public static Result<VoidValue> GetCreatedResultOrFailure(HttpResponseMessage httpResponse)
+    public static Result<VoidValue, Error> GetCreatedResultOrFailure(HttpResponseMessage httpResponse)
     {
         return GetResultOrFailure(httpResponse, HttpStatusCode.Created);
     }
 
-    public static Result<VoidValue> GetNoContentResultOrFailure(HttpResponseMessage httpResponse)
+    public static Result<VoidValue, Error> GetNoContentResultOrFailure(HttpResponseMessage httpResponse)
     {
         var isSuccess = HasStatusCode(httpResponse, HttpStatusCode.NoContent);
 
         if (!isSuccess)
         {
-            var errorMessages = GetErrorMessages(httpResponse);
-            return Result.Failure(errorMessages);
+            var error = GetError(httpResponse);
+            return Results.Failure<VoidValue>(error);
         }
 
-        return Result.Success();
+        return Results.Success();
     }
 
     public static Uri GetUri(string baseUrl, string path)
@@ -113,30 +112,30 @@ public static class HttpUtils
         return httpResponse.StatusCode == statusCode;
     }
 
-    private static Result<T> GetResultOrFailure<T>(HttpResponseMessage httpResponse, HttpStatusCode successStatus)
+    private static Result<T, Error> GetResultOrFailure<T>(HttpResponseMessage httpResponse, HttpStatusCode successStatus)
     {
         var isSuccess = HasStatusCode(httpResponse, successStatus);
 
         if (!isSuccess)
         {
-            var errorMessages = GetErrorMessages(httpResponse);
-            return Result<T>.FailureResult(errorMessages);
+            var error = GetError(httpResponse);
+            return Results.Failure<T>(error);
         }
 
         var response = ReadResponse<T>(httpResponse);
-        return Result<T>.SuccessResult(response);
+        return Results.Success(response);
     }
 
-    private static Result<VoidValue> GetResultOrFailure(HttpResponseMessage httpResponse, HttpStatusCode successStatus)
+    private static Result<VoidValue, Error> GetResultOrFailure(HttpResponseMessage httpResponse, HttpStatusCode successStatus)
     {
         var isSuccess = HasStatusCode(httpResponse, successStatus);
 
         if (!isSuccess)
         {
-            var errorMessages = GetErrorMessages(httpResponse);
-            return Result.Failure(errorMessages);
+            var error = GetError(httpResponse);
+            return Results.Failure<VoidValue>(error);
         }
 
-        return Result.Success();
+        return Results.Success();
     }
 }

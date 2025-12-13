@@ -42,48 +42,48 @@ public class ShopUiClient : IDisposable
         return _homePage;
     }
 
-    public Result<VoidValue> CheckStatusOk()
+    public Result<VoidValue, Error> CheckStatusOk()
     {
         if(_response?.Status == ((int)HttpStatusCode.OK))
         {
-            return Result.Success();
+            return Results.Success();
         }
 
-        return Result.Failure("Could not open shop UI at url " + _baseUrl + " due to status code: " + _response?.Status);
+        return Results.Failure<VoidValue>("Could not open shop UI at url " + _baseUrl + " due to status code: " + _response?.Status);
     }
 
-    public Result<VoidValue> CheckPageLoaded()
+    public Result<VoidValue, Error> CheckPageLoaded()
     {
         var contentType = _response.Headers.ContainsKey(ContentType) ? _response.Headers[ContentType] : null;
 
         if(contentType == null)
         {
-            return Result.Failure(ContentType + " is missing or empty");
+            return Results.Failure<VoidValue>(ContentType + " is missing or empty");
         }
 
         if(!contentType.Equals(TextHtml))
         {
-            return Result.Failure(ContentType + " is not " + TextHtml + " but instead " + contentType);
+            return Results.Failure<VoidValue>(ContentType + " is not " + TextHtml + " but instead " + contentType);
         }
 
         var pageContent = _page.ContentAsync().Result;
 
         if(pageContent == null)
         {
-            return Result.Failure("Page content is missing");
+            return Results.Failure<VoidValue>("Page content is missing");
         }
 
         if(!pageContent.Contains(HtmlOpeningTag))
         {
-            return Result.Failure("Page content " + pageContent + " does not contain " + HtmlOpeningTag);
+            return Results.Failure<VoidValue>("Page content " + pageContent + " does not contain " + HtmlOpeningTag);
         }
 
         if (!pageContent.Contains(HtmlClosingTag))
         {
-            return Result.Failure("Page content " + pageContent + " does not contain " + HtmlClosingTag);
+            return Results.Failure<VoidValue>("Page content " + pageContent + " does not contain " + HtmlClosingTag);
         }
 
-        return Result.Success();
+        return Results.Success();
     }
 
     public void Dispose()

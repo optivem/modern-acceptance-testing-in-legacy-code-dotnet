@@ -21,22 +21,22 @@ public class ShopApiDriver : IShopDriver
         _apiClient = new ShopApiClient(testHttpClient);
     }
 
-    public Result<VoidValue> GoToShop()
+    public Result<VoidValue, Error> GoToShop()
     {
         return _apiClient.Health().CheckHealth();
     }
 
-    public Result<PlaceOrderResponse> PlaceOrder(PlaceOrderRequest request)
+    public Result<PlaceOrderResponse, Error> PlaceOrder(PlaceOrderRequest request)
     {
         return _apiClient.Orders().PlaceOrder(request);
     }
 
-    public Result<VoidValue> CancelOrder(string orderNumber)
+    public Result<VoidValue, Error> CancelOrder(string orderNumber)
     {
         return _apiClient.Orders().CancelOrder(orderNumber);
     }
 
-    public Result<GetOrderResponse> ViewOrder(string orderNumber)
+    public Result<GetOrderResponse, Error> ViewOrder(string orderNumber)
     {
         return _apiClient.Orders().ViewOrder(orderNumber);
     }

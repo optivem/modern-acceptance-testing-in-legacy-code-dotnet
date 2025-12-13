@@ -18,19 +18,19 @@ public class OrderController
         _httpClient = httpClient;
     }
 
-    public Result<PlaceOrderResponse> PlaceOrder(PlaceOrderRequest request)
+    public Result<PlaceOrderResponse, Error> PlaceOrder(PlaceOrderRequest request)
     {
         var httpResponse = _httpClient.Post(Endpoint, request);
         return HttpUtils.GetCreatedResultOrFailure<PlaceOrderResponse>(httpResponse);
     }
 
-    public Result<GetOrderResponse> ViewOrder(string orderNumber)
+    public Result<GetOrderResponse, Error> ViewOrder(string orderNumber)
     {
         var httpResponse = _httpClient.Get($"{Endpoint}/{orderNumber}");
         return HttpUtils.GetOkResultOrFailure<GetOrderResponse>(httpResponse);
     }
 
-    public Result<VoidValue> CancelOrder(string orderNumber)
+    public Result<VoidValue, Error> CancelOrder(string orderNumber)
     {
         var httpResponse = _httpClient.Post($"{Endpoint}/{orderNumber}/cancel");
         return HttpUtils.GetNoContentResultOrFailure(httpResponse);

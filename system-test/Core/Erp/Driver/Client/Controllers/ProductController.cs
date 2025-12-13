@@ -17,7 +17,7 @@ public class ProductController
         _testHttpClient = testHttpClient;
     }
 
-    public Result<VoidValue> CreateProduct(CreateProductRequest request)
+    public Result<VoidValue, Error> CreateProduct(CreateProductRequest request)
     {
         var response = _testHttpClient.Post(Endpoint, request);
 

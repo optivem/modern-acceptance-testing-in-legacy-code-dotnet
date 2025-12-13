@@ -82,7 +82,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Quantity("invalid-quantity")
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("Quantity must be an integer");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("quantity", "Quantity must be an integer");
         }
 
         [Theory]
@@ -191,7 +192,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Quantity("-3")
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("Quantity must be positive");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("quantity", "Quantity must be positive");
         }
 
         [Theory]
@@ -202,7 +204,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Quantity("0")
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("Quantity must be positive");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("quantity", "Quantity must be positive");
         }
 
         [Theory]
@@ -214,7 +217,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Sku(sku)
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("SKU must not be empty");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("sku", "SKU must not be empty");
         }
 
         [Theory]
@@ -226,7 +230,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Quantity(emptyQuantity)
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("Quantity must not be empty");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("quantity", "Quantity must not be empty");
         }
 
         [Theory]
@@ -239,7 +244,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Quantity(nonIntegerQuantity)
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("Quantity must be an integer");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("quantity", "Quantity must be an integer");
         }
 
         [Theory]
@@ -251,7 +257,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Country(emptyCountry)
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("Country must not be empty");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("country", "Country must not be empty");
         }
 
         [Theory]
@@ -279,7 +286,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Quantity(null!)
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("Quantity must not be empty");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("quantity", "Quantity must not be empty");
         }
 
         [Theory]
@@ -290,7 +298,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Sku(null!)
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("SKU must not be empty");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("sku", "SKU must not be empty");
         }
 
         [Theory]
@@ -301,7 +310,8 @@ namespace Optivem.EShop.SystemTest.E2eTests
                 .Country(null!)
                 .Execute()
                 .ShouldFail()
-                .ErrorMessage("Country must not be empty");
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("country", "Country must not be empty");
         }
 
         [Theory]

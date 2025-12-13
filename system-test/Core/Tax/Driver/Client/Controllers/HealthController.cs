@@ -22,7 +22,7 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Driver.Client.Controllers
             _httpClient = httpGateway;
         }
 
-        public Result<VoidValue> CheckHealth()
+        public Result<VoidValue, Error> CheckHealth()
         {
             var response = _httpClient.Get(Endpoint);
             return HttpUtils.GetOkResultOrFailure(response);
