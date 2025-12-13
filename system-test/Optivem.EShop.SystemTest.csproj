@@ -11,7 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Optivem.Lang\Optivem.Lang.csproj" />
     <ProjectReference Include="..\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
-    <ProjectReference Include="..\Optivem.Results\Optivem.Results.csproj" />
     <ProjectReference Include="..\Optivem.Http\Optivem.Http.csproj" />
     <ProjectReference Include="..\Optivem.Playwright\Optivem.Playwright.csproj" />
     <ProjectReference Include="..\Optivem.Testing.Assertions\Optivem.Testing.Assertions.csproj" />

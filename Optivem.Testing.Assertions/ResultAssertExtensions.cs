@@ -1,5 +1,5 @@
 using Shouldly;
-using Optivem.Results;
+using Optivem.Lang;
 
 namespace Optivem.Testing.Assertions;
 

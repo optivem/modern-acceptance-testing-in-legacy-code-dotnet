@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Optivem.Lang\Optivem.Lang.csproj" />
-    <ProjectReference Include="..\Optivem.Results\Optivem.Results.csproj" />
   </ItemGroup>
 
 </Project>

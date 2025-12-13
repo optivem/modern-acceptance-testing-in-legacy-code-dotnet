@@ -1,6 +1,6 @@
 using Optivem.Lang;
 
-namespace Optivem.Results;
+namespace Optivem.Lang;
 
 public class Result<TResponse>
 {

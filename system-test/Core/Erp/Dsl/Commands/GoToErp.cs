@@ -1,7 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Erp.Driver;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands.Base;
 using Optivem.Lang;
-using Optivem.Results;
 using Optivem.Testing.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands;
