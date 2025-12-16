@@ -1,7 +1,5 @@
 using Optivem.Lang;
-using Optivem.Testing.Assertions;
 using Optivem.Http;
-using Optivem.Playwright;
 using Optivem.EShop.SystemTest.Core.Tax.Driver.Client;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Driver;
@@ -14,7 +12,7 @@ public class TaxDriver : IDisposable
     public TaxDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
-        var testHttpClient = new JsonHttpClient(_httpClient, baseUrl);
+        var testHttpClient = new JsonHttpClient<ProblemDetailResponse>(_httpClient, baseUrl);
         _taxApiClient = new TaxClient(testHttpClient);
     }
 

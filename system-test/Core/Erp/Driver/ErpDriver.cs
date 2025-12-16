@@ -13,7 +13,7 @@ public class ErpDriver : IDisposable
     public ErpDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
-        var httpGateway = new JsonHttpClient(_httpClient, baseUrl);
+        var httpGateway = new JsonHttpClient<ProblemDetailResponse>(_httpClient, baseUrl);
         _erpClient = new ErpClient(httpGateway);
     }
 

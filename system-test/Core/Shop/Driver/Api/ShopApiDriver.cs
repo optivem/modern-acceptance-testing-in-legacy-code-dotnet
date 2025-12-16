@@ -1,8 +1,5 @@
 using Optivem.Lang;
-using Optivem.Testing.Assertions;
 using Optivem.Http;
-using Optivem.Playwright;
-using Optivem.EShop.SystemTest.Core.Shop.Driver;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Api.Client;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Requests;
@@ -17,7 +14,7 @@ public class ShopApiDriver : IShopDriver
     public ShopApiDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
-        var testHttpClient = new JsonHttpClient(_httpClient, baseUrl);
+        var testHttpClient = new JsonHttpClient<ProblemDetailResponse>(_httpClient, baseUrl);
         _apiClient = new ShopApiClient(testHttpClient);
     }
 

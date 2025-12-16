@@ -41,5 +41,12 @@ public class Result<T, E>
         }
     }
 
-    // TODO: VJ: Map Error
+    public Result<T, E2> MapFailure<E2>(Func<E, E2> mapper)
+    {
+        if (_success)
+        {
+            return Result<T, E2>.Success(_value!);
+        }
+        return Result<T, E2>.Failure(mapper(_error!));
+    }
 }
