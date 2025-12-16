@@ -7,9 +7,9 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Dsl;
 public class ErpDsl : IDisposable
 {
     private readonly ErpDriver _driver;
-    private readonly Context _context;
+    private readonly UseCaseContext _context;
 
-    public ErpDsl(Context context, SystemConfiguration configuration)
+    public ErpDsl(UseCaseContext context, SystemConfiguration configuration)
     {
         _driver = CreateDriver(configuration);
         _context = context;

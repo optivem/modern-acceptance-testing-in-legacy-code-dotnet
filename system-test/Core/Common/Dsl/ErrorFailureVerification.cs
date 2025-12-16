@@ -1,23 +1,20 @@
-using Optivem.Lang;
+using Optivem.EShop.SystemTest.Core.Common.Error;
+using Optivem.Testing.Dsl;
 using Shouldly;
 
-namespace Optivem.Testing.Dsl;
+namespace Optivem.EShop.SystemTest.Core.Common.Dsl;
 
-public class FailureVerification<T>
+public class ErrorFailureVerification : ResponseVerification<Error.Error, UseCaseContext>
 {
-    private readonly Result<T, Error> _result;
-    private readonly Context _context;
-
-    public FailureVerification(Result<T, Error> result, Context context)
+    public ErrorFailureVerification(Error.Error error, UseCaseContext context) 
+        : base(error, context)
     {
-        _result = result;
-        _context = context;
     }
 
-    public FailureVerification<T> ErrorMessage(string expectedMessage)
+    public ErrorFailureVerification ErrorMessage(string expectedMessage)
     {
-        var expandedExpectedMessage = _context.ExpandAliases(expectedMessage);
-        var error = _result.Error;
+        var expandedExpectedMessage = Context.ExpandAliases(expectedMessage);
+        var error = Response;
         var errorMessage = error.Message;
         
         errorMessage.ShouldBe(expandedExpectedMessage, 
@@ -26,11 +23,11 @@ public class FailureVerification<T>
         return this;
     }
 
-    public FailureVerification<T> FieldErrorMessage(string expectedField, string expectedMessage)
+    public ErrorFailureVerification FieldErrorMessage(string expectedField, string expectedMessage)
     {
-        var expandedExpectedField = _context.ExpandAliases(expectedField);
-        var expandedExpectedMessage = _context.ExpandAliases(expectedMessage);
-        var error = _result.Error;
+        var expandedExpectedField = Context.ExpandAliases(expectedField);
+        var expandedExpectedMessage = Context.ExpandAliases(expectedMessage);
+        var error = Response;
         var fields = error.Fields;
 
         fields.ShouldNotBeNull("Expected field errors but none were found");

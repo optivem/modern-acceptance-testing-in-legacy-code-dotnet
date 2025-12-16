@@ -5,11 +5,11 @@ using Optivem.Testing.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;
 
-public class CancelOrder : BaseShopCommand<VoidValue, VoidVerification>
+public class CancelOrder : BaseShopCommand<VoidValue, VoidVerification<UseCaseContext>>
 {
     private string? _orderNumberResultAlias;
 
-    public CancelOrder(IShopDriver driver, Context context) 
+    public CancelOrder(IShopDriver driver, UseCaseContext context) 
         : base(driver, context)
     {
     }
@@ -20,14 +20,14 @@ public class CancelOrder : BaseShopCommand<VoidValue, VoidVerification>
         return this;
     }
 
-    public override CommandResult<VoidValue, VoidVerification> Execute()
+    public override ShopUseCaseResult<VoidValue, VoidVerification<UseCaseContext>> Execute()
     {
         var orderNumber = _context.GetResultValue(_orderNumberResultAlias!);
         var result = _driver.CancelOrder(orderNumber);
             
-        return new CommandResult<VoidValue, VoidVerification>(
+        return new ShopUseCaseResult<VoidValue, VoidVerification<UseCaseContext>>(
             result, 
             _context, 
-            (_, ctx) => new VoidVerification(ctx));
+            (response, ctx) => new VoidVerification<UseCaseContext>(response, ctx));
     }
 }

@@ -10,7 +10,7 @@ public class ViewOrder : BaseShopCommand<GetOrderResponse, ViewOrderVerification
 {
     private string? _orderNumberResultAlias;
 
-    public ViewOrder(IShopDriver driver, Context context) 
+    public ViewOrder(IShopDriver driver, UseCaseContext context) 
         : base(driver, context)
     {
     }
@@ -21,12 +21,12 @@ public class ViewOrder : BaseShopCommand<GetOrderResponse, ViewOrderVerification
         return this;
     }
 
-    public override CommandResult<GetOrderResponse, ViewOrderVerification> Execute()
+    public override ShopUseCaseResult<GetOrderResponse, ViewOrderVerification> Execute()
     {
         var orderNumber = _context.GetResultValue(_orderNumberResultAlias!);
         var result = _driver.ViewOrder(orderNumber);
         
-        return new CommandResult<GetOrderResponse, ViewOrderVerification>(
+        return new ShopUseCaseResult<GetOrderResponse, ViewOrderVerification>(
             result, 
             _context, 
             (response, ctx) => new ViewOrderVerification(response, ctx));

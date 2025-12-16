@@ -1,6 +1,6 @@
 namespace Optivem.Testing.Dsl;
 
-public interface ICommand<T>
+public interface IUseCase<T>
 {
     T Execute();
 }

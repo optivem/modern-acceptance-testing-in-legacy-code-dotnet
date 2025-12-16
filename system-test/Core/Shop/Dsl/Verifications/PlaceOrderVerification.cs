@@ -4,9 +4,9 @@ using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
 
-public class PlaceOrderVerification : BaseSuccessVerification<PlaceOrderResponse>
+public class PlaceOrderVerification : ResponseVerification<PlaceOrderResponse, UseCaseContext>
 {
-    public PlaceOrderVerification(PlaceOrderResponse response, Context context) 
+    public PlaceOrderVerification(PlaceOrderResponse response, UseCaseContext context) 
         : base(response, context)
     {
     }

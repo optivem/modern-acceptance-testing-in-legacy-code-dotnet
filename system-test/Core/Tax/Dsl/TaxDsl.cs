@@ -7,9 +7,9 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Dsl;
 public class TaxDsl : IDisposable
 {
     private readonly TaxDriver _driver;
-    private readonly Context _context;
+    private readonly UseCaseContext _context;
 
-    public TaxDsl(Context context, SystemConfiguration configuration)
+    public TaxDsl(UseCaseContext context, SystemConfiguration configuration)
     {
         _driver = CreateDriver(configuration);
         _context = context;

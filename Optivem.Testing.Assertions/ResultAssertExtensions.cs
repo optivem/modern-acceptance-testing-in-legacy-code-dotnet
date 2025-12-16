@@ -20,13 +20,4 @@ public static class ResultAssertExtensions
         result.IsFailure.ShouldBeTrue("Expected result to be failure but was success");
         return result;
     }
-
-    public static Result<T, Error> ShouldBeFailure<T>(this Result<T, Error> result, string errorMessage)
-    {
-        result.ShouldBeFailure();
-        var error = result.Error;
-        error.Message.ShouldBe(errorMessage, 
-            $"Expected result to contain error message '{errorMessage}' but got: {error.Message}");
-        return result;
-    }
 }

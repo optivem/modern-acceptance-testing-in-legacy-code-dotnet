@@ -1,5 +1,6 @@
 using Optivem.Lang;
 using Optivem.Testing.Assertions;
+using Optivem.EShop.SystemTest.Core.Common.Error;
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client.Pages;

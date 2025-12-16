@@ -5,16 +5,19 @@ using Optivem.Testing.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands;
 
-public class GoToErp : BaseErpCommand<VoidValue, VoidVerification>
+public class GoToErp : BaseErpCommand<VoidValue, VoidVerification<UseCaseContext>>
 {
-    public GoToErp(ErpDriver driver, Context context) 
+    public GoToErp(ErpDriver driver, UseCaseContext context) 
         : base(driver, context)
     {
     }
 
-    public override CommandResult<VoidValue, VoidVerification> Execute()
+    public override ErpUseCaseResult<VoidValue, VoidVerification<UseCaseContext>> Execute()
     {
         var result = _driver.GoToErp();
-        return new CommandResult<VoidValue, VoidVerification>(result, _context, (_, ctx) => new VoidVerification(ctx));
+        return new ErpUseCaseResult<VoidValue, VoidVerification<UseCaseContext>>(
+            result, 
+            _context, 
+            (response, ctx) => new VoidVerification<UseCaseContext>(response, ctx));
     }
 }

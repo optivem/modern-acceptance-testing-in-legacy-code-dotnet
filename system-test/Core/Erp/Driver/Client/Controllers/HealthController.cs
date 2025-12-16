@@ -1,5 +1,6 @@
 using Optivem.Lang;
 using Optivem.Http;
+using Optivem.EShop.SystemTest.Core.Common.Error;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Controllers
 {

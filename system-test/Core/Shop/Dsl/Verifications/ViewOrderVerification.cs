@@ -6,9 +6,9 @@ using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
 
-public class ViewOrderVerification : BaseSuccessVerification<GetOrderResponse>
+public class ViewOrderVerification : ResponseVerification<GetOrderResponse, UseCaseContext>
 {
-    public ViewOrderVerification(GetOrderResponse response, Context context) 
+    public ViewOrderVerification(GetOrderResponse response, UseCaseContext context) 
         : base(response, context)
     {
     }

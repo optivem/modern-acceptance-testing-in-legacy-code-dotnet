@@ -8,13 +8,13 @@ namespace Optivem.EShop.SystemTest.Core;
 
 public class SystemDsl : IDisposable
 {
-    private readonly Context _context;
+    private readonly UseCaseContext _context;
     private readonly SystemConfiguration _configuration;
     private readonly Dictionary<string, ShopDsl> _shopDsls;
     private ErpDsl? _erp;
     private TaxDsl? _tax;
 
-    public SystemDsl(Context context, SystemConfiguration configuration)
+    public SystemDsl(UseCaseContext context, SystemConfiguration configuration)
     {
         _context = context;
         _configuration = configuration;
@@ -22,7 +22,7 @@ public class SystemDsl : IDisposable
     }
 
     public SystemDsl(SystemConfiguration configuration)
-        : this(new Context(), configuration) { }
+        : this(new UseCaseContext(), configuration) { }
 
     public ShopDsl Shop(Channel channel)
     {

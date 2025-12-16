@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Optivem.Testing.Dsl;
 
-public class Context
+public class UseCaseContext
 {
     private readonly Dictionary<string, string> _paramMap = new();
     private readonly Dictionary<string, string> _resultMap = new();

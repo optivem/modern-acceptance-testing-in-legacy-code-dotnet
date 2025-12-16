@@ -10,9 +10,9 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Dsl;
 public class ShopDsl : IDisposable
 {
     private readonly IShopDriver _driver;
-    private readonly Context _context;
+    private readonly UseCaseContext _context;
 
-    public ShopDsl(Channel channel, Context context, SystemConfiguration configuration)
+    public ShopDsl(Channel channel, UseCaseContext context, SystemConfiguration configuration)
     {
         _driver = CreateDriver(channel, configuration);
         _context = context;

@@ -1,5 +1,6 @@
 using Optivem.Lang;
 using Optivem.Http;
+using Optivem.EShop.SystemTest.Core.Common.Error;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Api.Client;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Requests;

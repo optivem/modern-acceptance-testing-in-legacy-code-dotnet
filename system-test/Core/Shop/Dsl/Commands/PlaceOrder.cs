@@ -18,7 +18,7 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
     private string? _quantity;
     private string? _country;
 
-    public PlaceOrder(IShopDriver driver, Context context) 
+    public PlaceOrder(IShopDriver driver, UseCaseContext context) 
         : base(driver, context)
     {
         Sku(DEFAULT_SKU);
@@ -55,7 +55,7 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
         return this;
     }
 
-    public override CommandResult<PlaceOrderResponse, PlaceOrderVerification> Execute()
+    public override ShopUseCaseResult<PlaceOrderResponse, PlaceOrderVerification> Execute()
     {
         var sku = _context.GetParamValue(_skuParamAlias!);
 
@@ -74,7 +74,7 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
             _context.SetResultEntry(_orderNumberResultAlias, orderNumber);
         }
 
-        return new CommandResult<PlaceOrderResponse, PlaceOrderVerification>(
+        return new ShopUseCaseResult<PlaceOrderResponse, PlaceOrderVerification>(
             result, 
             _context, 
             (response, ctx) => new PlaceOrderVerification(response, ctx));
