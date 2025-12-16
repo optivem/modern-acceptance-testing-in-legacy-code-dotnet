@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands;
 
-public class CreateProduct : BaseErpCommand<VoidValue, VoidVerification<UseCaseContext>>
+public class CreateProduct : BaseErpCommand<VoidValue, VoidResponseVerification<UseCaseContext>>
 {
     private const string DEFAULT_SKU = "DEFAULT_SKU";
     private const decimal DEFAULT_UNIT_PRICE = 20.00m;
@@ -77,7 +77,7 @@ public class CreateProduct : BaseErpCommand<VoidValue, VoidVerification<UseCaseC
         return this;
     }
 
-    public override ErpUseCaseResult<VoidValue, VoidVerification<UseCaseContext>> Execute()
+    public override ErpUseCaseResult<VoidValue, VoidResponseVerification<UseCaseContext>> Execute()
     {
         var sku = _context.GetParamValue(_skuParamAlias!);
 
@@ -93,9 +93,9 @@ public class CreateProduct : BaseErpCommand<VoidValue, VoidVerification<UseCaseC
 
         var result = _driver.CreateProduct(request);
             
-        return new ErpUseCaseResult<VoidValue, VoidVerification<UseCaseContext>>(
+        return new ErpUseCaseResult<VoidValue, VoidResponseVerification<UseCaseContext>>(
             result, 
             _context, 
-            (response, ctx) => new VoidVerification<UseCaseContext>(response, ctx));
+            (response, ctx) => new VoidResponseVerification<UseCaseContext>(response, ctx));
     }
 }

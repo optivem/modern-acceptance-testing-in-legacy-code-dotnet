@@ -5,19 +5,19 @@ using Optivem.Testing.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;
 
-public class GoToShop : BaseShopCommand<VoidValue, VoidVerification<UseCaseContext>>
+public class GoToShop : BaseShopCommand<VoidValue, VoidResponseVerification<UseCaseContext>>
 {
     public GoToShop(IShopDriver driver, UseCaseContext context) 
         : base(driver, context)
     {
     }
 
-    public override ShopUseCaseResult<VoidValue, VoidVerification<UseCaseContext>> Execute()
+    public override ShopUseCaseResult<VoidValue, VoidResponseVerification<UseCaseContext>> Execute()
     {
         var result = _driver.GoToShop();
-        return new ShopUseCaseResult<VoidValue, VoidVerification<UseCaseContext>>(
+        return new ShopUseCaseResult<VoidValue, VoidResponseVerification<UseCaseContext>>(
             result, 
             _context, 
-            (response, ctx) => new VoidVerification<UseCaseContext>(response, ctx));
+            (response, ctx) => new VoidResponseVerification<UseCaseContext>(response, ctx));
     }
 }

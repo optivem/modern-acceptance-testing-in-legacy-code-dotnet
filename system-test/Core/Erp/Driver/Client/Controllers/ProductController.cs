@@ -8,16 +8,16 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Controllers;
 public class ProductController
 {
     private const string Endpoint = "/api/products";
-    private readonly JsonHttpClient<ProblemDetailResponse> _testHttpClient;
+    private readonly JsonHttpClient<ProblemDetailResponse> _httpClient;
 
-    public ProductController(JsonHttpClient<ProblemDetailResponse> testHttpClient)
+    public ProductController(JsonHttpClient<ProblemDetailResponse> httpClient)
     {
-        _testHttpClient = testHttpClient;
+        _httpClient = httpClient;
     }
 
     public Result<VoidValue, Error> CreateProduct(CreateProductRequest request)
     {
-        return _testHttpClient.Post(Endpoint, request)
+        return _httpClient.Post(Endpoint, request)
             .MapFailure(ProblemDetailConverter.ToError);
     }
 }

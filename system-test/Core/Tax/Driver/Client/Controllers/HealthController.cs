@@ -10,9 +10,9 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Driver.Client.Controllers
 
         private readonly JsonHttpClient<ProblemDetailResponse> _httpClient;
 
-        public HealthController(JsonHttpClient<ProblemDetailResponse> httpGateway)
+        public HealthController(JsonHttpClient<ProblemDetailResponse> httpClient)
         {
-            _httpClient = httpGateway;
+            _httpClient = httpClient;
         }
 
         public Result<VoidValue, Error> CheckHealth()

@@ -15,8 +15,8 @@ public class ShopApiDriver : IShopDriver
     public ShopApiDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
-        var testHttpClient = new JsonHttpClient<ProblemDetailResponse>(_httpClient, baseUrl);
-        _apiClient = new ShopApiClient(testHttpClient);
+        var jsonHttpClient = new JsonHttpClient<ProblemDetailResponse>(_httpClient, baseUrl);
+        _apiClient = new ShopApiClient(jsonHttpClient);
     }
 
     public Result<VoidValue, Error> GoToShop()

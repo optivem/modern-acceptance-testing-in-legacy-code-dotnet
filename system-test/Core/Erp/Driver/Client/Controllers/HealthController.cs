@@ -8,16 +8,16 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Controllers
     {
         private static readonly string Endpoint = "/health";
 
-        private readonly JsonHttpClient<ProblemDetailResponse> _testHttpClient;
+        private readonly JsonHttpClient<ProblemDetailResponse> _httpClient;
 
-        public HealthController(JsonHttpClient<ProblemDetailResponse> testHttpClient)
+        public HealthController(JsonHttpClient<ProblemDetailResponse> httpClient)
         {
-            _testHttpClient = testHttpClient;
+            _httpClient = httpClient;
         }
 
         public Result<VoidValue, Error> CheckHealth()
         {
-            return _testHttpClient.Get(Endpoint)
+            return _httpClient.Get(Endpoint)
                 .MapFailure(ProblemDetailConverter.ToError);
         }
     }
