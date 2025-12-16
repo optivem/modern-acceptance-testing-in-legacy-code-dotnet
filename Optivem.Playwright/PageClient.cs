@@ -3,7 +3,7 @@ using Microsoft.Playwright;
 
 namespace Optivem.Playwright;
 
-public class PageGateway
+public class PageClient
 {
     private readonly IPage _page;
     private readonly string _baseUrl;
@@ -12,14 +12,14 @@ public class PageGateway
     private const int DefaultTimeoutSeconds = 10;
     private const int DefaultTimeoutMilliseconds = DefaultTimeoutSeconds * 1000;
 
-    private PageGateway(IPage page, string baseUrl, float timeoutMilliseconds)
+    private PageClient(IPage page, string baseUrl, float timeoutMilliseconds)
     {
         _page = page;
         _baseUrl = baseUrl;
         _timeoutMilliseconds = timeoutMilliseconds;
     }
 
-    public PageGateway(IPage page, string baseUrl) 
+    public PageClient(IPage page, string baseUrl) 
         : this(page, baseUrl, DefaultTimeoutMilliseconds)
     {
     }

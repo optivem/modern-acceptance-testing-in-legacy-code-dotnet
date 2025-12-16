@@ -10,9 +10,9 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Controllers;
 public class ProductController
 {
     private const string Endpoint = "/api/products";
-    private readonly HttpGateway _testHttpClient;
+    private readonly JsonHttpClient _testHttpClient;
 
-    public ProductController(HttpGateway testHttpClient)
+    public ProductController(JsonHttpClient testHttpClient)
     {
         _testHttpClient = testHttpClient;
     }

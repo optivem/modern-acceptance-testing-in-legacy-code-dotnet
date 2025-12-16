@@ -14,9 +14,9 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Controllers
     {
         private static readonly string Endpoint = "/health";
 
-        private readonly HttpGateway _testHttpClient;
+        private readonly JsonHttpClient _testHttpClient;
 
-        public HealthController(HttpGateway testHttpClient)
+        public HealthController(JsonHttpClient testHttpClient)
         {
             _testHttpClient = testHttpClient;
         }

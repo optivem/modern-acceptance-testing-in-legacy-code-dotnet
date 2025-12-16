@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Optivem.Http;
 
-public class HttpGateway
+public class JsonHttpClient
 {
     private const string ContentType = "Content-Type";
     private const string ApplicationJson = "application/json";
@@ -11,7 +11,7 @@ public class HttpGateway
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
 
-    public HttpGateway(HttpClient httpClient, string baseUrl)
+    public JsonHttpClient(HttpClient httpClient, string baseUrl)
     {
         _httpClient = httpClient;
         _baseUrl = baseUrl;

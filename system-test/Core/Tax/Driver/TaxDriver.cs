@@ -14,7 +14,7 @@ public class TaxDriver : IDisposable
     public TaxDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
-        var testHttpClient = new HttpGateway(_httpClient, baseUrl);
+        var testHttpClient = new JsonHttpClient(_httpClient, baseUrl);
         _taxApiClient = new TaxClient(testHttpClient);
     }
 

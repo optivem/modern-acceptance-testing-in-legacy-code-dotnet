@@ -8,7 +8,7 @@ public class TaxClient
 {
     private readonly HealthController _healthController;
 
-    public TaxClient(HttpGateway httpGateway)
+    public TaxClient(JsonHttpClient httpGateway)
     {
         _healthController = new HealthController(httpGateway);
     }

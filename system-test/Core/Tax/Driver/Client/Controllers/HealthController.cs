@@ -15,9 +15,9 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Driver.Client.Controllers
     {
         public static readonly string Endpoint = "/health";
 
-        private readonly HttpGateway _httpClient;
+        private readonly JsonHttpClient _httpClient;
 
-        public HealthController(HttpGateway httpGateway)
+        public HealthController(JsonHttpClient httpGateway)
         {
             _httpClient = httpGateway;
         }

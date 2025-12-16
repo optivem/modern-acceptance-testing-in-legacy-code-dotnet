@@ -11,9 +11,9 @@ public abstract class BasePage
     private const string ErrorMessageSelector = "[role='alert'].error .error-message";
     private const string FieldErrorSelector = "[role='alert'].error .field-error";
 
-    protected readonly PageGateway PageClient;
+    protected readonly PageClient PageClient;
 
-    protected BasePage(PageGateway pageClient)
+    protected BasePage(PageClient pageClient)
     {
         PageClient = pageClient;
     }

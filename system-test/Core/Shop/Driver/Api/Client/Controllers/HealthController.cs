@@ -9,9 +9,9 @@ public class HealthController
 {
     private const string Endpoint = "/health";
 
-    private readonly HttpGateway _httpClient;
+    private readonly JsonHttpClient _httpClient;
 
-    public HealthController(HttpGateway httpClient)
+    public HealthController(JsonHttpClient httpClient)
     {
         _httpClient = httpClient;
     }

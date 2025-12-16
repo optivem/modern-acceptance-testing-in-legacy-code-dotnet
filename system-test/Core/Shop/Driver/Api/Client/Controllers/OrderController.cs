@@ -11,9 +11,9 @@ public class OrderController
 {
     private const string Endpoint = "/api/orders";
 
-    private readonly HttpGateway _httpClient;
+    private readonly JsonHttpClient _httpClient;
 
-    public OrderController(HttpGateway httpClient)
+    public OrderController(JsonHttpClient httpClient)
     {
         _httpClient = httpClient;
     }

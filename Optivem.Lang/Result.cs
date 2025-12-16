@@ -40,4 +40,6 @@ public class Result<T, E>
             return _error!;
         }
     }
+
+    // TODO: VJ: Map Error
 }

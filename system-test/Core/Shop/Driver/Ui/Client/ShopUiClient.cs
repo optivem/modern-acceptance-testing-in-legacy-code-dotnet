@@ -5,7 +5,7 @@ using Optivem.Lang;
 using Shouldly;
 using System.Net;
 using System.Net.NetworkInformation;
-using PlaywrightGateway = Optivem.Playwright.PageGateway;
+using PlaywrightGateway = Optivem.Playwright.PageClient;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client;
 

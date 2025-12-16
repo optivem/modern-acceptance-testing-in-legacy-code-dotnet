@@ -9,7 +9,7 @@ public class ErpClient
     private readonly HealthController _healthController;
     private readonly ProductController _productController;
 
-    public ErpClient(HttpGateway httpGateway)
+    public ErpClient(JsonHttpClient httpGateway)
     {
         _healthController = new HealthController(httpGateway);
         _productController = new ProductController(httpGateway);
