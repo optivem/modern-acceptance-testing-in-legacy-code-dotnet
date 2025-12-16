@@ -1,3 +1,4 @@
+using Optivem.EShop.SystemTest.Core.Common;
 using Optivem.EShop.SystemTest.Core.Erp.Driver;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands;
 using Optivem.Testing.Dsl;

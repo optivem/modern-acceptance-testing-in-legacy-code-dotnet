@@ -1,3 +1,4 @@
+using Optivem.EShop.SystemTest.Core.Common;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl;
 using Optivem.EShop.SystemTest.Core.Tax.Dsl;

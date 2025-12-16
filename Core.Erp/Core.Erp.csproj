@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Commons\Core.Commons.csproj" />
+    <ProjectReference Include="..\Optivem.Http\Optivem.Http.csproj" />
+    <ProjectReference Include="..\Optivem.Lang\Optivem.Lang.csproj" />
+    <ProjectReference Include="..\Optivem.Testing.Dsl\Optivem.Testing.Dsl.csproj" />
+  </ItemGroup>
+
+</Project>

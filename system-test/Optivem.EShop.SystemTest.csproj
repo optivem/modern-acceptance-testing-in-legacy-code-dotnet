@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Optivem.Lang\Optivem.Lang.csproj" />
     <ProjectReference Include="..\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
     <ProjectReference Include="..\Optivem.Http\Optivem.Http.csproj" />
