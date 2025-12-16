@@ -68,9 +68,9 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
 
         var result = _driver.PlaceOrder(request);
 
-        if (result.Success && _orderNumberResultAlias != null)
+        if (result.IsSuccess && _orderNumberResultAlias != null)
         {
-            var orderNumber = result.GetValue().OrderNumber;
+            var orderNumber = result.Value.OrderNumber;
             _context.SetResultEntry(_orderNumberResultAlias, orderNumber);
         }
 

@@ -17,7 +17,7 @@ public class FailureVerification<T>
     public FailureVerification<T> ErrorMessage(string expectedMessage)
     {
         var expandedExpectedMessage = _context.ExpandAliases(expectedMessage);
-        var error = _result.GetError();
+        var error = _result.Error;
         var errorMessage = error.Message;
         
         errorMessage.ShouldBe(expandedExpectedMessage, 
@@ -30,7 +30,7 @@ public class FailureVerification<T>
     {
         var expandedExpectedField = _context.ExpandAliases(expectedField);
         var expandedExpectedMessage = _context.ExpandAliases(expectedMessage);
-        var error = _result.GetError();
+        var error = _result.Error;
         var fields = error.Fields;
 
         fields.ShouldNotBeNull("Expected field errors but none were found");

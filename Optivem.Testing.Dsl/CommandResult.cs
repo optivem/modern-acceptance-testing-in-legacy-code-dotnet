@@ -18,18 +18,18 @@ public class CommandResult<TResponse, TVerification>
 
     public TVerification ShouldSucceed()
     {
-        if (!_result.Success)
+        if (!_result.IsSuccess)
         {
-            var error = _result.GetError();
+            var error = _result.Error;
             throw new InvalidOperationException($"Expected result to be success but was failure with error: {error.Message}");
         }
 
-        return _verificationFactory(_result.GetValue(), _context);
+        return _verificationFactory(_result.Value, _context);
     }
 
     public FailureVerification<TResponse> ShouldFail()
     {
-        if (_result.Success)
+        if (_result.IsSuccess)
         {
             throw new InvalidOperationException("Expected result to be failure but was success");
         }

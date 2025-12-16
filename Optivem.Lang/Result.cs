@@ -2,34 +2,42 @@ namespace Optivem.Lang;
 
 public class Result<T, E>
 {
-    public bool Success { get; }
+    private bool _success;
     private readonly T? _value;
     private readonly E? _error;
 
     private Result(bool success, T? value, E? error)
     {
-        Success = success;
+        _success = success;
         _value = value;
         _error = error;
     }
 
-    public static Result<T, E> SuccessResult(T value) => new(true, value, default);
+    public static Result<T, E> Success(T value) => new(true, value, default);
 
-    public static Result<T, E> FailureResult(E error) => new(false, default, error);
+    public static Result<T, E> Failure(E error) => new(false, default, error);
 
-    public bool IsFailure() => !Success;
+    public bool IsSuccess => _success;
 
-    public T GetValue()
+    public bool IsFailure => !_success;
+
+    public T Value
     {
-        if (!Success)
-            throw new InvalidOperationException("Cannot get value from a failed result");
-        return _value!;
+        get
+        {
+            if (!_success)
+                throw new InvalidOperationException("Cannot get value from a failed result");
+            return _value!;
+        }
     }
 
-    public E GetError()
+    public E Error
     {
-        if (Success)
-            throw new InvalidOperationException("Cannot get error from a successful result");
-        return _error!;
+        get
+        {
+            if (_success)
+                throw new InvalidOperationException("Cannot get error from a successful result");
+            return _error!;
+        }
     }
 }

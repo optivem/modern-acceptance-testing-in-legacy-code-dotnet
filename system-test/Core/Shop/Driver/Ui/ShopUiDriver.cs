@@ -38,13 +38,13 @@ public class ShopUiDriver : IShopDriver
 
         var statusResult = _client.CheckStatusOk();
 
-        if (statusResult.IsFailure()) {
+        if (statusResult.IsFailure) {
             return statusResult;
         }
 
         var pageLoadedResult = _client.CheckPageLoaded();
 
-        if (pageLoadedResult.IsFailure())
+        if (pageLoadedResult.IsFailure)
         {
             return pageLoadedResult;
         }
