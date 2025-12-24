@@ -6,15 +6,15 @@ $Config = @{
     Tests = @(
         @{  Id = "smoke";
             Name = "Smoke Tests";
-            Command = "dotnet test --filter 'FullyQualifiedName~SmokeTests' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
-            Path = "system-test";
+            Command = "dotnet test --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+            Path = "SystemTests/SmokeTests";
             TestReportPath = "TestResults\testResults.html"
             TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; },
         @{ 
             Id = "e2e";
             Name = "E2E Tests";
-            Command = "dotnet test --filter 'FullyQualifiedName~E2eTests' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
-            Path = "system-test";
+            Command = "dotnet test --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+            Path = "SystemTests/E2eTests";
             TestReportPath = "TestResults\testResults.html";
             TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install";  }
     )

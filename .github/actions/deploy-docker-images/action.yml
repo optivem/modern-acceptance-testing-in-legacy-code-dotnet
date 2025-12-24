@@ -1,6 +1,5 @@
 name: 'Deploy Docker Images'
 description: 'Deploy Docker images using Docker Compose and run smoke tests'
-
 inputs:
   environment:
     description: 'Target deployment environment (e.g., qa, staging, production)'
@@ -11,26 +10,54 @@ inputs:
   image-urls:
     description: 'Docker image URLs to deploy (JSON array format)'
     required: true
+  external-system-mode:
+    description: 'External system mode: stub or real'
+    required: false
+    default: 'stub'
+  frontend-url:
+    description: 'Frontend URL for health check'
+    required: false
+    default: 'http://localhost:3001/'
+  backend-url:
+    description: 'Backend API URL for health check'
+    required: false
+    default: 'http://localhost:8081/health'
+  erp-url:
+    description: 'ERP API URL for health check'
+    required: false
+    default: 'http://localhost:9002/erp/health'
+  tax-url:
+    description: 'Tax API URL for health check'
+    required: false
+    default: 'http://localhost:9002/tax/health'
 
 runs:
   using: 'composite'
   steps:
-    - name: Clone Base Repository
+    - name: Checkout Base Repository
       run: |
-        echo "📥 Cloning base repository..."
-        git clone https://github.com/optivem/modern-acceptance-testing-in-legacy-code.git modern-acceptance-testing-in-legacy-code
-        echo "✅ Base repository cloned successfully"
+        if [ -d "modern-acceptance-testing-in-legacy-code/.git" ]; then
+          echo "📂 Base repository already exists, pulling latest changes..."
+          cd modern-acceptance-testing-in-legacy-code
+          git pull origin main
+          cd ..
+        else
+          echo "📥 Cloning base repository..."
+          git clone https://github.com/optivem/modern-acceptance-testing-in-legacy-code.git modern-acceptance-testing-in-legacy-code
+        fi
+        echo "✅ Base repository ready"
       shell: bash
 
     - name: Deploy System
       run: |
         echo "🚀 Deploying system version ${{ inputs.version }} to ${{ inputs.environment }} environment..."
+        echo "🔧 External System Mode: ${{ inputs.external-system-mode }}"
         echo ""
         
         # List Docker images being deployed
         if [[ -n "${{ inputs.image-urls }}" ]]; then
           echo "📦 Deploying the following Docker images:"
-          
+        
           # Parse JSON array and iterate through each URL
           echo '${{ inputs.image-urls }}' | jq -r '.[]' | while IFS= read -r image_url; do
             if [[ -n "$image_url" ]]; then
@@ -49,34 +76,38 @@ runs:
         echo "   - Other cloud providers (DigitalOcean, Linode, etc.)"
         echo ""
         echo "🐳 Starting Docker Compose for simulated deployment..."
-        docker compose -f modern-acceptance-testing-in-legacy-code/docker-compose.pipeline.yml up -d
+        
+        COMPOSE_FILE="docker-compose.pipeline.${{ inputs.external-system-mode }}.yml"
+        echo "📄 Using compose file: $COMPOSE_FILE"
+        docker compose -f modern-acceptance-testing-in-legacy-code/$COMPOSE_FILE up -d
+
       shell: bash
 
     - name: Wait for System - Frontend
       uses: optivem/wait-for-docker-compose-action@v1
       with:
-        url: 'http://localhost:3001/'
+        url: ${{ inputs.frontend-url }}
         max-attempts: '30'
         wait-seconds: '10'
 
     - name: Wait for System - Backend
       uses: optivem/wait-for-docker-compose-action@v1
       with:
-        url: 'http://localhost:8081/health'
+        url: ${{ inputs.backend-url }}
         max-attempts: '30'
         wait-seconds: '10'
 
     - name: Wait for System - ERP
       uses: optivem/wait-for-docker-compose-action@v1
       with:
-        url: 'http://localhost:9001/erp/health'
+        url: ${{ inputs.erp-url }}
         max-attempts: '30'
         wait-seconds: '10'
 
     - name: Wait for System - Tax
       uses: optivem/wait-for-docker-compose-action@v1
       with:
-        url: 'http://localhost:9001/tax/health'
+        url: ${{ inputs.tax-url }}
         max-attempts: '30'
         wait-seconds: '10'
 
@@ -88,21 +119,21 @@ runs:
     - name: Restore system test dependencies
       run: dotnet restore
       shell: bash
-      working-directory: system-test
+      working-directory: SystemTests/SmokeTests
 
     - name: Build system tests
       run: dotnet build --no-restore --configuration Release
       shell: bash
-      working-directory: system-test
+      working-directory: SystemTests/SmokeTests
 
     - name: Install Playwright browsers
       run: |
         dotnet build
         pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
       shell: bash
-      working-directory: system-test
+      working-directory: SystemTests/SmokeTests
 
     - name: Run Smoke Tests
-      run: dotnet test --no-build --configuration Release --filter "FullyQualifiedName~SmokeTests" --verbosity normal
+      run: dotnet test --no-build --configuration Release --verbosity normal
       shell: bash
-      working-directory: system-test
+      working-directory: SystemTests/SmokeTests

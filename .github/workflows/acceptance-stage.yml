@@ -15,10 +15,8 @@ concurrency:
   group: acceptance-stage
   cancel-in-progress: true
 
-env:
-  DOTNET_VERSION: '8.0.x'
-
 jobs:
+
   find-latest-images:
     runs-on: ubuntu-latest
     outputs:
@@ -29,16 +27,16 @@ jobs:
       contents: read
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Resolve Latest Docker Digests
-      id: get-digest
-      uses: optivem/find-latest-docker-images-action@v1
-      with:
-        image-urls: |
-          ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code/frontend:latest
-          ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code/backend:latest
+      - name: Resolve Latest Docker Digests
+        id: get-digest
+        uses: optivem/find-latest-docker-images-action@v1
+        with:
+          image-urls: |
+            ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code/frontend:latest
+            ghcr.io/${{ github.repository_owner }}/modern-acceptance-testing-in-legacy-code/backend:latest
 
   should-run:
     needs: find-latest-images
@@ -62,7 +60,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   system-test:
-    needs: [should-run, find-latest-images]
+    needs: [ should-run, find-latest-images ]
     if: needs.should-run.outputs.should_run == 'true'
     runs-on: ubuntu-latest
 
@@ -70,36 +68,52 @@ jobs:
       contents: read
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Deploy System
-      id: deploy-system
-      uses: ./.github/actions/deploy-docker-images
-      with:
-        environment: acceptance
-        version: latest
-        image-urls: ${{ needs.find-latest-images.outputs.image-digest-urls }}
+      - name: Deploy System (Real External Systems)
+        uses: ./.github/actions/deploy-docker-images
+        with:
+          environment: acceptance
+          version: latest
+          image-urls: ${{ needs.find-latest-images.outputs.image-digest-urls }}
+          external-system-mode: 'real'
+          frontend-url: 'http://localhost:3001/'
+          backend-url: 'http://localhost:8081/health'
+          erp-url: 'http://localhost:9001/erp/health'
+          tax-url: 'http://localhost:9001/tax/health'
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Deploy System (Stub External Systems)
+        uses: ./.github/actions/deploy-docker-images
+        with:
+          environment: acceptance
+          version: latest
+          image-urls: ${{ needs.find-latest-images.outputs.image-digest-urls }}
+          external-system-mode: 'stub'
+          frontend-url: 'http://localhost:3002/'
+          backend-url: 'http://localhost:8082/health'
+          erp-url: 'http://localhost:9002/erp/health'
+          tax-url: 'http://localhost:9002/tax/health'
 
-    - name: Restore system test dependencies
-      working-directory: ./system-test
-      run: dotnet restore
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Build system tests
-      working-directory: ./system-test
-      run: dotnet build --no-restore --configuration Release
+      - name: Restore system test dependencies
+        working-directory: ./system-test
+        run: dotnet restore
 
-    - name: Install Playwright browsers
-      working-directory: ./system-test
-      run: |
-        dotnet build
-        pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+      - name: Build system tests
+        working-directory: ./system-test
+        run: dotnet build --no-restore --configuration Release
 
-    - name: Run E2E Tests
-      working-directory: ./system-test
-      run: dotnet test --no-build --configuration Release --filter "FullyQualifiedName~E2eTests" --verbosity normal
+      - name: Install Playwright browsers
+        working-directory: ./system-test
+        run: |
+          dotnet build
+          pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+
+      - name: Run E2E Tests
+        working-directory: ./system-test
+        run: dotnet test --no-build --configuration Release --filter "FullyQualifiedName~E2eTests" --verbosity normal
