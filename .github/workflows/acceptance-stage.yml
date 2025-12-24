@@ -112,7 +112,7 @@ jobs:
         run: |
           dotnet build
           pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
-         working-directory: ./SystemTests/E2eTests
+        working-directory: ./SystemTests/E2eTests
 
       - name: Run E2E Tests
         run: dotnet test --no-build --configuration Release --verbosity normal
