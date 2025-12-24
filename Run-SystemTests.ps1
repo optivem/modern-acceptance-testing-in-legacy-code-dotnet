@@ -4,6 +4,7 @@ param(
     [string]$Mode = "local",
     [string]$TestId,
 
+    [switch]$Rebuild,
     [switch]$Restart,
 
     [int]$LogLines = 50
@@ -45,7 +46,7 @@ if (-not (Test-Path $ScriptPath)) {
 
 Write-Host "Executing script from repository..." -ForegroundColor Cyan
 Set-Location "$RepoPath"
-& $ScriptPath -Mode $Mode -Restart:$Restart -LogLines $LogLines -WorkingDirectory $WorkingDirectory -TestId $TestId
+& $ScriptPath -Mode $Mode -Rebuild:$Rebuild -Restart:$Restart -LogLines $LogLines -WorkingDirectory $WorkingDirectory -TestId $TestId
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Script execution failed with exit code: $LASTEXITCODE" -ForegroundColor Red
