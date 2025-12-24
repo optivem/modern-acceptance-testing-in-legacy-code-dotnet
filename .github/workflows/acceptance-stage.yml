@@ -101,19 +101,19 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore system test dependencies
-        working-directory: ./system-test
+        working-directory: ./SystemTests/E2eTests
         run: dotnet restore
 
       - name: Build system tests
-        working-directory: ./system-test
+        working-directory: ./SystemTests/E2eTests
         run: dotnet build --no-restore --configuration Release
 
       - name: Install Playwright browsers
-        working-directory: ./system-test
+        working-directory: ./SystemTests/E2eTests
         run: |
           dotnet build
           pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
 
       - name: Run E2E Tests
-        working-directory: ./system-test
-        run: dotnet test --no-build --configuration Release --filter "FullyQualifiedName~E2eTests" --verbosity normal
+        working-directory: ./SystemTests/E2eTests
+        run: dotnet test --no-build --configuration Release --verbosity normal
