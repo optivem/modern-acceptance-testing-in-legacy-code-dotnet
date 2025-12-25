@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core.Gherkin\Core.Gherkin.csproj" />
     <ProjectReference Include="..\..\Core\Core.Root\Core.Root.csproj" />
     <ProjectReference Include="..\..\Libs\Optivem.Lang\Optivem.Lang.csproj" />
     <ProjectReference Include="..\..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
