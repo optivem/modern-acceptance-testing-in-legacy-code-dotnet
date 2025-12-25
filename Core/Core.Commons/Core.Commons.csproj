@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Optivem.Lang\Optivem.Lang.csproj" />
-    <ProjectReference Include="..\Optivem.Testing.Dsl\Optivem.Testing.Dsl.csproj" />
+    <ProjectReference Include="..\..\Optivem.Lang\Optivem.Lang.csproj" />
+    <ProjectReference Include="..\..\Optivem.Testing.Dsl\Optivem.Testing.Dsl.csproj" />
   </ItemGroup>
 
   <ItemGroup>

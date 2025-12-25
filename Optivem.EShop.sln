@@ -40,13 +40,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Testing.Channels.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Lang", "Optivem.Lang\Optivem.Lang.csproj", "{FBDDFACF-05E6-4920-9306-D3908E92FE35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Commons", "Core.Commons\Core.Commons.csproj", "{04B125B0-258F-4DA8-B1F1-4214B4945D94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Commons", "Core\Core.Commons\Core.Commons.csproj", "{04B125B0-258F-4DA8-B1F1-4214B4945D94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Shop", "Core.Shop\Core.Shop.csproj", "{8F5F23B7-0DA0-41EF-B994-71294FD6AFBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Shop", "Core\Core.Shop\Core.Shop.csproj", "{8F5F23B7-0DA0-41EF-B994-71294FD6AFBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tax", "Core.Tax\Core.Tax.csproj", "{4FBEAD90-697E-4620-94CB-49ED8FC153C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tax", "Core\Core.Tax\Core.Tax.csproj", "{4FBEAD90-697E-4620-94CB-49ED8FC153C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Erp", "Core.Erp\Core.Erp.csproj", "{2CCE53DA-8189-4B87-A601-121261686691}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Erp", "Core\Core.Erp\Core.Erp.csproj", "{2CCE53DA-8189-4B87-A601-121261686691}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{56E2B456-6FAB-410A-B43B-A41342689283}"
 EndProject
@@ -58,7 +58,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmokeTests", "SystemTests\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E2eTests", "SystemTests\E2eTests\E2eTests.csproj", "{D83196F4-27AC-4AF2-B36D-B809950FD142}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Root", "Core.Root\Core.Root.csproj", "{750D0A6D-2B42-B285-4079-D0BDDF83052A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Root", "Core\Core.Root\Core.Root.csproj", "{750D0A6D-2B42-B285-4079-D0BDDF83052A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
