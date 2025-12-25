@@ -24,8 +24,8 @@ Successfully created and integrated the Clock module for time-related testing op
 
 **Files Modified:**
 - `Core/Core.Commons/SystemConfiguration.cs`
-- `Core/Core.Root/SystemDsl.cs`
-- `Core/Core.Root/Core.Root.csproj`
+- `Core/Core.Dsl/SystemDsl.cs`
+- `Core/Core.Dsl/Core.Dsl.csproj`
 - `SystemTests/SmokeTests/appsettings.json`
 - `SystemTests/E2eTests/appsettings.json`
 - `SystemTests/SmokeTests/SystemConfigurationLoader.cs`
