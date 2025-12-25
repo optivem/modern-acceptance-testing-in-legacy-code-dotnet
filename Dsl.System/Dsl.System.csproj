@@ -8,12 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Gherkin\**" />
-    <EmbeddedResource Remove="Gherkin\**" />
-    <None Remove="Gherkin\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Core\Core.Clock\Core.Clock.csproj" />
     <ProjectReference Include="..\Core\Core.Commons\Core.Commons.csproj" />
     <ProjectReference Include="..\Core\Core.Erp\Core.Erp.csproj" />

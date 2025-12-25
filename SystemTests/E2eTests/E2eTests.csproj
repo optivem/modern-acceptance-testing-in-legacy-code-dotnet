@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Dsl\Dsl.csproj" />
+    <ProjectReference Include="..\..\Dsl.System\Dsl.System.csproj" />
     <ProjectReference Include="..\..\Libs\Optivem.Lang\Optivem.Lang.csproj" />
     <ProjectReference Include="..\..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
     <ProjectReference Include="..\..\Libs\Optivem.Http\Optivem.Http.csproj" />
