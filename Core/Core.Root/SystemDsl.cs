@@ -1,3 +1,4 @@
+using Optivem.EShop.SystemTest.Core.Clock.Dsl;
 using Optivem.EShop.SystemTest.Core.Common;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl;
@@ -14,6 +15,7 @@ public class SystemDsl : IDisposable
     private readonly Dictionary<string, ShopDsl> _shopDsls;
     private ErpDsl? _erp;
     private TaxDsl? _tax;
+    private ClockDsl? _clock;
 
     public SystemDsl(UseCaseContext context, SystemConfiguration configuration)
     {
@@ -39,6 +41,8 @@ public class SystemDsl : IDisposable
 
     public TaxDsl Tax => _tax ??= new TaxDsl(_context, _configuration);
 
+    public ClockDsl Clock => _clock ??= new ClockDsl(_context, _configuration);
+
     public void Dispose()
     {
         foreach (var shop in _shopDsls.Values)
@@ -47,6 +51,7 @@ public class SystemDsl : IDisposable
         }
         _erp?.Dispose();
         _tax?.Dispose();
+        _clock?.Dispose();
 
         ChannelContext.Clear();
     }

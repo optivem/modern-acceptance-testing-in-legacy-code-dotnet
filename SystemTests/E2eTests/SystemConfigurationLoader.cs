@@ -21,8 +21,9 @@ public static class SystemConfigurationLoader
         var shopApiBaseUrl = GetValue("Shop:ApiBaseUrl");
         var erpBaseUrl = GetValue("Erp:ApiBaseUrl");
         var taxBaseUrl = GetValue("Tax:ApiBaseUrl");
+        var clockBaseUrl = GetValue("Clock:ApiBaseUrl");
 
-        return new SystemConfiguration(shopUiBaseUrl, shopApiBaseUrl, erpBaseUrl, taxBaseUrl);
+        return new SystemConfiguration(shopUiBaseUrl, shopApiBaseUrl, erpBaseUrl, taxBaseUrl, clockBaseUrl);
     }
 
     private static string GetValue(string key)

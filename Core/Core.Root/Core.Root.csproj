@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Core.Clock\Core.Clock.csproj" />
     <ProjectReference Include="..\Core.Commons\Core.Commons.csproj" />
     <ProjectReference Include="..\Core.Erp\Core.Erp.csproj" />
     <ProjectReference Include="..\Core.Shop\Core.Shop.csproj" />
