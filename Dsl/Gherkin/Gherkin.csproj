@@ -5,11 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Optivem.EShop.SystemTest.Core.Gherkin</RootNamespace>
+    <AssemblyName>Optivem.EShop.SystemTest.Core.Gherkin</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
-    <ProjectReference Include="..\..\Dsl\Dsl.csproj" />
+    <ProjectReference Include="..\Dsl.csproj" />
   </ItemGroup>
 
 </Project>
