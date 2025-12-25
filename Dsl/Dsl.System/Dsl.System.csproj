@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Optivem.EShop.SystemTest.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core.Clock\Core.Clock.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Commons\Core.Commons.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Erp\Core.Erp.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Shop\Core.Shop.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Tax\Core.Tax.csproj" />
+    <ProjectReference Include="..\..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
+    <ProjectReference Include="..\..\Libs\Optivem.Testing.Dsl\Optivem.Testing.Dsl.csproj" />
+  </ItemGroup>
+
+</Project>

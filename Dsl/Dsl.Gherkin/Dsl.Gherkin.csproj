@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
+    <ProjectReference Include="..\..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
     <ProjectReference Include="..\Dsl.System\Dsl.System.csproj" />
   </ItemGroup>
 

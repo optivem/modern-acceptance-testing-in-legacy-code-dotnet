@@ -26,8 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Dsl.Gherkin\Dsl.Gherkin.csproj" />
-    <ProjectReference Include="..\..\Dsl.System\Dsl.System.csproj" />
+    <ProjectReference Include="..\..\Dsl\Dsl.Gherkin\Dsl.Gherkin.csproj" />
+    <ProjectReference Include="..\..\Dsl\Dsl.System\Dsl.System.csproj" />
     <ProjectReference Include="..\..\Libs\Optivem.Lang\Optivem.Lang.csproj" />
     <ProjectReference Include="..\..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
     <ProjectReference Include="..\..\Libs\Optivem.Http\Optivem.Http.csproj" />

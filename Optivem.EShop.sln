@@ -62,9 +62,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E2eTests", "SystemTests\E2e
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Clock", "Core\Core.Clock\Core.Clock.csproj", "{3DBF5395-115C-4013-AFFD-BB314714735A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsl.System", "Dsl.System\Dsl.System.csproj", "{E378D9B6-2C24-4F60-AE11-9558954FBD97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsl.System", "Dsl\Dsl.System\Dsl.System.csproj", "{E378D9B6-2C24-4F60-AE11-9558954FBD97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsl.Gherkin", "Dsl.Gherkin\Dsl.Gherkin.csproj", "{8C3367B8-DAA4-40C1-A2CE-22DE4DB32009}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsl.Gherkin", "Dsl\Dsl.Gherkin\Dsl.Gherkin.csproj", "{8C3367B8-DAA4-40C1-A2CE-22DE4DB32009}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
