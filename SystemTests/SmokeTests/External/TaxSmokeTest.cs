@@ -1,25 +1,14 @@
 using Optivem.EShop.SystemTest.Core;
+using Optivem.EShop.SystemTest.Base;
 
 namespace SmokeTests.External;
 
-public class TaxSmokeTest : IDisposable
+public class TaxSmokeTest : BaseSystemTest
 {
-    private readonly SystemDsl _app;
-
-    public TaxSmokeTest()
-    {
-        _app = SystemDslFactory.Create();
-    }
-
-    public void Dispose()
-    {
-        _app.Dispose();
-    }
-
     [Fact]
     public void ShouldBeAbleToGoToTax()
     {
-        _app.Tax.GoToTax()
+        App.Tax.GoToTax()
             .Execute()
             .ShouldSucceed();
     }

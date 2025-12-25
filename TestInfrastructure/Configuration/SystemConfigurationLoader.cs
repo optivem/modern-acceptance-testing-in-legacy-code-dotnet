@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Optivem.EShop.SystemTest.Core.Common;
 
-namespace E2eTests;
+namespace Optivem.EShop.SystemTest.Configuration;
 
 public static class SystemConfigurationLoader
 {

@@ -4,30 +4,17 @@ using Optivem.EShop.SystemTest.Core.Shop;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
 using Optivem.Testing.Channels;
 using Channel = Optivem.Testing.Channels.Channel;
+using Optivem.EShop.SystemTest.Base;
 
 namespace SmokeTests;
 
-public class GherkinSmokeTest : IDisposable
+public class GherkinSmokeTest : BaseSystemTest
 {
-    private readonly SystemDsl _app;
-    private readonly ScenarioDsl _scenario;
-
-    public GherkinSmokeTest()
-    {
-        _app = SystemDslFactory.Create();
-        _scenario = new ScenarioDsl(_app);
-    }
-
-    public void Dispose()
-    {
-        _app.Dispose();
-    }
-
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldPlaceOrderUsingGherkinStyle(Channel channel)
     {
-        _scenario
+        Scenario
             .Given(channel)
                 .Product()
                     .Sku("GHERKIN-SKU")
@@ -52,7 +39,7 @@ public class GherkinSmokeTest : IDisposable
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldCancelOrderUsingGherkinStyle(Channel channel)
     {
-        _scenario
+        Scenario
             .Given(channel)
                 .Product()
                     .Sku("CANCEL-SKU")
@@ -68,7 +55,7 @@ public class GherkinSmokeTest : IDisposable
                 .Order("CANCEL-ORDER-001")
                     .Status(OrderStatus.PLACED);
 
-        _scenario
+        Scenario
             .Given(channel)
             .When()
                 .CancelOrder()
