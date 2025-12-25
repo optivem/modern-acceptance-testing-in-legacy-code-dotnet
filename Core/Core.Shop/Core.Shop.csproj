@@ -9,12 +9,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core.Commons\Core.Commons.csproj" />
-    <ProjectReference Include="..\..\Optivem.Http\Optivem.Http.csproj" />
-    <ProjectReference Include="..\..\Optivem.Lang\Optivem.Lang.csproj" />
-    <ProjectReference Include="..\..\Optivem.Playwright\Optivem.Playwright.csproj" />
-    <ProjectReference Include="..\..\Optivem.Testing.Assertions\Optivem.Testing.Assertions.csproj" />
-    <ProjectReference Include="..\..\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
-    <ProjectReference Include="..\..\Optivem.Testing.Dsl\Optivem.Testing.Dsl.csproj" />
+    <ProjectReference Include="..\..\Libs\Optivem.Http\Optivem.Http.csproj" />
+    <ProjectReference Include="..\..\Libs\Optivem.Lang\Optivem.Lang.csproj" />
+    <ProjectReference Include="..\..\Libs\Optivem.Playwright\Optivem.Playwright.csproj" />
+    <ProjectReference Include="..\..\Libs\Optivem.Testing.Assertions\Optivem.Testing.Assertions.csproj" />
+    <ProjectReference Include="..\..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
+    <ProjectReference Include="..\..\Libs\Optivem.Testing.Dsl\Optivem.Testing.Dsl.csproj" />
   </ItemGroup>
 
   <ItemGroup>
