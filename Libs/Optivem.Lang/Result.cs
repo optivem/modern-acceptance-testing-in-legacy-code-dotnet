@@ -41,6 +41,24 @@ public class Result<T, E>
         }
     }
 
+    public Result<T2, E> Map<T2>(Func<T, T2> mapper)
+    {
+        if (_success)
+        {
+            return Result<T2, E>.Success(mapper(_value!));
+        }
+        return Result<T2, E>.Failure(_error!);
+    }
+
+    public Result<T, E2> MapError<E2>(Func<E, E2> mapper)
+    {
+        if (_success)
+        {
+            return Result<T, E2>.Success(_value!);
+        }
+        return Result<T, E2>.Failure(mapper(_error!));
+    }
+
     public Result<T, E2> MapFailure<E2>(Func<E, E2> mapper)
     {
         if (_success)
