@@ -79,22 +79,22 @@ public class ViewOrderVerification : ResponseVerification<GetOrderResponse, UseC
         return this;
     }
 
-    public ViewOrderVerification OriginalPrice(decimal expectedOriginalPrice)
+    public ViewOrderVerification SubtotalPrice(decimal expectedSubtotalPrice)
     {
-        Response.OriginalPrice.ShouldBe(expectedOriginalPrice,
-            $"Expected original price: {expectedOriginalPrice}, but got: {Response.OriginalPrice}");
+        Response.SubtotalPrice.ShouldBe(expectedSubtotalPrice,
+            $"Expected subtotal price: {expectedSubtotalPrice}, but got: {Response.SubtotalPrice}");
         return this;
     }
 
-    public ViewOrderVerification OriginalPrice(string expectedOriginalPrice)
+    public ViewOrderVerification SubtotalPrice(string expectedSubtotalPrice)
     {
-        return OriginalPrice(decimal.Parse(expectedOriginalPrice, CultureInfo.InvariantCulture));
+        return SubtotalPrice(decimal.Parse(expectedSubtotalPrice, CultureInfo.InvariantCulture));
     }
 
-    public ViewOrderVerification OriginalPriceGreaterThanZero()
+    public ViewOrderVerification SubtotalPriceGreaterThanZero()
     {
-        Response.OriginalPrice.ShouldBeGreaterThan(0m, 
-            $"Original price should be positive, but was: {Response.OriginalPrice}");
+        Response.SubtotalPrice.ShouldBeGreaterThan(0m, 
+            $"Subtotal price should be positive, but was: {Response.SubtotalPrice}");
         return this;
     }
 
@@ -112,10 +112,10 @@ public class ViewOrderVerification : ResponseVerification<GetOrderResponse, UseC
         return this;
     }
 
-    public ViewOrderVerification SubtotalPriceGreaterThanZero()
+    public ViewOrderVerification PreTaxTotalGreaterThanZero()
     {
-        Response.SubtotalPrice.ShouldBeGreaterThan(0m, 
-            $"Subtotal price should be positive, but was: {Response.SubtotalPrice}");
+        Response.PreTaxTotal.ShouldBeGreaterThan(0m, 
+            $"Pre-tax total should be positive, but was: {Response.PreTaxTotal}");
         return this;
     }
 

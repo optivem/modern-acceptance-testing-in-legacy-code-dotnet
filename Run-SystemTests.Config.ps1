@@ -3,6 +3,12 @@
 
 $Config = @{
 
+    BuildCommands = @(
+        @{  Name = "Clean Build";
+            Command = "dotnet clean; dotnet build"
+        }
+    )
+
     Tests = @(
         @{  Id = "smoke";
             Name = "Smoke Tests";

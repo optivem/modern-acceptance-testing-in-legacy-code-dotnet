@@ -120,10 +120,10 @@ public class ShopUiDriver : IShopDriver
         var quantity = _orderHistoryPage.GetQuantity();
         var country = _orderHistoryPage.GetCountry();
         var unitPrice = _orderHistoryPage.GetUnitPrice();
-        var originalPrice = _orderHistoryPage.GetOriginalPrice();
+        var subtotalPrice = _orderHistoryPage.GetSubtotalPrice();
         var discountRate = _orderHistoryPage.GetDiscountRate();
         var discountAmount = _orderHistoryPage.GetDiscountAmount();
-        var subtotalPrice = _orderHistoryPage.GetSubtotalPrice();
+        var preTaxTotal = _orderHistoryPage.GetPreTaxTotal();
         var taxRate = _orderHistoryPage.GetTaxRate();
         var taxAmount = _orderHistoryPage.GetTaxAmount();
         var totalPrice = _orderHistoryPage.GetTotalPrice();
@@ -135,10 +135,10 @@ public class ShopUiDriver : IShopDriver
             Sku = sku,
             Quantity = quantity,
             UnitPrice = unitPrice,
-            OriginalPrice = originalPrice,
+            SubtotalPrice = subtotalPrice,
             DiscountRate = discountRate,
             DiscountAmount = discountAmount,
-            SubtotalPrice = subtotalPrice,
+            PreTaxTotal = preTaxTotal,
             TaxRate = taxRate,
             TaxAmount = taxAmount,
             TotalPrice = totalPrice,

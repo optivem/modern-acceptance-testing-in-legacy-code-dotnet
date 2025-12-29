@@ -14,7 +14,7 @@ public class E2eTest : BaseSystemTest
 
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
-    public void ShouldPlaceOrderWithCorrectOriginalPrice(Channel channel)
+    public void ShouldPlaceOrderWithCorrectSubtotalPrice(Channel channel)
     {
         App.Erp.CreateProduct()
             .Sku("ABC")
@@ -33,7 +33,7 @@ public class E2eTest : BaseSystemTest
             .OrderNumber("ORDER-1001")
             .Execute()
             .ShouldSucceed()
-            .OriginalPrice(100.00m);
+            .SubtotalPrice(100.00m);
     }
 
     [Theory]
@@ -41,7 +41,7 @@ public class E2eTest : BaseSystemTest
     [ChannelInlineData("20.00", "5", "100.00")]
     [ChannelInlineData("10.00", "3", "30.00")]
     [ChannelInlineData("15.50", "2", "31.00")]
-    public void ShouldPlaceOrderWithCorrectOriginalPriceParameterized(Channel channel, string unitPrice, string quantity, string originalPrice)
+    public void ShouldPlaceOrderWithCorrectSubtotalPriceParameterized(Channel channel, string unitPrice, string quantity, string subtotalPrice)
     {
         App.Erp.CreateProduct()
             .Sku("ABC")
@@ -60,7 +60,7 @@ public class E2eTest : BaseSystemTest
             .OrderNumber("ORDER-1001")
             .Execute()
             .ShouldSucceed()
-            .OriginalPrice(originalPrice);
+            .SubtotalPrice(subtotalPrice);
     }
 
     [Theory]
@@ -104,11 +104,11 @@ public class E2eTest : BaseSystemTest
             .Quantity(5)
             .Country("US")
             .UnitPrice(20.00m)
-            .OriginalPrice(100.00m)
+            .SubtotalPrice(100.00m)
             .Status(OrderStatus.PLACED)
             .DiscountRateGreaterThanOrEqualToZero()
             .DiscountAmountGreaterThanOrEqualToZero()
-            .SubtotalPriceGreaterThanZero()
+            .PreTaxTotalGreaterThanZero()
             .TaxRateGreaterThanOrEqualToZero()
             .TaxAmountGreaterThanOrEqualToZero()
             .TotalPriceGreaterThanZero();

@@ -122,7 +122,7 @@ runs:
       working-directory: SystemTests/SmokeTests
 
     - name: Build system tests
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build --no-restore
       shell: bash
       working-directory: SystemTests/SmokeTests
 
@@ -134,6 +134,6 @@ runs:
       working-directory: SystemTests/SmokeTests
 
     - name: Run Smoke Tests
-      run: dotnet test --no-build --configuration Release --verbosity normal
+      run: dotnet test --no-build --verbosity normal
       shell: bash
       working-directory: SystemTests/SmokeTests

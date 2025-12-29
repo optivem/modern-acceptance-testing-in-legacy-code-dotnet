@@ -51,23 +51,23 @@ public class OrderVerificationBuilder
         return this;
     }
 
-    public OrderVerificationBuilder OriginalPrice(decimal expectedOriginalPrice)
+    public OrderVerificationBuilder SubtotalPrice(decimal expectedSubtotalPrice)
     {
         _systemDsl.Shop(_channel).ViewOrder()
             .OrderNumber(_orderNumber)
             .Execute()
             .ShouldSucceed()
-            .OriginalPrice(expectedOriginalPrice);
+            .SubtotalPrice(expectedSubtotalPrice);
         return this;
     }
 
-    public OrderVerificationBuilder OriginalPrice(string expectedOriginalPrice)
+    public OrderVerificationBuilder SubtotalPrice(string expectedSubtotalPrice)
     {
         _systemDsl.Shop(_channel).ViewOrder()
             .OrderNumber(_orderNumber)
             .Execute()
             .ShouldSucceed()
-            .OriginalPrice(expectedOriginalPrice);
+            .SubtotalPrice(expectedSubtotalPrice);
         return this;
     }
 }

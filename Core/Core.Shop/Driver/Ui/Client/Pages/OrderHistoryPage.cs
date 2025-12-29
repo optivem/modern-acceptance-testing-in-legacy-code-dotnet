@@ -14,10 +14,10 @@ public class OrderHistoryPage : BasePage
     private const string CountryOutputSelector = "[aria-label='Display Country']";
     private const string QuantityOutputSelector = "[aria-label='Display Quantity']";
     private const string UnitPriceOutputSelector = "[aria-label='Display Unit Price']";
-    private const string OriginalPriceOutputSelector = "[aria-label='Display Original Price']";
+    private const string SubtotalPriceOutputSelector = "[aria-label='Display Subtotal Price']";
     private const string DiscountRateOutputSelector = "[aria-label='Display Discount Rate']";
     private const string DiscountAmountOutputSelector = "[aria-label='Display Discount Amount']";
-    private const string SubtotalPriceOutputSelector = "[aria-label='Display Subtotal Price']";
+    private const string PreTaxTotalOutputSelector = "[aria-label='Display Pre-Tax Total']";
     private const string TaxRateOutputSelector = "[aria-label='Display Tax Rate']";
     private const string TaxAmountOutputSelector = "[aria-label='Display Tax Amount']";
     private const string TotalPriceOutputSelector = "[aria-label='Display Total Price']";
@@ -66,10 +66,10 @@ public class OrderHistoryPage : BasePage
     public string GetCountry() => PageClient.ReadInputValue(CountryOutputSelector);
     public int GetQuantity() => PageClient.ReadInputIntegerValue(QuantityOutputSelector);
     public decimal GetUnitPrice() => PageClient.ReadInputCurrencyDecimalValue(UnitPriceOutputSelector);
-    public decimal GetOriginalPrice() => PageClient.ReadInputCurrencyDecimalValue(OriginalPriceOutputSelector);
+    public decimal GetSubtotalPrice() => PageClient.ReadInputCurrencyDecimalValue(SubtotalPriceOutputSelector);
     public decimal GetDiscountRate() => PageClient.ReadInputPercentageDecimalValue(DiscountRateOutputSelector);
     public decimal GetDiscountAmount() => PageClient.ReadInputCurrencyDecimalValue(DiscountAmountOutputSelector);
-    public decimal GetSubtotalPrice() => PageClient.ReadInputCurrencyDecimalValue(SubtotalPriceOutputSelector);
+    public decimal GetPreTaxTotal() => PageClient.ReadInputCurrencyDecimalValue(PreTaxTotalOutputSelector);
     public decimal GetTaxRate() => PageClient.ReadInputPercentageDecimalValue(TaxRateOutputSelector);
     public decimal GetTaxAmount() => PageClient.ReadInputCurrencyDecimalValue(TaxAmountOutputSelector);
     public decimal GetTotalPrice() => PageClient.ReadInputCurrencyDecimalValue(TotalPriceOutputSelector);

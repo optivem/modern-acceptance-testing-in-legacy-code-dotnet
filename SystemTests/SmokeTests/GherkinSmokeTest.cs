@@ -31,7 +31,7 @@ public class GherkinSmokeTest : BaseSystemTest
                     .Has()
                     .Sku("GHERKIN-SKU")
                     .Quantity(3)
-                    .OriginalPrice(75.00m)
+                    .SubtotalPrice(75.00m)
                     .Status(OrderStatus.PLACED);
     }
 
