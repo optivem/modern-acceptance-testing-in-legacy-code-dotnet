@@ -105,7 +105,7 @@ jobs:
         working-directory: ./SystemTests/E2eTests
 
       - name: Build system tests
-        run: dotnet build --no-restore
+        run: dotnet build --no-restore --configuration Release
         working-directory: ./SystemTests/E2eTests
 
       - name: Install Playwright browsers
