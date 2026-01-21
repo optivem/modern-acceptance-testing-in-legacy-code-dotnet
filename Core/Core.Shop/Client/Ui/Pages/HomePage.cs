@@ -1,7 +1,7 @@
 using Optivem.Commons.Http;
 using Optivem.Commons.Playwright;
 
-namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client.Pages;
+namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 
 public class HomePage : BasePage
 {

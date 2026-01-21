@@ -2,11 +2,11 @@ using Optivem.Commons.Util;
 using Optivem.Commons.Http;
 using Optivem.EShop.SystemTest.Core.Common.Error;
 
-namespace Optivem.EShop.SystemTest.Core.Tax.Driver.Client.Controllers
+namespace Optivem.EShop.SystemTest.Core.Erp.Client.Controllers
 {
     public class HealthController
     {
-        public static readonly string Endpoint = "/health";
+        private static readonly string Endpoint = "/health";
 
         private readonly JsonHttpClient<ProblemDetailResponse> _httpClient;
 

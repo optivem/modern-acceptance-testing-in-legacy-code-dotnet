@@ -1,7 +1,7 @@
 using Optivem.Commons.Util;
 using Optivem.Commons.Http;
 using Optivem.EShop.SystemTest.Core.Common.Error;
-using Optivem.EShop.SystemTest.Core.Tax.Driver.Client;
+using Optivem.EShop.SystemTest.Core.Tax.Client;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Driver;
 

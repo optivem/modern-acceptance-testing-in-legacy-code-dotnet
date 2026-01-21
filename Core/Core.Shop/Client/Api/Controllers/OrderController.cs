@@ -4,7 +4,7 @@ using Optivem.EShop.SystemTest.Core.Common.Error;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Requests;
 
-namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Api.Client.Controllers;
+namespace Optivem.EShop.SystemTest.Core.Shop.Client.Api.Controllers;
 
 public class OrderController
 {

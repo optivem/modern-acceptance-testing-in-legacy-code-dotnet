@@ -3,7 +3,7 @@ using Optivem.Commons.Http;
 using Optivem.Commons.Util;
 using Optivem.Commons.WireMock;
 
-namespace Optivem.EShop.SystemTest.Core.Clock.Driver;
+namespace Optivem.EShop.SystemTest.Core.Clock.Client;
 
 public class ClockStubClient : IDisposable
 {

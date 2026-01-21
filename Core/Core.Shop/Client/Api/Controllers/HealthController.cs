@@ -2,7 +2,7 @@ using Optivem.Commons.Util;
 using Optivem.Commons.Http;
 using Optivem.EShop.SystemTest.Core.Common.Error;
 
-namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Api.Client.Controllers;
+namespace Optivem.EShop.SystemTest.Core.Shop.Client.Api.Controllers;
 
 public class HealthController
 {

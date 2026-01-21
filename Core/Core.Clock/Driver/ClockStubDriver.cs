@@ -1,4 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Clock.Driver.Dtos;
+using Optivem.EShop.SystemTest.Core.Clock.Client;
 using Optivem.Commons.Util;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Driver;

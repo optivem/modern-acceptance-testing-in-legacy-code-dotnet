@@ -1,8 +1,8 @@
 using Optivem.Commons.Util;
 using Optivem.Commons.Http;
 using Optivem.EShop.SystemTest.Core.Common.Error;
-using Optivem.EShop.SystemTest.Core.Erp.Driver.Client;
-using Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Dtos.Requests;
+using Optivem.EShop.SystemTest.Core.Erp.Client;
+using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Requests;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Driver;
 

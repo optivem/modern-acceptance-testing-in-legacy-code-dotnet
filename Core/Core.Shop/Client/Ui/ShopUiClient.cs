@@ -1,6 +1,6 @@
 using Microsoft.Playwright;
 using Optivem.EShop.SystemTest.Core.Common.Error;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client.Pages;
+using Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 using Optivem.Commons.Http;
 using Optivem.Commons.Util;
 using Shouldly;
@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using PlaywrightGateway = Optivem.Commons.Playwright.PageClient;
 
-namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client;
+namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui;
 
 public class ShopUiClient : IDisposable
 {

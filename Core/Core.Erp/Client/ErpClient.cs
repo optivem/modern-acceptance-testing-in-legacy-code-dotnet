@@ -1,8 +1,8 @@
 using Optivem.Commons.Http;
 using Optivem.EShop.SystemTest.Core.Common.Error;
-using Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Controllers;
+using Optivem.EShop.SystemTest.Core.Erp.Client.Controllers;
 
-namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Client;
+namespace Optivem.EShop.SystemTest.Core.Erp.Client;
 
 public class ErpClient
 {
