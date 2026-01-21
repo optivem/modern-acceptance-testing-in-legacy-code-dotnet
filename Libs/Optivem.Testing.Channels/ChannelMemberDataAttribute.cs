@@ -2,7 +2,7 @@ namespace Optivem.Testing.Channels;
 
 /// <summary>
 /// Specifies a member-based test data provider for use with [ChannelData].
-/// When combined with [ChannelData], creates a Cartesian product of channels × data from the member.
+/// When combined with [ChannelData], creates a Cartesian product of channels ï¿½ data from the member.
 /// Follows xUnit's [MemberData] naming convention.
 /// 
 /// Example:

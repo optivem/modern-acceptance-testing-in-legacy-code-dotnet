@@ -1,6 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Clock.Driver.Dtos;
 using Optivem.Http;
-using Optivem.Lang;
+using Optivem.Util;
 using Optivem.WireMock;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Driver;

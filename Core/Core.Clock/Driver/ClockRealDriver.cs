@@ -1,5 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Clock.Driver.Dtos;
-using Optivem.Lang;
+using Optivem.Util;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Driver;
 

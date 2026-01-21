@@ -284,7 +284,7 @@ public class ChannelDataAttributeTests
     public void Documentation_ChannelData_WithInlineData_GeneratesCorrectCount()
     {
         // This is a meta-test documenting expected behavior:
-        // 2 channels × 2 inline data rows = 4 tests
+        // 2 channels ï¿½ 2 inline data rows = 4 tests
         // Verified by: ChannelData_WithChannelInlineData_ShouldGenerateCartesianProduct
         true.ShouldBeTrue();
     }
@@ -293,7 +293,7 @@ public class ChannelDataAttributeTests
     public void Documentation_ChannelData_WithClassData_GeneratesCorrectCount()
     {
         // This is a meta-test documenting expected behavior:
-        // 2 channels × 2 class data rows = 4 tests
+        // 2 channels ï¿½ 2 class data rows = 4 tests
         // Verified by: ChannelData_WithChannelClassData_ShouldGenerateCartesianProduct
         true.ShouldBeTrue();
     }
@@ -302,7 +302,7 @@ public class ChannelDataAttributeTests
     public void Documentation_ChannelData_WithMemberData_GeneratesCorrectCount()
     {
         // This is a meta-test documenting expected behavior:
-        // 2 channels × 2 member data rows = 4 tests
+        // 2 channels ï¿½ 2 member data rows = 4 tests
         // Verified by: ChannelData_WithChannelMemberData_Method_ShouldGenerateCartesianProduct
         true.ShouldBeTrue();
     }

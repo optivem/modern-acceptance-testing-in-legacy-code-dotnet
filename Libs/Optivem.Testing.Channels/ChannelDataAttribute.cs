@@ -30,7 +30,7 @@ namespace Optivem.Testing.Channels;
 /// [ChannelMemberData(nameof(GetTestData))]
 /// public void Test(Channel channel, string value, string message) { }
 /// 
-/// Generates: 2 channels × N data rows = 2N test cases.
+/// Generates: 2 channels ï¿½ N data rows = 2N test cases.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public class ChannelDataAttribute : DataAttribute
@@ -78,7 +78,7 @@ public class ChannelDataAttribute : DataAttribute
         // If ChannelInlineData is present
         else if (inlineDataAttributes.Length > 0)
         {
-            // Create Cartesian product: channels × inline data (combinatorial mode)
+            // Create Cartesian product: channels ï¿½ inline data (combinatorial mode)
             foreach (var channel in _channels)
             {
                 foreach (var inlineDataAttr in inlineDataAttributes)
@@ -100,7 +100,7 @@ public class ChannelDataAttribute : DataAttribute
                     $"Type {classDataAttribute.ProviderType.Name} must implement IEnumerable<object[]>");
             }
 
-            // Create Cartesian product: channels × class data
+            // Create Cartesian product: channels ï¿½ class data
             foreach (var channel in _channels)
             {
                 foreach (var dataRow in dataProvider)
@@ -147,7 +147,7 @@ public class ChannelDataAttribute : DataAttribute
                     $"Member '{memberDataAttribute.MemberName}' must return IEnumerable<object[]>");
             }
 
-            // Create Cartesian product: channels × member data
+            // Create Cartesian product: channels ï¿½ member data
             foreach (var channel in _channels)
             {
                 foreach (var dataRow in dataProvider)

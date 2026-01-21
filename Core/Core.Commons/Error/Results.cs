@@ -1,4 +1,4 @@
-using Optivem.Lang;
+using Optivem.Util;
 
 namespace Optivem.EShop.SystemTest.Core.Common.Error;
 

@@ -2,7 +2,7 @@ using Optivem.EShop.SystemTest.Core.Erp.Driver;
 using Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Dtos;
 using Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Dtos.Requests;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands.Base;
-using Optivem.Lang;
+using Optivem.Util;
 using Optivem.Testing.Dsl;
 using System.CodeDom;
 using System.Globalization;
