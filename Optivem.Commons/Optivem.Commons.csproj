@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Optivem.Lang\Optivem.Lang.csproj" />
+    <ProjectReference Include="..\Libs\Optivem.Lang\Optivem.Lang.csproj" />
   </ItemGroup>
 
 </Project>
