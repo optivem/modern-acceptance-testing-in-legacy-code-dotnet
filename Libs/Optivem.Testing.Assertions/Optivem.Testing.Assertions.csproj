@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Optivem.Lang\Optivem.Lang.csproj" />
+    <ProjectReference Include="..\..\Optivem.Commons\Optivem.Commons.csproj" />
   </ItemGroup>
 
 </Project>
