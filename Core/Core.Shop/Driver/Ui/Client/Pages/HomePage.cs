@@ -1,5 +1,5 @@
 using Optivem.Commons.Http;
-using Optivem.Playwright;
+using Optivem.Commons.Playwright;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client.Pages;
 

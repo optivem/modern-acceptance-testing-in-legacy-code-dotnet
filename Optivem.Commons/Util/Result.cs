@@ -1,4 +1,4 @@
-namespace Optivem.Util;
+namespace Optivem.Commons.Util;
 
 public class Result<T, E>
 {

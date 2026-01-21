@@ -1,6 +1,6 @@
 using WireMock.Server;
 
-namespace Optivem.WireMock;
+namespace Optivem.Commons.WireMock;
 
 public class WireMockManager : IDisposable
 {

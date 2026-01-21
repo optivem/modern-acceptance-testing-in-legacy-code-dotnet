@@ -1,4 +1,4 @@
-using Optivem.Util;
+using Optivem.Commons.Util;
 using Optivem.Testing.Assertions;
 using Optivem.EShop.SystemTest.Core.Common.Error;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;

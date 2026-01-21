@@ -2,11 +2,11 @@ using Microsoft.Playwright;
 using Optivem.EShop.SystemTest.Core.Common.Error;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client.Pages;
 using Optivem.Commons.Http;
-using Optivem.Util;
+using Optivem.Commons.Util;
 using Shouldly;
 using System.Net;
 using System.Net.NetworkInformation;
-using PlaywrightGateway = Optivem.Playwright.PageClient;
+using PlaywrightGateway = Optivem.Commons.Playwright.PageClient;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client;
 
