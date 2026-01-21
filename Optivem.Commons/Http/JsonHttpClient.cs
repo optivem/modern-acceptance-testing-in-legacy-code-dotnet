@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Optivem.Util;
 
-namespace Optivem.Http;
+namespace Optivem.Commons.Http;
 
 public class JsonHttpClient<E>
 {

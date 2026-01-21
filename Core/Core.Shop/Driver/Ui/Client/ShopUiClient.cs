@@ -1,7 +1,7 @@
 using Microsoft.Playwright;
 using Optivem.EShop.SystemTest.Core.Common.Error;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Client.Pages;
-using Optivem.Http;
+using Optivem.Commons.Http;
 using Optivem.Util;
 using Shouldly;
 using System.Net;

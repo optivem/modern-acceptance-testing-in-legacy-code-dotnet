@@ -1,5 +1,5 @@
 using Optivem.Util;
-using Optivem.Http;
+using Optivem.Commons.Http;
 using Optivem.EShop.SystemTest.Core.Common.Error;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Api.Client.Controllers;

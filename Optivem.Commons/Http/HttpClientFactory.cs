@@ -1,4 +1,4 @@
-namespace Optivem.Http;
+namespace Optivem.Commons.Http;
 
 public static class HttpClientFactory
 {
