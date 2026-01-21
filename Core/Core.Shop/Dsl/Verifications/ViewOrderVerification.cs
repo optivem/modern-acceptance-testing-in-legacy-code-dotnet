@@ -1,7 +1,7 @@
 using System.Globalization;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
-using Optivem.Testing.Dsl;
+using Optivem.Commons.Dsl;
 using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;

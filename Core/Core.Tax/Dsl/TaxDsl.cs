@@ -1,7 +1,7 @@
 using Optivem.EShop.SystemTest.Core.Common;
 using Optivem.EShop.SystemTest.Core.Tax.Driver;
 using Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands;
-using Optivem.Testing.Dsl;
+using Optivem.Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl;
 

@@ -2,7 +2,7 @@ using Optivem.EShop.SystemTest.Core.Shop.Driver;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
-using Optivem.Testing.Dsl;
+using Optivem.Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;
 

@@ -3,7 +3,7 @@ using Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Dtos;
 using Optivem.EShop.SystemTest.Core.Erp.Driver.Client.Dtos.Requests;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands.Base;
 using Optivem.Commons.Util;
-using Optivem.Testing.Dsl;
+using Optivem.Commons.Dsl;
 using System.CodeDom;
 using System.Globalization;
 

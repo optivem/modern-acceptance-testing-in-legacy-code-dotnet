@@ -3,7 +3,7 @@ using Optivem.EShop.SystemTest.Core.Clock.Dsl.Verifications;
 using Optivem.EShop.SystemTest.Core.Clock.Driver;
 using Optivem.EShop.SystemTest.Core.Clock.Driver.Dtos;
 using Optivem.EShop.SystemTest.Core.Common.Dsl;
-using Optivem.Testing.Dsl;
+using Optivem.Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Dsl.Commands;
 

@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Optivem.Commons\Optivem.Commons.csproj" />
-    <ProjectReference Include="..\..\Libs\Optivem.Testing.Dsl\Optivem.Testing.Dsl.csproj" />
+    <ProjectReference Include="..\..\Optivem.Commons\Optivem.Commons.csproj" />
     <ProjectReference Include="..\Core.Commons\Core.Commons.csproj" />
   </ItemGroup>
 

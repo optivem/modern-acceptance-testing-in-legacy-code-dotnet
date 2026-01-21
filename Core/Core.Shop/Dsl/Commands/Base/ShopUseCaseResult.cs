@@ -1,7 +1,7 @@
 using Optivem.EShop.SystemTest.Core.Common.Dsl;
 using Optivem.EShop.SystemTest.Core.Common.Error;
 using Optivem.Commons.Util;
-using Optivem.Testing.Dsl;
+using Optivem.Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands.Base;
 

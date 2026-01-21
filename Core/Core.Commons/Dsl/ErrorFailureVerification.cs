@@ -1,5 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Common.Error;
-using Optivem.Testing.Dsl;
+using Optivem.Commons.Dsl;
 using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Common.Dsl;
