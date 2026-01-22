@@ -13,7 +13,9 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui;
 
 public class ShopUiClient : IDisposable
 {
-    private const bool IsHeadless = false;
+    private static readonly bool IsHeadless = Environment.GetEnvironmentVariable("CI") == "true" 
+        || Environment.GetEnvironmentVariable("HEADLESS") == "true" 
+        || bool.Parse(Environment.GetEnvironmentVariable("PLAYWRIGHT_HEADLESS") ?? "false");
 
     private const string ContentType = "content-type";
     private const string TextHtml = "text/html";
