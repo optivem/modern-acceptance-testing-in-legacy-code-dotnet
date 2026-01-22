@@ -7,7 +7,7 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands;
 
 public class GoToErp : BaseErpCommand<VoidValue, VoidVerification<UseCaseContext>>
 {
-    public GoToErp(ErpDriver driver, UseCaseContext context) 
+    public GoToErp(IErpDriver driver, UseCaseContext context) 
         : base(driver, context)
     {
     }
@@ -15,6 +15,7 @@ public class GoToErp : BaseErpCommand<VoidValue, VoidVerification<UseCaseContext
     public override ErpUseCaseResult<VoidValue, VoidVerification<UseCaseContext>> Execute()
     {
         var result = _driver.GoToErp();
+        
         return new ErpUseCaseResult<VoidValue, VoidVerification<UseCaseContext>>(
             result, 
             _context, 

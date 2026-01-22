@@ -16,7 +16,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldPlaceOrderWithCorrectSubtotalPrice(Channel channel)
     {
-        App.Erp.CreateProduct()
+        App.Erp.ReturnsProduct()
             .Sku("ABC")
             .UnitPrice(20.00m)
             .Execute()
@@ -43,7 +43,7 @@ public class E2eTest : BaseSystemTest
     [ChannelInlineData("15.50", "2", "31.00")]
     public void ShouldPlaceOrderWithCorrectSubtotalPriceParameterized(Channel channel, string unitPrice, string quantity, string subtotalPrice)
     {
-        App.Erp.CreateProduct()
+        App.Erp.ReturnsProduct()
             .Sku("ABC")
             .UnitPrice(unitPrice)
             .Execute()
@@ -79,7 +79,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldPlaceOrder(Channel channel)
     {
-        App.Erp.CreateProduct()
+        App.Erp.ReturnsProduct()
             .Sku(SKU)
             .UnitPrice(20.00m)
             .Execute()
@@ -118,7 +118,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldCancelOrder(Channel channel)
     {
-        App.Erp.CreateProduct()
+        App.Erp.ReturnsProduct()
             .Sku(SKU)
             .Execute()
             .ShouldSucceed();
@@ -255,7 +255,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldRejectOrderWithUnsupportedCountry(Channel channel)
     {
-        App.Erp.CreateProduct()
+        App.Erp.ReturnsProduct()
             .Sku(SKU)
             .Execute()
             .ShouldSucceed();
@@ -323,7 +323,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.API)]
     public void ShouldNotCancelAlreadyCancelledOrder(Channel channel)
     {
-        App.Erp.CreateProduct()
+        App.Erp.ReturnsProduct()
             .Sku(SKU)
             .Execute()
             .ShouldSucceed();

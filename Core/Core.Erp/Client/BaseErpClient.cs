@@ -24,8 +24,8 @@ public abstract class BaseErpClient : IDisposable
         return HttpClient.Get("/health");
     }
 
-    public Result<VoidValue, ExtErpErrorResponse> CreateProduct(ExtCreateProductRequest request)
+    public Result<ExtProductDetailsResponse, ExtErpErrorResponse> GetProduct(string? sku)
     {
-        return HttpClient.Post("/api/products", request);
+        return HttpClient.Get<ExtProductDetailsResponse>($"/api/products/{sku}");
     }
 }

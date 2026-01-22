@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos;
 
-namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos
+public class GetProductResponse
 {
-    public class GetProductResponse
-    {
-        public string? Sku { get; set; }
-        public decimal? Price { get; set; }
-    }
+    public string Sku { get; set; } = default!;
+    public decimal Price { get; set; }
 }

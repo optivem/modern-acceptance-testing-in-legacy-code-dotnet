@@ -7,7 +7,14 @@ public class UseCaseContext
     private readonly Dictionary<string, string> _paramMap = new();
     private readonly Dictionary<string, string> _resultMap = new();
 
-    public string GetParamValue(string alias)
+    public ExternalSystemMode ExternalSystemMode { get; }
+
+    public UseCaseContext(ExternalSystemMode externalSystemMode = ExternalSystemMode.Stub)
+    {
+        ExternalSystemMode = externalSystemMode;
+    }
+
+    public string? GetParamValue(string? alias)
     {
         if (string.IsNullOrWhiteSpace(alias))
         {

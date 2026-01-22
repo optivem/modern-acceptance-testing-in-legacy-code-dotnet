@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos;
 
-namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos
+public class GetProductRequest
 {
-    public class GetProductRequest
-    {
-        public string? Sku { get; set; }
-    }
+    public string? Sku { get; set; }
 }

@@ -5,9 +5,6 @@ using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Error;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Client;
 
-/// <summary>
-/// Stub ERP client for making HTTP calls to the WireMock stub.
-/// </summary>
 public class ErpStubClient : BaseErpClient
 {
     private readonly JsonWireMockClient _wireMockClient;
@@ -17,10 +14,17 @@ public class ErpStubClient : BaseErpClient
         _wireMockClient = new JsonWireMockClient(baseUrl);
     }
 
+    public new void Dispose()
+    {
+        base.Dispose();
+        _wireMockClient?.Dispose();
+    }
+
     public Result<VoidValue, ExtErpErrorResponse> ConfigureGetProduct(ExtProductDetailsResponse response)
     {
         var sku = response.Id;
         return _wireMockClient.StubGet($"/erp/api/products/{sku}", 200, response)
-            .MapFailure(error => new ExtErpErrorResponse { Message = error });
+            .MapFailure(ExtErpErrorResponse.From);
     }
+
 }

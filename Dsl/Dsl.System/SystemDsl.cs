@@ -37,7 +37,7 @@ public class SystemDsl : IDisposable
         return shop;
     }
 
-    public ErpDsl Erp => _erp ??= new ErpDsl(_context, _configuration);
+    public ErpDsl Erp => _erp ??= new ErpDsl(_configuration.ErpBaseUrl, _context);
 
     public TaxDsl Tax => _tax ??= new TaxDsl(_context, _configuration);
 

@@ -37,7 +37,7 @@ public class ProductBuilder
     {
         _givenClause.AddGivenAction(() =>
         {
-            var command = _systemDsl.Erp.CreateProduct();
+            var command = _systemDsl.Erp.ReturnsProduct();
 
             if (_sku != null)
             {

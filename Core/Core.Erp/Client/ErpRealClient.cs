@@ -9,4 +9,10 @@ public class ErpRealClient : BaseErpClient
     public ErpRealClient(string baseUrl) : base(baseUrl)
     {
     }
+    
+
+    public Result<VoidValue, ExtErpErrorResponse> CreateProduct(ExtCreateProductRequest request)
+    {
+        return HttpClient.Post("/api/products", request);
+    }
 }
