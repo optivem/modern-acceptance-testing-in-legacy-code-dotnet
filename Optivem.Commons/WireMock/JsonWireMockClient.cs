@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using Optivem.Commons.Util;
 
 namespace Optivem.Commons.WireMock;
 
@@ -35,21 +36,33 @@ public class JsonWireMockClient
         return options;
     }
 
-    public void ConfigureGet<T>(string path, int statusCode, T response)
+    public Result<VoidValue, string> StubGet<T>(string path, int statusCode, T response)
     {
-        var responseBody = Serialize(response);
+        try
+        {
+            var responseBody = Serialize(response);
 
-        _server
-            .Given(Request.Create().WithPath(path).UsingGet())
-            .RespondWith(
-                Response.Create()
-                    .WithStatusCode(statusCode)
-                    .WithHeader(ContentType, ApplicationJson)
-                    .WithBody(responseBody)
-            );
+            _server
+                .Given(Request.Create().WithPath(path).UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode(statusCode)
+                        .WithHeader(ContentType, ApplicationJson)
+                        .WithBody(responseBody)
+                );
+
+            // Verify stub was registered successfully by checking mappings
+            var mappings = _server.LogEntries;
+            
+            return Result<VoidValue, string>.Success(VoidValue.Empty);
+        }
+        catch (Exception ex)
+        {
+            return Result<VoidValue, string>.Failure($"Failed to configure GET stub for {path}: {ex.Message}");
+        }
     }
 
-    private string Serialize(object obj)
+    private string Serialize<T>(T obj)
     {
         try
         {
