@@ -1,4 +1,4 @@
-namespace Optivem.EShop.SystemTest.Core.Erp.Client.Dtos;
+namespace Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Error;
 
 public class ExtErpErrorResponse
 {
