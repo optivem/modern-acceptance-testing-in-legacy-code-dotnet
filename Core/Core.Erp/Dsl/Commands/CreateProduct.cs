@@ -1,6 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Erp.Driver;
 using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos;
-using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Requests;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands.Base;
 using Optivem.Commons.Util;
 using Optivem.Commons.Dsl;

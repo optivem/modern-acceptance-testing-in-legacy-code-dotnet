@@ -1,6 +1,6 @@
 using Optivem.Commons.Util;
 using Optivem.EShop.SystemTest.Core.Erp.Client;
-using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Requests;
+using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos;
 using Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos.Error;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Driver;

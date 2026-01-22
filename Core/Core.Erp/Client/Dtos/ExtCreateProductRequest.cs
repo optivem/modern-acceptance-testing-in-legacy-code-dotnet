@@ -1,4 +1,4 @@
-namespace Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Requests;
+namespace Optivem.EShop.SystemTest.Core.Erp.Client.Dtos;
 
 public class ExtCreateProductRequest
 {
