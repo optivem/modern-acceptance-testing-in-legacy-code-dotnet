@@ -9,13 +9,12 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Api;
 
 public class ShopApiDriver : IShopDriver
 {
-    private readonly HttpClient _httpClient;
+    private readonly JsonHttpClient<ProblemDetailResponse> _httpClient;
     private readonly ShopApiClient _apiClient;
 
     public ShopApiDriver(string baseUrl)
     {
-        _httpClient = HttpClientFactory.Create(baseUrl);
-        var jsonHttpClient = new JsonHttpClient<ProblemDetailResponse>(_httpClient, baseUrl);
+        var jsonHttpClient = new JsonHttpClient<ProblemDetailResponse>(baseUrl);
         _apiClient = new ShopApiClient(jsonHttpClient);
     }
 

@@ -20,9 +20,9 @@ public class JsonHttpClient<E>
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
 
-    public JsonHttpClient(HttpClient httpClient, string baseUrl)
+    public JsonHttpClient(string baseUrl)
     {
-        _httpClient = httpClient;
+        _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
         _baseUrl = baseUrl;
     }
 
@@ -167,5 +167,10 @@ public class JsonHttpClient<E>
 
         var response = ReadResponse<T>(httpResponse);
         return Result<T, E>.Success(response);
+    }
+
+    public void Dispose()
+    {
+        _httpClient?.Dispose();
     }
 }

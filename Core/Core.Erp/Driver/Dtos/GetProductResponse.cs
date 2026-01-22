@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos
 {
-    internal class GetProductResponse
+    public class GetProductResponse
     {
+        public string? Sku { get; set; }
+        public decimal? Price { get; set; }
     }
 }

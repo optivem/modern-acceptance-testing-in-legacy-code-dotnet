@@ -4,7 +4,7 @@ using Optivem.Commons.Util;
 
 namespace Optivem.Commons.WireMock;
 
-public class JsonWireMockClient
+public class JsonWireMockClient : IDisposable
 {
     private const string ContentType = "Content-Type";
     private const string ApplicationJson = "application/json";
@@ -18,11 +18,20 @@ public class JsonWireMockClient
     {
     }
 
+    public void Dispose()
+    {
+        _httpClient?.Dispose();
+    }
+
     private JsonWireMockClient(string baseUrl, JsonSerializerOptions jsonOptions)
     {
         var uri = new Uri(baseUrl);
         _wireMockBaseUrl = $"http://{uri.Host}:{uri.Port}";
-        _httpClient = new HttpClient();
+        _httpClient = new HttpClient()
+        {
+            BaseAddress = uri,
+        };
+
         _jsonOptions = jsonOptions;
     }
 
@@ -38,6 +47,8 @@ public class JsonWireMockClient
 
     public async Task<Result<VoidValue, string>> StubGetAsync<T>(string path, int statusCode, T response)
     {
+        // TODO: VJ: Try more idiomatic approach?
+
         try
         {
             var responseBody = Serialize(response);
@@ -97,4 +108,6 @@ public class JsonWireMockClient
             throw new InvalidOperationException("Failed to serialize object", ex);
         }
     }
+
+
 }

@@ -8,17 +8,15 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Client;
 public abstract class BaseErpClient : IDisposable
 {
     protected readonly JsonHttpClient<ExtErpErrorResponse> HttpClient;
-    private readonly HttpClient _rawHttpClient;
 
     protected BaseErpClient(string baseUrl)
     {
-        _rawHttpClient = HttpClientFactory.Create(baseUrl);
-        HttpClient = new JsonHttpClient<ExtErpErrorResponse>(_rawHttpClient, baseUrl);
+        HttpClient = new JsonHttpClient<ExtErpErrorResponse>(baseUrl);
     }
 
     public void Dispose()
     {
-        _rawHttpClient?.Dispose();
+        HttpClient?.Dispose();
     }
 
     public Result<VoidValue, ExtErpErrorResponse> CheckHealth()
@@ -26,7 +24,8 @@ public abstract class BaseErpClient : IDisposable
         return HttpClient.Get("/health");
     }
 
-    public abstract Result<ExtProductDetailsResponse, ExtErpErrorResponse> GetProduct(string id);
-
-
+    public Result<VoidValue, ExtErpErrorResponse> CreateProduct(ExtCreateProductRequest request)
+    {
+        return HttpClient.Post("/api/products", request);
+    }
 }

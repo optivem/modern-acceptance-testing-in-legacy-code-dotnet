@@ -7,14 +7,13 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Driver;
 
 public class TaxDriver : IDisposable
 {
-    private readonly HttpClient _httpClient;
+    private readonly JsonHttpClient<ProblemDetailResponse> _httpClient;
     private readonly TaxClient _taxApiClient;
 
     public TaxDriver(string baseUrl)
     {
-        _httpClient = HttpClientFactory.Create(baseUrl);
-        var testHttpClient = new JsonHttpClient<ProblemDetailResponse>(_httpClient, baseUrl);
-        _taxApiClient = new TaxClient(testHttpClient);
+        _httpClient = new JsonHttpClient<ProblemDetailResponse>(baseUrl);
+        _taxApiClient = new TaxClient(_httpClient);
     }
 
     public void Dispose()

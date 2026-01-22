@@ -13,14 +13,15 @@ public class ClockStubClient : IDisposable
 
     public ClockStubClient(string baseUrl)
     {
-        var httpClient = new HttpClient();
-        _httpClient = new JsonHttpClient<ExtClockErrorResponse>(httpClient, baseUrl);
+        _httpClient = new JsonHttpClient<ExtClockErrorResponse>(baseUrl);
         
         _wireMockClient = new JsonWireMockClient(baseUrl);
     }
 
     public void Dispose()
     {
+        _httpClient.Dispose();
+        _wireMockClient.Dispose();
         // No need to dispose WireMock client - it just connects to running server
     }
 

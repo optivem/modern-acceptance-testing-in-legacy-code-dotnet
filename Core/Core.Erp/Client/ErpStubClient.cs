@@ -17,11 +17,6 @@ public class ErpStubClient : BaseErpClient
         _wireMockClient = new JsonWireMockClient(baseUrl);
     }
 
-    public override Result<ExtProductDetailsResponse, ExtErpErrorResponse> GetProduct(string id)
-    {
-        return HttpClient.Get<ExtProductDetailsResponse>($"/api/products/{id}");
-    }
-
     public Result<VoidValue, ExtErpErrorResponse> ConfigureGetProduct(ExtProductDetailsResponse response)
     {
         var sku = response.Id;
