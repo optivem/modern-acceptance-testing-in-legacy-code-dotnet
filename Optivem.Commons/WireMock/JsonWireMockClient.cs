@@ -1,8 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
-using WireMock.Server;
 using Optivem.Commons.Util;
 
 namespace Optivem.Commons.WireMock;
@@ -12,17 +9,20 @@ public class JsonWireMockClient
     private const string ContentType = "Content-Type";
     private const string ApplicationJson = "application/json";
 
-    private readonly WireMockServer _server;
+    private readonly HttpClient _httpClient;
+    private readonly string _wireMockBaseUrl;
     private readonly JsonSerializerOptions _jsonOptions;
 
-    public JsonWireMockClient(WireMockServer server)
-        : this(server, CreateDefaultJsonOptions())
+    public JsonWireMockClient(string baseUrl)
+        : this(baseUrl, CreateDefaultJsonOptions())
     {
     }
 
-    public JsonWireMockClient(WireMockServer server, JsonSerializerOptions jsonOptions)
+    private JsonWireMockClient(string baseUrl, JsonSerializerOptions jsonOptions)
     {
-        _server = server;
+        var uri = new Uri(baseUrl);
+        _wireMockBaseUrl = $"http://{uri.Host}:{uri.Port}";
+        _httpClient = new HttpClient();
         _jsonOptions = jsonOptions;
     }
 
@@ -36,30 +36,54 @@ public class JsonWireMockClient
         return options;
     }
 
-    public Result<VoidValue, string> StubGet<T>(string path, int statusCode, T response)
+    public async Task<Result<VoidValue, string>> StubGetAsync<T>(string path, int statusCode, T response)
     {
         try
         {
             var responseBody = Serialize(response);
 
-            _server
-                .Given(Request.Create().WithPath(path).UsingGet())
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode(statusCode)
-                        .WithHeader(ContentType, ApplicationJson)
-                        .WithBody(responseBody)
-                );
+            var mappingRequest = new
+            {
+                request = new
+                {
+                    method = "GET",
+                    urlPath = path
+                },
+                response = new
+                {
+                    status = statusCode,
+                    headers = new Dictionary<string, string>
+                    {
+                        { ContentType, ApplicationJson }
+                    },
+                    body = responseBody
+                }
+            };
 
-            // Verify stub was registered successfully by checking mappings
-            var mappings = _server.LogEntries;
+            var requestJson = JsonSerializer.Serialize(mappingRequest, _jsonOptions);
+            var content = new StringContent(requestJson, System.Text.Encoding.UTF8, ApplicationJson);
+
+            var apiResponse = await _httpClient.PostAsync($"{_wireMockBaseUrl}/__admin/mappings", content);
             
-            return Result<VoidValue, string>.Success(VoidValue.Empty);
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                return Result<VoidValue, string>.Success(VoidValue.Empty);
+            }
+            else
+            {
+                var errorContent = await apiResponse.Content.ReadAsStringAsync();
+                return Result<VoidValue, string>.Failure($"Failed to register stub for GET {path}: {errorContent}");
+            }
         }
         catch (Exception ex)
         {
             return Result<VoidValue, string>.Failure($"Failed to configure GET stub for {path}: {ex.Message}");
         }
+    }
+
+    public Result<VoidValue, string> StubGet<T>(string path, int statusCode, T response)
+    {
+        return StubGetAsync(path, statusCode, response).GetAwaiter().GetResult();
     }
 
     private string Serialize<T>(T obj)
