@@ -32,6 +32,21 @@ public class UseCaseContext
         return generatedValue;
     }
 
+    public string? GetParamValueOrLiteral(string? alias)
+    {
+        if (string.IsNullOrWhiteSpace(alias))
+        {
+            return alias;
+        }
+
+        return ExternalSystemMode switch
+        {
+            ExternalSystemMode.Stub => GetParamValue(alias),
+            ExternalSystemMode.Real => alias,
+            _ => throw new InvalidOperationException($"Unsupported external system mode: {ExternalSystemMode}")
+        };
+    }
+
     public void SetResultEntry(string alias, string value)
     {
         if (_resultMap.ContainsKey(alias))

@@ -7,18 +7,28 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Dsl;
 
 public class TaxDsl : IDisposable
 {
-    private readonly TaxDriver _driver;
+    private readonly ITaxDriver _driver;
     private readonly UseCaseContext _context;
 
-    public TaxDsl(UseCaseContext context, SystemConfiguration configuration)
+    private TaxDsl(ITaxDriver driver, UseCaseContext context)
     {
-        _driver = CreateDriver(configuration);
+        _driver = driver;
         _context = context;
     }
 
-    private static TaxDriver CreateDriver(SystemConfiguration configuration)
+    public TaxDsl(string baseUrl, UseCaseContext context)
+        : this(CreateDriver(baseUrl, context), context)
     {
-        return new TaxDriver(configuration.TaxBaseUrl);
+    }
+
+    private static ITaxDriver CreateDriver(string baseUrl, UseCaseContext context)
+    {
+        return context.ExternalSystemMode switch
+        {
+            ExternalSystemMode.Real => new TaxRealDriver(baseUrl),
+            ExternalSystemMode.Stub => new TaxStubDriver(baseUrl),
+            _ => throw new ArgumentOutOfRangeException($"Unknown mode: {context.ExternalSystemMode}")
+        };
     }
 
     public void Dispose()
@@ -27,4 +37,6 @@ public class TaxDsl : IDisposable
     }
 
     public GoToTax GoToTax() => new(_driver, _context);
+    public ReturnsTaxRate ReturnsTaxRate() => new(_driver, _context); 
+    public GetTaxRate GetTaxRate() => new(_driver, _context);
 }

@@ -39,7 +39,7 @@ public class SystemDsl : IDisposable
 
     public ErpDsl Erp => _erp ??= new ErpDsl(_configuration.ErpBaseUrl, _context);
 
-    public TaxDsl Tax => _tax ??= new TaxDsl(_context, _configuration);
+    public TaxDsl Tax => _tax ??= new TaxDsl(_configuration.TaxBaseUrl, _context);
 
     public ClockDsl Clock => _clock ??= new ClockDsl(_context, _configuration);
 

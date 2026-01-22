@@ -1,14 +1,13 @@
-using Optivem.EShop.SystemTest.Core.Common.Dsl;
-using Optivem.EShop.SystemTest.Core.Common.Error;
 using Optivem.EShop.SystemTest.Core.Tax.Driver;
+using Optivem.EShop.SystemTest.Core.Tax.Driver.Dtos.Error;
 using Optivem.Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands.Base;
 
 public abstract class BaseTaxCommand<TResponse, TVerification> 
-    : BaseUseCase<TaxDriver, UseCaseContext, TResponse, Error, TVerification, ErrorFailureVerification>
+    : BaseUseCase<ITaxDriver, UseCaseContext, TResponse, TaxErrorResponse, TVerification, TaxErrorVerification>
 {
-    protected BaseTaxCommand(TaxDriver driver, UseCaseContext context) 
+    protected BaseTaxCommand(ITaxDriver driver, UseCaseContext context) 
         : base(driver, context)
     {
     }
