@@ -4,12 +4,12 @@ using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Error;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Client;
 
-public class ErpClient
+public class ErpRealClient
 {
     private readonly HealthController _healthController;
     private readonly ProductController _productController;
 
-    public ErpClient(JsonHttpClient<ExtErpErrorResponse> httpGateway)
+    public ErpRealClient(JsonHttpClient<ExtErpErrorResponse> httpGateway)
     {
         _healthController = new HealthController(httpGateway);
         _productController = new ProductController(httpGateway);

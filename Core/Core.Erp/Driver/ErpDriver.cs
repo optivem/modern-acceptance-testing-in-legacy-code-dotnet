@@ -10,13 +10,13 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Driver;
 public class ErpDriver : IDisposable
 {
     private readonly HttpClient _httpClient;
-    private readonly ErpClient _erpClient;
+    private readonly ErpRealClient _erpClient;
 
     public ErpDriver(string baseUrl)
     {
         _httpClient = HttpClientFactory.Create(baseUrl);
         var httpGateway = new JsonHttpClient<ExtErpErrorResponse>(_httpClient, baseUrl);
-        _erpClient = new ErpClient(httpGateway);
+        _erpClient = new ErpRealClient(httpGateway);
     }
 
     public Result<VoidValue, ErpErrorResponse> GoToErp()
