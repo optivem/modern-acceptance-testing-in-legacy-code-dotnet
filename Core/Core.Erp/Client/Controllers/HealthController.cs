@@ -1,6 +1,6 @@
 using Optivem.Commons.Util;
 using Optivem.Commons.Http;
-using Optivem.EShop.SystemTest.Core.Common.Error;
+using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Client.Controllers
 {
@@ -8,17 +8,16 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Client.Controllers
     {
         private static readonly string Endpoint = "/health";
 
-        private readonly JsonHttpClient<ProblemDetailResponse> _httpClient;
+        private readonly JsonHttpClient<ExtErpErrorResponse> _httpClient;
 
-        public HealthController(JsonHttpClient<ProblemDetailResponse> httpClient)
+        public HealthController(JsonHttpClient<ExtErpErrorResponse> httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public Result<VoidValue, Error> CheckHealth()
+        public Result<VoidValue, ExtErpErrorResponse> CheckHealth()
         {
-            return _httpClient.Get(Endpoint)
-                .MapFailure(ProblemDetailConverter.ToError);
+            return _httpClient.Get(Endpoint);
         }
     }
 }

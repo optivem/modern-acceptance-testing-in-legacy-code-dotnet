@@ -1,6 +1,6 @@
 using Optivem.Commons.Util;
 using Optivem.Commons.Http;
-using Optivem.EShop.SystemTest.Core.Common.Error;
+using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos;
 using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Requests;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Client.Controllers;
@@ -8,16 +8,15 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Client.Controllers;
 public class ProductController
 {
     private const string Endpoint = "/api/products";
-    private readonly JsonHttpClient<ProblemDetailResponse> _httpClient;
+    private readonly JsonHttpClient<ExtErpErrorResponse> _httpClient;
 
-    public ProductController(JsonHttpClient<ProblemDetailResponse> httpClient)
+    public ProductController(JsonHttpClient<ExtErpErrorResponse> httpClient)
     {
         _httpClient = httpClient;
     }
 
-    public Result<VoidValue, Error> CreateProduct(CreateProductRequest request)
+    public Result<VoidValue, ExtErpErrorResponse> CreateProduct(CreateProductRequest request)
     {
-        return _httpClient.Post(Endpoint, request)
-            .MapFailure(ProblemDetailConverter.ToError);
+        return _httpClient.Post(Endpoint, request);
     }
 }
