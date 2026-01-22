@@ -5,19 +5,26 @@ namespace Optivem.EShop.SystemTest.Core.Clock.Driver;
 
 public class ClockRealDriver : IClockDriver
 {
+    public void Dispose()
+    {
+        // No resources to dispose
+    }
+
     public Result<VoidValue, ClockErrorResponse> GoToClock()
     {
-        // Health check by accessing system time
         var _ = DateTimeOffset.UtcNow;
         return Result<VoidValue, ClockErrorResponse>.Success(VoidValue.Empty);
     }
 
     public Result<GetTimeResponse, ClockErrorResponse> GetTime()
     {
+        var currentTime = DateTimeOffset.UtcNow;
+
         var response = new GetTimeResponse
         {
-            Time = DateTimeOffset.UtcNow
+            Time = currentTime
         };
+
         return Result<GetTimeResponse, ClockErrorResponse>.Success(response);
     }
 
@@ -25,10 +32,5 @@ public class ClockRealDriver : IClockDriver
     {
         // No-op for real driver - cannot configure system clock
         return Result<VoidValue, ClockErrorResponse>.Success(VoidValue.Empty);
-    }
-
-    public void Dispose()
-    {
-        // No resources to dispose
     }
 }

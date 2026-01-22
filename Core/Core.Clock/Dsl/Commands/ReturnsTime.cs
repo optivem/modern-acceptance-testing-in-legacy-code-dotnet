@@ -38,6 +38,7 @@ public class ReturnsTime : BaseClockCommand<VoidValue, VoidVerification<UseCaseC
         };
 
         var result = _driver.ReturnsTime(request);
+        
         return new ClockUseCaseResult<VoidValue, VoidVerification<UseCaseContext>>(
             result, 
             _context,

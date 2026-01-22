@@ -11,15 +11,4 @@ public class ClockErrorVerification : ResponseVerification<ClockErrorResponse, U
         : base(error, context)
     {
     }
-
-    public ClockErrorVerification ErrorMessage(string expectedMessage)
-    {
-        var expandedExpectedMessage = Context.ExpandAliases(expectedMessage);
-        var errorMessage = Response.Message;
-        
-        errorMessage.ShouldBe(expandedExpectedMessage, 
-            $"Expected error message: '{expandedExpectedMessage}', but got: '{errorMessage}'");
-        
-        return this;
-    }
 }
