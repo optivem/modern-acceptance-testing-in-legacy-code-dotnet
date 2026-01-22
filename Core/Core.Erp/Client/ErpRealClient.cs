@@ -14,4 +14,9 @@ public class ErpRealClient : BaseErpClient
     {
         return HttpClient.Post("/api/products", request);
     }
+
+    public override Result<ExtProductDetailsResponse, ExtErpErrorResponse> GetProduct(string id)
+    {
+        return HttpClient.Get<ExtProductDetailsResponse>($"/api/products/{id}");
+    }
 }

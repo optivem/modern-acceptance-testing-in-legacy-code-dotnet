@@ -1,5 +1,6 @@
 using Optivem.Commons.Http;
 using Optivem.Commons.Util;
+using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos;
 using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Error;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Client;
@@ -24,6 +25,8 @@ public abstract class BaseErpClient : IDisposable
     {
         return HttpClient.Get("/health");
     }
+
+    public abstract Result<ExtProductDetailsResponse, ExtErpErrorResponse> GetProduct(string id);
 
 
 }
