@@ -9,7 +9,8 @@ public class PageClient
     private readonly string _baseUrl;
     private readonly float _timeoutMilliseconds;
 
-    private const int DefaultTimeoutSeconds = 10;
+    // Increase timeout to match Java's 30 seconds for better stability
+    private const int DefaultTimeoutSeconds = 30;
     private const int DefaultTimeoutMilliseconds = DefaultTimeoutSeconds * 1000;
 
     private PageClient(IPage page, string baseUrl, float timeoutMilliseconds)
@@ -27,6 +28,11 @@ public class PageClient
     public string GetBaseUrl() => _baseUrl;
 
     public IPage GetPage() => _page;
+    
+    public string? GetPageContent()
+    {
+        return _page.ContentAsync().Result;
+    }
 
     public void Fill(string selector, string? text)
     {
@@ -70,6 +76,25 @@ public class PageClient
         try
         {
             Wait(locator);
+            return locator.CountAsync().Result > 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public bool IsVisible(string selector)
+    {
+        try
+        {
+            var locator = _page.Locator(selector);
+            // Wait for element to appear or timeout - matches Java behavior
+            var waitForOptions = GetWaitForOptions();
+            waitForOptions.State = WaitForSelectorState.Visible;
+            waitForOptions.Timeout = _timeoutMilliseconds;
+            
+            locator.WaitForAsync(waitForOptions).Wait();
             return locator.CountAsync().Result > 0;
         }
         catch

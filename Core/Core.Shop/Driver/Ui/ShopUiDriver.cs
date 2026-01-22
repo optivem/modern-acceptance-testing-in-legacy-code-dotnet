@@ -62,41 +62,19 @@ public class ShopUiDriver : IShopDriver
         _newOrderPage!.InputCountry(request.Country);
         _newOrderPage!.ClickPlaceOrder();
 
-        var isSuccess = _newOrderPage.HasSuccessNotification();
+        var result = _newOrderPage.GetResult();
 
-        if (!isSuccess)
+        if (result.IsFailure)
         {
-            var generalMessage = _newOrderPage.ReadGeneralErrorMessage();
-            var fieldErrorTexts = _newOrderPage.ReadFieldErrors();
-
-            if (fieldErrorTexts.Count == 0)
-            {
-                // Business logic error - no field errors
-                return Results.Failure<PlaceOrderResponse>(generalMessage);
-            }
-            else
-            {
-                // Validation error with field errors
-                // Parse "fieldName: message" format
-                var fieldErrors = fieldErrorTexts
-                    .Select(text =>
-                    {
-                        var parts = text.Split(':', 2);
-                        if (parts.Length == 2)
-                        {
-                            return new Error.FieldError(parts[0].Trim(), parts[1].Trim());
-                        }
-                        return new Error.FieldError("unknown", text);
-                    })
-                    .ToList();
-
-                var error = Error.Of(generalMessage, fieldErrors.AsReadOnly());
-                return Results.Failure<PlaceOrderResponse>(error);
-            }
+            return Results.Failure<PlaceOrderResponse>(result.Error);
         }
 
-        var orderNumberValue = _newOrderPage.GetOrderNumber();
+        var orderNumberValue = NewOrderPage.ExtractOrderNumber(result.Value);
         var response = new PlaceOrderResponse { OrderNumber = orderNumberValue };
+        
+        // Reset page state to ensure clean navigation for subsequent operations
+        _currentPage = Pages.None;
+        
         return Results.Success(response);
     }
 
@@ -106,28 +84,38 @@ public class ShopUiDriver : IShopDriver
         _orderHistoryPage!.InputOrderNumber(orderNumber);
         _orderHistoryPage!.ClickSearch();
 
-        var isSuccess = _orderHistoryPage.HasOrderDetails();
+        var isOrderListed = _orderHistoryPage.IsOrderListed(orderNumber);
 
-        if (!isSuccess)
+        if (!isOrderListed)
         {
-            var errorMessages = _orderHistoryPage.ReadErrorNotification();
-            var errorMessage = errorMessages.Count > 0 ? errorMessages[0] : "View order failed";
-            return Results.Failure<GetOrderResponse>(errorMessage);
+            return Results.Failure<GetOrderResponse>(Error.Of($"Order {orderNumber} does not exist."));
         }
 
-        var displayOrderNumber = _orderHistoryPage.GetOrderNumber();
-        var sku = _orderHistoryPage.GetSku();
-        var quantity = _orderHistoryPage.GetQuantity();
-        var country = _orderHistoryPage.GetCountry();
-        var unitPrice = _orderHistoryPage.GetUnitPrice();
-        var subtotalPrice = _orderHistoryPage.GetSubtotalPrice();
-        var discountRate = _orderHistoryPage.GetDiscountRate();
-        var discountAmount = _orderHistoryPage.GetDiscountAmount();
-        var preTaxTotal = _orderHistoryPage.GetPreTaxTotal();
-        var taxRate = _orderHistoryPage.GetTaxRate();
-        var taxAmount = _orderHistoryPage.GetTaxAmount();
-        var totalPrice = _orderHistoryPage.GetTotalPrice();
-        var status = _orderHistoryPage.GetStatus();
+        // Navigate to order details page
+        var orderDetailsPage = _orderHistoryPage.ClickViewOrderDetails(orderNumber);
+        
+        // Verify order details page loaded successfully
+        var isLoadedSuccessfully = orderDetailsPage.IsLoadedSuccessfully();
+        
+        if (!isLoadedSuccessfully)
+        {
+            return Results.Failure<GetOrderResponse>(Error.Of("Failed to load order details page"));
+        }
+
+        // Read order details from the details page
+        var displayOrderNumber = orderDetailsPage.GetOrderNumber();
+        var sku = orderDetailsPage.GetSku();
+        var quantity = orderDetailsPage.GetQuantity();
+        var country = orderDetailsPage.GetCountry();
+        var unitPrice = orderDetailsPage.GetUnitPrice();
+        var basePrice = orderDetailsPage.GetBasePrice();
+        var subtotalPrice = orderDetailsPage.GetSubtotalPrice();
+        var discountRate = orderDetailsPage.GetDiscountRate();
+        var discountAmount = orderDetailsPage.GetDiscountAmount();
+        var taxRate = orderDetailsPage.GetTaxRate();
+        var taxAmount = orderDetailsPage.GetTaxAmount();
+        var totalPrice = orderDetailsPage.GetTotalPrice();
+        var status = orderDetailsPage.GetStatus();
 
         var response = new GetOrderResponse
         {
@@ -135,10 +123,10 @@ public class ShopUiDriver : IShopDriver
             Sku = sku,
             Quantity = quantity,
             UnitPrice = unitPrice,
+            BasePrice = basePrice,
             SubtotalPrice = subtotalPrice,
             DiscountRate = discountRate,
             DiscountAmount = discountAmount,
-            PreTaxTotal = preTaxTotal,
             TaxRate = taxRate,
             TaxAmount = taxAmount,
             TotalPrice = totalPrice,
@@ -149,25 +137,46 @@ public class ShopUiDriver : IShopDriver
         return Results.Success(response);
     }
 
-    public Result<VoidValue, Error> CancelOrder(string orderNumberAlias)
+    public Result<VoidValue, Error> CancelOrder(string orderNumber)
     {
-        ViewOrder(orderNumberAlias);
-        _orderHistoryPage!.ClickCancelOrder();
+        // Navigate to order details page first
+        var viewResult = ViewOrder(orderNumber);
+        if (viewResult.IsFailure)
+        {
+            return Results.Failure<VoidValue>(viewResult.Error.Message);
+        }
 
-        var cancellationMessage = _orderHistoryPage.ReadSuccessNotification();
+        // Now we should be on the order details page, so get a reference to it
+        EnsureOnOrderHistoryPage();
+        _orderHistoryPage!.InputOrderNumber(orderNumber);
+        _orderHistoryPage!.ClickSearch();
+        var orderDetailsPage = _orderHistoryPage.ClickViewOrderDetails(orderNumber);
+        
+        // Perform the cancel action
+        orderDetailsPage.ClickCancelOrder();
+
+        var result = orderDetailsPage.GetResult();
+        
+        if (result.IsFailure)
+        {
+            return Results.Failure<VoidValue>(result.Error.Message);
+        }
+
+        var cancellationMessage = result.Value;
         if (cancellationMessage != "Order cancelled successfully!")
         {
-            return Results.Failure<VoidValue>("Did not see cancellation success message, instead: " + cancellationMessage);
+            return Results.Failure<VoidValue>("Did not receive expected cancellation success message");
         }
 
-        var displayStatusAfterCancel = _orderHistoryPage.GetStatus();
+        var displayStatusAfterCancel = orderDetailsPage.GetStatus();
         if (displayStatusAfterCancel != OrderStatus.CANCELLED)
         {
-            return Results.Failure<VoidValue>("Did not see cancelled status, instead: " + displayStatusAfterCancel);
+            return Results.Failure<VoidValue>("Order status not updated to CANCELLED");
         }
 
-        if(!_orderHistoryPage.IsCancelButtonHidden()) {
-            return Results.Failure<VoidValue>("Cancel button is not hidden");
+        if (!orderDetailsPage.IsCancelButtonHidden())
+        {
+            return Results.Failure<VoidValue>("Cancel button still visible");
         }
 
         return Results.Success();
@@ -190,11 +199,9 @@ public class ShopUiDriver : IShopDriver
 
     private void EnsureOnOrderHistoryPage()
     {
-        if (_currentPage != Pages.OrderHistory)
-        {
-            _homePage = _client.OpenHomePage();
-            _orderHistoryPage = _homePage.ClickOrderHistory();
-            _currentPage = Pages.OrderHistory;
-        }
+        // Always refresh to ensure clean navigation, especially after PlaceOrder
+        _homePage = _client.OpenHomePage();
+        _orderHistoryPage = _homePage.ClickOrderHistory();
+        _currentPage = Pages.OrderHistory;
     }
 }

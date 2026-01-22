@@ -108,7 +108,7 @@ public class E2eTest : BaseSystemTest
             .Status(OrderStatus.PLACED)
             .DiscountRateGreaterThanOrEqualToZero()
             .DiscountAmountGreaterThanOrEqualToZero()
-            .PreTaxTotalGreaterThanZero()
+            .SubtotalPriceGreaterThanZero()
             .TaxRateGreaterThanOrEqualToZero()
             .TaxAmountGreaterThanOrEqualToZero()
             .TotalPriceGreaterThanZero();

@@ -7,11 +7,14 @@ using Shouldly;
 using System.Net;
 using System.Net.NetworkInformation;
 using PlaywrightGateway = Optivem.Commons.Playwright.PageClient;
+using GraphQL;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui;
 
 public class ShopUiClient : IDisposable
 {
+    private const bool IsHeadless = false;
+
     private const string ContentType = "content-type";
     private const string TextHtml = "text/html";
     private const string HtmlOpeningTag = "<html";
@@ -30,7 +33,7 @@ public class ShopUiClient : IDisposable
     {
         _baseUrl = baseUrl;
         _playwright = Microsoft.Playwright.Playwright.CreateAsync().Result;
-        _browser = _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true }).Result;
+        _browser = _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = IsHeadless }).Result;
         _context = _browser.NewContextAsync().Result;
         _page = _browser.NewPageAsync().Result;
         var pageClient = new PlaywrightGateway(_page, baseUrl);

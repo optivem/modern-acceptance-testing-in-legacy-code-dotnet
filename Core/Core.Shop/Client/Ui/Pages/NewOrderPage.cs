@@ -40,9 +40,13 @@ public class NewOrderPage : BasePage
     public string GetOrderNumber()
     {
         var confirmationMessageText = ReadSuccessNotification();
+        return ExtractOrderNumber(confirmationMessageText);
+    }
 
+    public static string ExtractOrderNumber(string successMessageText)
+    {
         var pattern = new Regex(OrderNumberRegex);
-        var match = pattern.Match(confirmationMessageText);
+        var match = pattern.Match(successMessageText);
 
         if (!match.Success)
         {

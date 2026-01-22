@@ -7,23 +7,9 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 public class OrderHistoryPage : BasePage
 {
     private const string OrderNumberInputSelector = "[aria-label='Order Number']";
-    private const string SearchButtonSelector = "[aria-label='Search']";
-    private const string OrderDetailsContainerSelector = "#orderDetails";
-    private const string OrderNumberOutputSelector = "[aria-label='Display Order Number']";
-    private const string SkuOutputSelector = "[aria-label='Display SKU']";
-    private const string CountryOutputSelector = "[aria-label='Display Country']";
-    private const string QuantityOutputSelector = "[aria-label='Display Quantity']";
-    private const string UnitPriceOutputSelector = "[aria-label='Display Unit Price']";
-    private const string SubtotalPriceOutputSelector = "[aria-label='Display Subtotal Price']";
-    private const string DiscountRateOutputSelector = "[aria-label='Display Discount Rate']";
-    private const string DiscountAmountOutputSelector = "[aria-label='Display Discount Amount']";
-    private const string PreTaxTotalOutputSelector = "[aria-label='Display Pre-Tax Total']";
-    private const string TaxRateOutputSelector = "[aria-label='Display Tax Rate']";
-    private const string TaxAmountOutputSelector = "[aria-label='Display Tax Amount']";
-    private const string TotalPriceOutputSelector = "[aria-label='Display Total Price']";
-    private const string StatusOutputSelector = "[aria-label='Display Status']";
-    private const string CancelOrderOutputSelector = "[aria-label='Cancel Order']";
-    private const string OrderDetailsHeadingText = "Order Details";
+    private const string SearchButtonSelector = "[aria-label='Refresh Order List']";
+    private const string ViewDetailsLinkText = "View Details";
+    private const string RowSelectorTemplate = "//tr[contains(., '{0}')]";
 
     public OrderHistoryPage(PageClient pageClient) : base(pageClient)
     {
@@ -39,55 +25,24 @@ public class OrderHistoryPage : BasePage
         PageClient.Click(SearchButtonSelector);
     }
 
-    public void WaitForOrderDetails()
+    public bool IsOrderListed(string orderNumber)
     {
-        var orderDetailsText = PageClient.ReadTextContent(OrderDetailsContainerSelector);
-        if (!orderDetailsText.Contains(OrderDetailsHeadingText))
-        {
-            throw new InvalidOperationException("Should display order details heading");
-        }
+        var rowSelector = GetRowSelector(orderNumber);
+        return PageClient.IsVisible(rowSelector);
     }
 
-    public bool HasOrderDetails()
+    public OrderDetailsPage ClickViewOrderDetails(string orderNumber)
     {
-        try
-        {
-            WaitForOrderDetails();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+        var rowSelector = GetRowSelector(orderNumber);
+        // Find the link by its text content
+        var viewDetailsLinkSelector = rowSelector + "//a[contains(text(), '" + ViewDetailsLinkText + "')]";
+        PageClient.Click(viewDetailsLinkSelector);
+        return new OrderDetailsPage(PageClient);
     }
 
-    public string GetOrderNumber() => PageClient.ReadInputValue(OrderNumberOutputSelector);
-    public string GetSku() => PageClient.ReadInputValue(SkuOutputSelector);
-    public string GetCountry() => PageClient.ReadInputValue(CountryOutputSelector);
-    public int GetQuantity() => PageClient.ReadInputIntegerValue(QuantityOutputSelector);
-    public decimal GetUnitPrice() => PageClient.ReadInputCurrencyDecimalValue(UnitPriceOutputSelector);
-    public decimal GetSubtotalPrice() => PageClient.ReadInputCurrencyDecimalValue(SubtotalPriceOutputSelector);
-    public decimal GetDiscountRate() => PageClient.ReadInputPercentageDecimalValue(DiscountRateOutputSelector);
-    public decimal GetDiscountAmount() => PageClient.ReadInputCurrencyDecimalValue(DiscountAmountOutputSelector);
-    public decimal GetPreTaxTotal() => PageClient.ReadInputCurrencyDecimalValue(PreTaxTotalOutputSelector);
-    public decimal GetTaxRate() => PageClient.ReadInputPercentageDecimalValue(TaxRateOutputSelector);
-    public decimal GetTaxAmount() => PageClient.ReadInputCurrencyDecimalValue(TaxAmountOutputSelector);
-    public decimal GetTotalPrice() => PageClient.ReadInputCurrencyDecimalValue(TotalPriceOutputSelector);
-
-    public OrderStatus GetStatus()
+    private string GetRowSelector(string orderNumber)
     {
-        var status = PageClient.ReadInputValue(StatusOutputSelector);
-        return Enum.Parse<OrderStatus>(status);
-    }
-
-    public void ClickCancelOrder()
-    {
-        PageClient.Click(CancelOrderOutputSelector);
-        PageClient.WaitForHidden(CancelOrderOutputSelector);
-    }
-
-    public bool IsCancelButtonHidden()
-    {
-        return PageClient.IsHidden(CancelOrderOutputSelector);
+        // Simpler selector: find any row that contains the order number text
+        return string.Format(RowSelectorTemplate, orderNumber);
     }
 }

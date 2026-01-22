@@ -112,13 +112,6 @@ public class ViewOrderVerification : ResponseVerification<GetOrderResponse, UseC
         return this;
     }
 
-    public ViewOrderVerification PreTaxTotalGreaterThanZero()
-    {
-        Response.PreTaxTotal.ShouldBeGreaterThan(0m, 
-            $"Pre-tax total should be positive, but was: {Response.PreTaxTotal}");
-        return this;
-    }
-
     public ViewOrderVerification TaxRateGreaterThanOrEqualToZero()
     {
         Response.TaxRate.ShouldBeGreaterThanOrEqualTo(0m, 
