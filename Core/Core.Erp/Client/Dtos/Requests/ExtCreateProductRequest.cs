@@ -1,6 +1,6 @@
 namespace Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Requests;
 
-public class CreateProductRequest
+public class ExtCreateProductRequest
 {
     public string? Id { get; set; }
     public string? Title { get; set; }

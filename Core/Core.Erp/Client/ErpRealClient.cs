@@ -10,7 +10,7 @@ public class ErpRealClient : BaseErpClient
     {
     }
 
-    public Result<VoidValue, ExtErpErrorResponse> CreateProduct(CreateProductRequest request)
+    public Result<VoidValue, ExtErpErrorResponse> CreateProduct(ExtCreateProductRequest request)
     {
         return HttpClient.Post("/api/products", request);
     }

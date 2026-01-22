@@ -81,7 +81,7 @@ public class CreateProduct : BaseErpCommand<VoidValue, VoidVerification<UseCaseC
     {
         var sku = _context.GetParamValue(_skuParamAlias!);
 
-        var request = new CreateProductRequest
+        var request = new ExtCreateProductRequest
         {
             Id = sku,
             Title = _title,

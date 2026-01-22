@@ -20,7 +20,7 @@ public class ErpDriver : IDisposable
             .MapFailure(ErpErrorResponse.From);
     }
 
-    public Result<VoidValue, ErpErrorResponse> CreateProduct(CreateProductRequest request)
+    public Result<VoidValue, ErpErrorResponse> CreateProduct(ExtCreateProductRequest request)
     {
         return _erpClient.CreateProduct(request)
             .MapFailure(ErpErrorResponse.From);
