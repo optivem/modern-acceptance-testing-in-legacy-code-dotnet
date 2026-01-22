@@ -1,20 +1,17 @@
-using Optivem.Commons.Http;
-using Optivem.EShop.SystemTest.Core.Erp.Client.Controllers;
+using Optivem.Commons.Util;
 using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Error;
+using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Requests;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Client;
 
-public class ErpRealClient
+public class ErpRealClient : BaseErpClient
 {
-    private readonly HealthController _healthController;
-    private readonly ProductController _productController;
-
-    public ErpRealClient(JsonHttpClient<ExtErpErrorResponse> httpGateway)
+    public ErpRealClient(string baseUrl) : base(baseUrl)
     {
-        _healthController = new HealthController(httpGateway);
-        _productController = new ProductController(httpGateway);
     }
 
-    public ProductController Products => _productController;
-    public HealthController Health => _healthController;
+    public Result<VoidValue, ExtErpErrorResponse> CreateProduct(CreateProductRequest request)
+    {
+        return HttpClient.Post("/api/products", request);
+    }
 }
