@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
-using Optivem.Commons.Http;
-using Optivem.Commons.Playwright;
+using Commons.Http;
+using Commons.Playwright;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 

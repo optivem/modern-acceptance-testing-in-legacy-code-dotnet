@@ -1,4 +1,4 @@
-using Optivem.Commons.Util;
+using Commons.Util;
 using Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Errors;

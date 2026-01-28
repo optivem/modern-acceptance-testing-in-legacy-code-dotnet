@@ -1,5 +1,5 @@
-using Optivem.Commons.Util;
-using Optivem.Commons.WireMock;
+using Commons.Util;
+using Commons.WireMock;
 using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos;
 using Optivem.EShop.SystemTest.Core.Erp.Client.Dtos.Error;
 

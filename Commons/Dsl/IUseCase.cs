@@ -1,4 +1,4 @@
-namespace Optivem.Commons.Dsl;
+namespace Commons.Dsl;
 
 public interface IUseCase<T>
 {

@@ -1,8 +1,8 @@
 using Optivem.EShop.SystemTest.Core.Tax.Driver;
 using Optivem.EShop.SystemTest.Core.Tax.Driver.Dtos.Error;
 using Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands.Base;
-using Optivem.Commons.Util;
-using Optivem.Commons.Dsl;
+using Commons.Util;
+using Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands;
 

@@ -1,4 +1,4 @@
-using Optivem.Commons.Playwright;
+using Commons.Playwright;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;

@@ -1,4 +1,4 @@
-using Optivem.Commons.Util;
+using Commons.Util;
 using Optivem.EShop.SystemTest.Core.Shop.Client.Api;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Coupons;
 using Optivem.EShop.SystemTest.Core.Shop.Commons;

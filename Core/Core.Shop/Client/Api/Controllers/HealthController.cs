@@ -1,5 +1,5 @@
-using Optivem.Commons.Util;
-using Optivem.Commons.Http;
+using Commons.Util;
+using Commons.Http;
 using Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Api.Controllers;

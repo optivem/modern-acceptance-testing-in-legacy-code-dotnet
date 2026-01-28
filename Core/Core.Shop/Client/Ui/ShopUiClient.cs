@@ -1,8 +1,8 @@
 using Microsoft.Playwright;
 using Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
-using Optivem.Commons.Playwright;
+using Commons.Playwright;
 using System.Net;
-using PlaywrightGateway = Optivem.Commons.Playwright.PageClient;
+using PlaywrightGateway = Commons.Playwright.PageClient;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui;
 

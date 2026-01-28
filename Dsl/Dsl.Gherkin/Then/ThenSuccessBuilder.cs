@@ -2,8 +2,8 @@ using Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 using static Optivem.EShop.SystemTest.Core.Gherkin.GherkinDefaults;
 using Dsl.Gherkin.Then;
-using Optivem.Commons.Dsl;
-using Optivem.Commons.Util;
+using Commons.Dsl;
+using Commons.Util;
 
 namespace Optivem.EShop.SystemTest.Core.Gherkin.Then;
 

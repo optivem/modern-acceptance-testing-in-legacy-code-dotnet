@@ -1,4 +1,4 @@
-namespace Optivem.Commons.Dsl;
+namespace Commons.Dsl;
 
 public abstract class BaseUseCase<TDriver, TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification> 
     : IUseCase<UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification>>

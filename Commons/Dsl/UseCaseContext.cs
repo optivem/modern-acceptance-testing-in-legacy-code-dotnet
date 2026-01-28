@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Optivem.Commons.Dsl;
+namespace Commons.Dsl;
 
 public class UseCaseContext
 {

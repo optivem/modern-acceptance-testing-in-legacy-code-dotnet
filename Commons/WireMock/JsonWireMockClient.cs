@@ -1,8 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Optivem.Commons.Util;
+using Commons.Util;
 
-namespace Optivem.Commons.WireMock;
+namespace Commons.WireMock;
 
 public class JsonWireMockClient : IDisposable
 {

@@ -4,7 +4,7 @@ using Optivem.EShop.SystemTest.Core.Shop.Driver.Api;
 using Optivem.EShop.SystemTest.Core.Shop.Driver.Ui;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;
 using Optivem.Testing;
-using Optivem.Commons.Dsl;
+using Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl;
 

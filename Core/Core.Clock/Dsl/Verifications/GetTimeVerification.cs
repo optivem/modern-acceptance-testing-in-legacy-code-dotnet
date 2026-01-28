@@ -1,5 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Clock.Driver.Dtos;
-using Optivem.Commons.Dsl;
+using Commons.Dsl;
 using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Dsl.Verifications;

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Configuration;
-using Optivem.Commons.Dsl;
+using Commons.Dsl;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Common;
 

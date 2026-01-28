@@ -1,7 +1,7 @@
 using System.Globalization;
 using Microsoft.Playwright;
 
-namespace Optivem.Commons.Playwright;
+namespace Commons.Playwright;
 
 public class PageClient
 {

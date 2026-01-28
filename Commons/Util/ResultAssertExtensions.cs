@@ -1,6 +1,6 @@
 using Shouldly;
 
-namespace Optivem.Commons.Util;
+namespace Commons.Util;
 
 public static class ResultAssertExtensions
 {

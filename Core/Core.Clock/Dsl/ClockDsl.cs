@@ -1,6 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Clock.Dsl.Commands;
 using Optivem.EShop.SystemTest.Core.Clock.Driver;
-using Optivem.Commons.Dsl;
+using Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Dsl;
 

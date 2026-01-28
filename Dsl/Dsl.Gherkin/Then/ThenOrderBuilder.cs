@@ -1,5 +1,5 @@
 using Dsl.Gherkin.Then;
-using Optivem.Commons.Dsl;
+using Commons.Dsl;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Gherkin;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;

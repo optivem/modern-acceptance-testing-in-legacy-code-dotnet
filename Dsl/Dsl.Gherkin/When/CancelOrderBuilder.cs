@@ -1,7 +1,7 @@
 using DevLab.JmesPath.Functions;
 using Dsl.Gherkin.When;
-using Optivem.Commons.Dsl;
-using Optivem.Commons.Util;
+using Commons.Dsl;
+using Commons.Util;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Gherkin;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Coupons;

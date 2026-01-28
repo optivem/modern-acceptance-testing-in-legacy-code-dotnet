@@ -1,6 +1,6 @@
-using Optivem.Commons.Http;
-using Optivem.Commons.Playwright;
-using Optivem.Commons.Util;
+using Commons.Http;
+using Commons.Playwright;
+using Commons.Util;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Errors;
 using Optivem.EShop.SystemTest.Core.Shop.Commons;
 

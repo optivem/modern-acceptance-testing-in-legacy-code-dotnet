@@ -1,4 +1,4 @@
-using Optivem.Commons.Dsl;
+using Commons.Dsl;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Gherkin.Then;
 using Optivem.Testing;

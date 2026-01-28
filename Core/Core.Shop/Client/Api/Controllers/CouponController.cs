@@ -1,5 +1,5 @@
-using Optivem.Commons.Http;
-using Optivem.Commons.Util;
+using Commons.Http;
+using Commons.Util;
 using Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Coupons;
 

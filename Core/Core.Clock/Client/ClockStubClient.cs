@@ -1,8 +1,8 @@
 using Optivem.EShop.SystemTest.Core.Clock.Client.Dtos;
 using Optivem.EShop.SystemTest.Core.Clock.Client.Dtos.Error;
-using Optivem.Commons.Http;
-using Optivem.Commons.Util;
-using Optivem.Commons.WireMock;
+using Commons.Http;
+using Commons.Util;
+using Commons.WireMock;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Client;
 

@@ -1,5 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Tax.Driver.Dtos;
-using Optivem.Commons.Dsl;
+using Commons.Dsl;
 using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Verifications;

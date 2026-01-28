@@ -1,7 +1,7 @@
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
-using Optivem.Commons.Dsl;
+using Commons.Dsl;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;

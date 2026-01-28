@@ -2,9 +2,9 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Optivem.Commons.Util;
+using Commons.Util;
 
-namespace Optivem.Commons.Http;
+namespace Commons.Http;
 
 public class JsonHttpClient<E>
 {

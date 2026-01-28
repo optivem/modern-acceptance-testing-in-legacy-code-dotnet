@@ -1,6 +1,6 @@
-using Optivem.Commons.Util;
+using Commons.Util;
 
-namespace Optivem.Commons.Dsl;
+namespace Commons.Dsl;
 
 public class UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification>
 {

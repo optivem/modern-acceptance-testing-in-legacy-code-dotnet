@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace Optivem.Commons.Util
+namespace Commons.Util
 {
     public class VoidValue
     {
