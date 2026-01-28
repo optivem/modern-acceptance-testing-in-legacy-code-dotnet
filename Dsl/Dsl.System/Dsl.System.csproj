@@ -16,7 +16,7 @@
     <ProjectReference Include="..\..\Core\Core.Erp\Core.Erp.csproj" />
     <ProjectReference Include="..\..\Core\Core.Shop\Core.Shop.csproj" />
     <ProjectReference Include="..\..\Core\Core.Tax\Core.Tax.csproj" />
-    <ProjectReference Include="..\..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
+    <ProjectReference Include="..\..\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
     <ProjectReference Include="..\..\Optivem.Commons\Optivem.Commons.csproj" />
   </ItemGroup>
 

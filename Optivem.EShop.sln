@@ -26,9 +26,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy-docker-images", "dep
 		.github\actions\deploy-docker-images\action.yml = .github\actions\deploy-docker-images\action.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Testing.Channels", "Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj", "{FFB1E01C-6DF1-42BC-BC4B-3B01DDF0E0B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Testing.Channels", "Optivem.Testing.Channels\Optivem.Testing.Channels.csproj", "{FFB1E01C-6DF1-42BC-BC4B-3B01DDF0E0B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Testing.Channels.Tests", "Libs\Optivem.Testing.Channels.Tests\Optivem.Testing.Channels.Tests.csproj", "{AF98ECDD-B325-26EA-BEFB-593E9B7B6ED0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Testing.Channels.Tests", "Optivem.Testing.Channels.Tests\Optivem.Testing.Channels.Tests.csproj", "{AF98ECDD-B325-26EA-BEFB-593E9B7B6ED0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Shop", "Core\Core.Shop\Core.Shop.csproj", "{8F5F23B7-0DA0-41EF-B994-71294FD6AFBA}"
 EndProject
@@ -219,7 +219,6 @@ Global
 		{FB45BF1E-D953-4FF7-8E79-C46B5B355405} = {65C2C82B-4368-4B45-B4C7-298C5926EEDF}
 		{AD0543BD-1239-42AB-A600-B712D414F066} = {65C2C82B-4368-4B45-B4C7-298C5926EEDF}
 		{002C24CD-96A9-47D2-9E1B-BFB1C3699FC2} = {AD0543BD-1239-42AB-A600-B712D414F066}
-		{FFB1E01C-6DF1-42BC-BC4B-3B01DDF0E0B9} = {B0EE7BCE-7C7B-4D9A-9BEC-7F43E5F8816F}
 		{8F5F23B7-0DA0-41EF-B994-71294FD6AFBA} = {56E2B456-6FAB-410A-B43B-A41342689283}
 		{4FBEAD90-697E-4620-94CB-49ED8FC153C8} = {56E2B456-6FAB-410A-B43B-A41342689283}
 		{2CCE53DA-8189-4B87-A601-121261686691} = {56E2B456-6FAB-410A-B43B-A41342689283}
