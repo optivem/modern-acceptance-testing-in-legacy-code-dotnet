@@ -38,29 +38,29 @@ public class CouponManagementPage : BasePage
     {
     }
 
-    public void InputCouponCode(string couponCode)
+    public void InputCouponCode(string? couponCode)
     {
         PageClient.Fill(CouponCodeInputSelector, couponCode);
     }
 
-    public void InputDiscountRate(string discountRate)
+    public void InputDiscountRate(string? discountRate)
     {
         PageClient.Fill(DiscountRateInputSelector, discountRate);
     }
 
-    public void InputValidFrom(string validFrom)
+    public void InputValidFrom(string? validFrom)
     {
         var datetimeValue = GetValidFromDateTimeString(validFrom);
         PageClient.Fill(ValidFromInputSelector, datetimeValue);
     }
 
-    public void InputValidTo(string validTo)
+    public void InputValidTo(string? validTo)
     {
         var datetimeValue = GetValidToDateTimeString(validTo);
         PageClient.Fill(ValidToInputSelector, datetimeValue);
     }
 
-    public void InputUsageLimit(string usageLimit)
+    public void InputUsageLimit(string? usageLimit)
     {
         PageClient.Fill(UsageLimitInputSelector, usageLimit);
     }
@@ -134,7 +134,7 @@ public class CouponManagementPage : BasePage
         return coupons;
     }
 
-    private static string GetValidFromDateTimeString(string validFrom)
+    private static string GetValidFromDateTimeString(string? validFrom)
     {
         if (string.IsNullOrEmpty(validFrom))
         {
@@ -147,7 +147,7 @@ public class CouponManagementPage : BasePage
         return dateOnly + TimeMidnight;
     }
 
-    private static string GetValidToDateTimeString(string validTo)
+    private static string GetValidToDateTimeString(string? validTo)
     {
         if (string.IsNullOrEmpty(validTo))
         {
@@ -160,15 +160,20 @@ public class CouponManagementPage : BasePage
         return dateOnly + TimeEndOfDay;
     }
 
-    private static double ParseDiscountRate(string text)
+    private static decimal ParseDiscountRate(string? text)
     {
+        if(text == null || string.IsNullOrEmpty(text))
+        {
+            return 0.0m;
+        }
+
         try
         {
-            return double.Parse(text) / 100.0; // Convert percentage to decimal
+            return decimal.Parse(text) / 100.0m; // Convert percentage to decimal
         }
         catch (FormatException)
         {
-            return 0.0;
+            return 0.0m;
         }
     }
 
@@ -191,7 +196,7 @@ public class CouponManagementPage : BasePage
         }
     }
 
-    private static int? ParseUsageLimit(string text)
+    private static int? ParseUsageLimit(string? text)
     {
         if (text == null || text.Equals(TextUnlimited, StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(text))
         {

@@ -15,7 +15,7 @@ public class OrderHistoryPage : BasePage
     {
     }
 
-    public void InputOrderNumber(string orderNumber)
+    public void InputOrderNumber(string? orderNumber)
     {
         PageClient.Fill(OrderNumberInputSelector, orderNumber);
     }
@@ -25,13 +25,13 @@ public class OrderHistoryPage : BasePage
         PageClient.Click(SearchButtonSelector);
     }
 
-    public bool IsOrderListed(string orderNumber)
+    public bool IsOrderListed(string? orderNumber)
     {
         var rowSelector = GetRowSelector(orderNumber);
         return PageClient.IsVisible(rowSelector);
     }
 
-    public OrderDetailsPage ClickViewOrderDetails(string orderNumber)
+    public OrderDetailsPage ClickViewOrderDetails(string? orderNumber)
     {
         var rowSelector = GetRowSelector(orderNumber);
         // Find the link by its text content
@@ -40,7 +40,7 @@ public class OrderHistoryPage : BasePage
         return new OrderDetailsPage(PageClient);
     }
 
-    private string GetRowSelector(string orderNumber)
+    private string GetRowSelector(string? orderNumber)
     {
         // Simpler selector: find any row that contains the order number text
         return string.Format(RowSelectorTemplate, orderNumber);

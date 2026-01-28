@@ -14,7 +14,7 @@ public class CancelOrder : BaseShopCommand<VoidValue, VoidVerification>
     {
     }
 
-    public CancelOrder OrderNumber(string orderNumberResultAlias)
+    public CancelOrder OrderNumber(string? orderNumberResultAlias)
     {
         _orderNumberResultAlias = orderNumberResultAlias;
         return this;

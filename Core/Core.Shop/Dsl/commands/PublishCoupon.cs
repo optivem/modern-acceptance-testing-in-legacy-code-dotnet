@@ -19,7 +19,7 @@ public class PublishCoupon : BaseShopCommand<VoidValue, VoidVerification>
     {
     }
 
-    public PublishCoupon CouponCode(string couponCodeParamAlias)
+    public PublishCoupon CouponCode(string? couponCodeParamAlias)
     {
         _couponCodeParamAlias = couponCodeParamAlias;
         return this;
@@ -31,25 +31,25 @@ public class PublishCoupon : BaseShopCommand<VoidValue, VoidVerification>
         return this;
     }
 
-    public PublishCoupon DiscountRate(string discountRate)
+    public PublishCoupon DiscountRate(string? discountRate)
     {
         _discountRate = discountRate;
         return this;
     }
 
-    public PublishCoupon ValidFrom(string validFrom)
+    public PublishCoupon ValidFrom(string? validFrom)
     {
         _validFrom = validFrom;
         return this;
     }
 
-    public PublishCoupon ValidTo(string validTo)
+    public PublishCoupon ValidTo(string? validTo)
     {
         _validTo = validTo;
         return this;
     }
 
-    public PublishCoupon UsageLimit(string usageLimit)
+    public PublishCoupon UsageLimit(string? usageLimit)
     {
         _usageLimit = usageLimit;
         return this;

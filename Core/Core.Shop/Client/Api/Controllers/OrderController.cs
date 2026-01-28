@@ -21,12 +21,12 @@ public class OrderController
         return _httpClient.Post<PlaceOrderResponse>(Endpoint, request);
     }
 
-    public Result<ViewOrderResponse, ProblemDetailResponse> ViewOrder(string orderNumber)
+    public Result<ViewOrderResponse, ProblemDetailResponse> ViewOrder(string? orderNumber)
     {
         return _httpClient.Get<ViewOrderResponse>($"{Endpoint}/{orderNumber}");
     }
 
-    public Result<VoidValue, ProblemDetailResponse> CancelOrder(string orderNumber)
+    public Result<VoidValue, ProblemDetailResponse> CancelOrder(string? orderNumber)
     {
         return _httpClient.Post($"{Endpoint}/{orderNumber}/cancel");
     }

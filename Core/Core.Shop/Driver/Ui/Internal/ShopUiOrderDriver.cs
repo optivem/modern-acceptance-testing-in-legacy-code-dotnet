@@ -32,7 +32,7 @@ public class ShopUiOrderDriver : IOrderDriver
         EnsureOnNewOrderPage();
 
         _newOrderPage!.InputSku(sku);
-        _newOrderPage.InputQuantity(quantity.ToString());
+        _newOrderPage.InputQuantity(quantity);
         _newOrderPage.InputCountry(country);
         _newOrderPage.InputCouponCode(couponCode);
         _newOrderPage.ClickPlaceOrder();
@@ -52,7 +52,7 @@ public class ShopUiOrderDriver : IOrderDriver
         return Success(response);
     }
 
-    public Result<VoidValue, SystemError> CancelOrder(string orderNumber)
+    public Result<VoidValue, SystemError> CancelOrder(string? orderNumber)
     {
         var result = EnsureOnOrderDetailsPage(orderNumber);
         if (result.IsFailure)
@@ -88,7 +88,7 @@ public class ShopUiOrderDriver : IOrderDriver
         return Success();
     }
 
-    public Result<ViewOrderResponse, SystemError> ViewOrder(string orderNumber)
+    public Result<ViewOrderResponse, SystemError> ViewOrder(string? orderNumber)
     {
         var result = EnsureOnOrderDetailsPage(orderNumber);
         if (result.IsFailure)
@@ -159,7 +159,7 @@ public class ShopUiOrderDriver : IOrderDriver
         }
     }
 
-    private Result<VoidValue, SystemError> EnsureOnOrderDetailsPage(string orderNumber)
+    private Result<VoidValue, SystemError> EnsureOnOrderDetailsPage(string? orderNumber)
     {
         EnsureOnOrderHistoryPage();
         

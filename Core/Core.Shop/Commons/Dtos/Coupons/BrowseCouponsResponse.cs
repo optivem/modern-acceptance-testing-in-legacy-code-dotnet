@@ -11,7 +11,7 @@ public class BrowseCouponsResponse
 public class CouponDto
 {
     public required string Code { get; set; }
-    public required double DiscountRate { get; set; }
+    public required decimal DiscountRate { get; set; }
     public DateTime? ValidFrom { get; set; }
     public DateTime? ValidTo { get; set; }
     public int? UsageLimit { get; set; }

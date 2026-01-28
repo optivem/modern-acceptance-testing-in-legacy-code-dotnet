@@ -19,19 +19,19 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
     {
     }
 
-    public PlaceOrder OrderNumber(string orderNumberResultAlias)
+    public PlaceOrder OrderNumber(string? orderNumberResultAlias)
     {
         _orderNumberResultAlias = orderNumberResultAlias;
         return this;
     }
 
-    public PlaceOrder Sku(string skuParamAlias)
+    public PlaceOrder Sku(string? skuParamAlias)
     {
         _skuParamAlias = skuParamAlias;
         return this;
     }
 
-    public PlaceOrder Quantity(string quantity)
+    public PlaceOrder Quantity(string? quantity)
     {
         _quantity = quantity;
         return this;
@@ -42,13 +42,13 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
         return Quantity(quantity.ToString());
     }
 
-    public PlaceOrder Country(string countryAlias)
+    public PlaceOrder Country(string? countryAlias)
     {
         _countryAlias = countryAlias;
         return this;
     }
 
-    public PlaceOrder CouponCode(string couponCodeAlias)
+    public PlaceOrder CouponCode(string? couponCodeAlias)
     {
         _couponCodeAlias = couponCodeAlias;
         return this;

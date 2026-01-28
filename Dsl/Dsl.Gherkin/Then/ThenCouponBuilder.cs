@@ -22,7 +22,7 @@ namespace Dsl.Gherkin.Then
             _verification.HasCouponWithCode(couponCode);
         }
 
-        public ThenCouponBuilder<TSuccessResponse, TSuccessVerification> HasDiscountRate(double discountRate)
+        public ThenCouponBuilder<TSuccessResponse, TSuccessVerification> HasDiscountRate(decimal discountRate)
         {
             _verification.CouponHasDiscountRate(_couponCode, discountRate);
             return this;

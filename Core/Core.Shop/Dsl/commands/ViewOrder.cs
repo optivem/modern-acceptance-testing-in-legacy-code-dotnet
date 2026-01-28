@@ -15,7 +15,7 @@ public class ViewOrder : BaseShopCommand<ViewOrderResponse, ViewOrderVerificatio
     {
     }
 
-    public ViewOrder OrderNumber(string orderNumberResultAlias)
+    public ViewOrder OrderNumber(string? orderNumberResultAlias)
     {
         _orderNumberResultAlias = orderNumberResultAlias;
         return this;

@@ -37,6 +37,12 @@ public class ChannelDataAttribute : DataAttribute
 {
     private readonly string[] _channels;
 
+    private static Type THEORY_ATTRIBUTE_TYPE = Type.GetType("Xunit.TheoryAttribute, xunit.core")!;
+    private static Type FACT_ATTRIBUTE_TYPE = Type.GetType("Xunit.FactAttribute, xunit.core")!;
+    private static readonly Type INLINE_DATA_ATTRIBUTE_TYPE = Type.GetType("Xunit.InlineDataAttribute, xunit.core")!;
+    private static readonly Type CLASS_DATA_ATTRIBUTE_TYPE = Type.GetType("Xunit.ClassDataAttribute, xunit.core")!;
+    private static readonly Type MEMBER_DATA_ATTRIBUTE_TYPE = Type.GetType("Xunit.MemberDataAttribute, xunit.core")!;
+
     public ChannelDataAttribute(params string[] channels)
     {
         _channels = channels ?? throw new ArgumentNullException(nameof(channels));
@@ -160,13 +166,15 @@ public class ChannelDataAttribute : DataAttribute
         }
     }
 
+
+
     private static void ValidateTheoryAttributePresent(MethodInfo testMethod)
     {
         // Check for [Theory] attribute
-        var theoryAttribute = testMethod.GetCustomAttribute(Type.GetType("Xunit.TheoryAttribute, xunit.core"));
+        var theoryAttribute = testMethod.GetCustomAttribute(THEORY_ATTRIBUTE_TYPE);
         
         // Check for [Fact] attribute
-        var factAttribute = testMethod.GetCustomAttribute(Type.GetType("Xunit.FactAttribute, xunit.core"));
+        var factAttribute = testMethod.GetCustomAttribute(FACT_ATTRIBUTE_TYPE);
         
         if (theoryAttribute == null && factAttribute != null)
         {
@@ -185,10 +193,12 @@ public class ChannelDataAttribute : DataAttribute
         }
     }
 
+
+
     private static void ValidateNoStandardXUnitAttributes(MethodInfo testMethod)
     {
         // Check for [InlineData]
-        var inlineData = testMethod.GetCustomAttribute(Type.GetType("Xunit.InlineDataAttribute, xunit.core"));
+        var inlineData = testMethod.GetCustomAttribute(INLINE_DATA_ATTRIBUTE_TYPE);
         if (inlineData != null)
         {
             throw new InvalidOperationException(
@@ -198,7 +208,7 @@ public class ChannelDataAttribute : DataAttribute
         }
 
         // Check for [ClassData]
-        var classData = testMethod.GetCustomAttribute(Type.GetType("Xunit.ClassDataAttribute, xunit.core"));
+        var classData = testMethod.GetCustomAttribute(CLASS_DATA_ATTRIBUTE_TYPE);
         if (classData != null)
         {
             throw new InvalidOperationException(
@@ -208,7 +218,7 @@ public class ChannelDataAttribute : DataAttribute
         }
 
         // Check for [MemberData]
-        var memberData = testMethod.GetCustomAttribute(Type.GetType("Xunit.MemberDataAttribute, xunit.core"));
+        var memberData = testMethod.GetCustomAttribute(MEMBER_DATA_ATTRIBUTE_TYPE);
         if (memberData != null)
         {
             throw new InvalidOperationException(

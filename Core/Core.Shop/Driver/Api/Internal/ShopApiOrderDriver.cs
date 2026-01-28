@@ -20,12 +20,12 @@ public class ShopApiOrderDriver : IOrderDriver
         return _apiClient.Orders().PlaceOrder(request).MapError(SystemError.From);
     }
 
-    public Result<VoidValue, SystemError> CancelOrder(string orderNumber)
+    public Result<VoidValue, SystemError> CancelOrder(string? orderNumber)
     {
         return _apiClient.Orders().CancelOrder(orderNumber).MapError(SystemError.From);
     }
 
-    public Result<ViewOrderResponse, SystemError> ViewOrder(string orderNumber)
+    public Result<ViewOrderResponse, SystemError> ViewOrder(string? orderNumber)
     {
         return _apiClient.Orders().ViewOrder(orderNumber).MapError(SystemError.From);
     }

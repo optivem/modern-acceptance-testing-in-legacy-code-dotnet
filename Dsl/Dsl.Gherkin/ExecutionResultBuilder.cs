@@ -21,13 +21,13 @@ namespace Dsl.Gherkin
             _result = result;
         }
 
-        public ExecutionResultBuilder<TSuccessResponse, TSuccessVerification> OrderNumber(string orderNumber)
+        public ExecutionResultBuilder<TSuccessResponse, TSuccessVerification> OrderNumber(string? orderNumber)
         {
             _orderNumber = orderNumber;
             return this;
         }
 
-        public ExecutionResultBuilder<TSuccessResponse, TSuccessVerification> CouponCode(string couponCode)
+        public ExecutionResultBuilder<TSuccessResponse, TSuccessVerification> CouponCode(string? couponCode)
         {
             _couponCode = couponCode;
             return this;

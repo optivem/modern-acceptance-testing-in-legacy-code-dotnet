@@ -16,13 +16,13 @@ public class ReturnsProduct : BaseErpCommand<VoidValue, VoidVerification>
     {
     }
 
-    public ReturnsProduct Sku(string skuParamAlias)
+    public ReturnsProduct Sku(string? skuParamAlias)
     {
         _skuParamAlias = skuParamAlias;
         return this;
     }
 
-    public ReturnsProduct UnitPrice(string unitPrice)
+    public ReturnsProduct UnitPrice(string? unitPrice)
     {
         _unitPrice = unitPrice;
         return this;
