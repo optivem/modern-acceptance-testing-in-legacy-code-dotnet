@@ -199,6 +199,7 @@ public class E2eTest : BaseSystemTest
     public void ShouldRejectOrderWithZeroQuantity(Channel channel)
     {
         App.Shop(channel).PlaceOrder()
+            .Sku(SKU)
             .Quantity("0")
             .Country("US")
             .Execute()
@@ -228,6 +229,7 @@ public class E2eTest : BaseSystemTest
     public void ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
     {
         App.Shop(channel).PlaceOrder()
+            .Sku(SKU)
             .Quantity(emptyQuantity)
             .Country("US")
             .Execute()
@@ -258,6 +260,7 @@ public class E2eTest : BaseSystemTest
     public void ShouldRejectOrderWithEmptyCountry(Channel channel, string emptyCountry)
     {
         App.Shop(channel).PlaceOrder()
+            .Sku(SKU)
             .Country(emptyCountry)
             .Execute()
             .ShouldFail()
