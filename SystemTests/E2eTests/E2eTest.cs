@@ -124,12 +124,15 @@ public class E2eTest : BaseSystemTest
     {
         App.Erp().ReturnsProduct()
             .Sku(SKU)
+            .UnitPrice(20.00m)
             .Execute()
             .ShouldSucceed();
 
         App.Shop(channel).PlaceOrder()
             .OrderNumber(ORDER_NUMBER)
             .Sku(SKU)
+            .Quantity(5)
+            .Country("US")
             .Execute()
             .ShouldSucceed();
 
@@ -261,6 +264,7 @@ public class E2eTest : BaseSystemTest
     {
         App.Shop(channel).PlaceOrder()
             .Sku(SKU)
+            .Quantity(5)
             .Country(emptyCountry)
             .Execute()
             .ShouldFail()
