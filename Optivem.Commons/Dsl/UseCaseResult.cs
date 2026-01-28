@@ -25,7 +25,7 @@ public class UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerificat
     {
         if (!_result.IsSuccess)
         {
-            throw new InvalidOperationException($"Expected result to be success but was failure, due to error: " + _result.Error.ToString());
+            throw new InvalidOperationException($"Expected result to be success but was failure, due to error: " + _result.Error!.ToString());
         }
 
         return _verificationFactory(_result.Value, _context);

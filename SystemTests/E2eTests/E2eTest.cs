@@ -26,6 +26,7 @@ public class E2eTest : BaseSystemTest
             .OrderNumber("ORDER-1001")
             .Sku("ABC")
             .Quantity(5)
+            .Country("US")
             .Execute()
             .ShouldSucceed();
 
@@ -53,6 +54,7 @@ public class E2eTest : BaseSystemTest
             .OrderNumber("ORDER-1001")
             .Sku("ABC")
             .Quantity(quantity)
+            .Country("US")
             .Execute()
             .ShouldSucceed();
 
@@ -68,7 +70,9 @@ public class E2eTest : BaseSystemTest
     public void ShouldRejectOrderWithInvalidQuantity(Channel channel)
     {
         App.Shop(channel).PlaceOrder()
+            .Sku(SKU)
             .Quantity("invalid-quantity")
+            .Country("US")
             .Execute()
             .ShouldFail()
             .ErrorMessage("The request contains one or more validation errors")
@@ -149,6 +153,8 @@ public class E2eTest : BaseSystemTest
     {
         App.Shop(channel).PlaceOrder()
             .Sku("NON-EXISTENT-SKU-12345")
+            .Quantity(5)
+            .Country("US")
             .Execute()
             .ShouldFail()
             .ErrorMessage("The request contains one or more validation errors")
@@ -179,7 +185,9 @@ public class E2eTest : BaseSystemTest
     public void ShouldRejectOrderWithNegativeQuantity(Channel channel)
     {
         App.Shop(channel).PlaceOrder()
+            .Sku(SKU)
             .Quantity("-3")
+            .Country("US")
             .Execute()
             .ShouldFail()
             .ErrorMessage("The request contains one or more validation errors")
@@ -192,6 +200,7 @@ public class E2eTest : BaseSystemTest
     {
         App.Shop(channel).PlaceOrder()
             .Quantity("0")
+            .Country("US")
             .Execute()
             .ShouldFail()
             .ErrorMessage("The request contains one or more validation errors")
@@ -205,6 +214,8 @@ public class E2eTest : BaseSystemTest
     {
         App.Shop(channel).PlaceOrder()
             .Sku(sku)
+            .Quantity(5)
+            .Country("US")
             .Execute()
             .ShouldFail()
             .ErrorMessage("The request contains one or more validation errors")
@@ -218,6 +229,7 @@ public class E2eTest : BaseSystemTest
     {
         App.Shop(channel).PlaceOrder()
             .Quantity(emptyQuantity)
+            .Country("US")
             .Execute()
             .ShouldFail()
             .ErrorMessage("The request contains one or more validation errors")
@@ -231,7 +243,9 @@ public class E2eTest : BaseSystemTest
     public void ShouldRejectOrderWithNonIntegerQuantity(Channel channel, string nonIntegerQuantity)
     {
         App.Shop(channel).PlaceOrder()
+            .Sku(SKU)
             .Quantity(nonIntegerQuantity)
+            .Country("US")
             .Execute()
             .ShouldFail()
             .ErrorMessage("The request contains one or more validation errors")
@@ -262,6 +276,7 @@ public class E2eTest : BaseSystemTest
 
         App.Shop(channel).PlaceOrder()
             .Sku(SKU)
+            .Quantity(5)
             .Country("XX")
             .Execute()
             .ShouldFail()
@@ -325,12 +340,15 @@ public class E2eTest : BaseSystemTest
     {
         App.Erp().ReturnsProduct()
             .Sku(SKU)
+            .UnitPrice(20.00m)
             .Execute()
             .ShouldSucceed();
 
         App.Shop(channel).PlaceOrder()
             .OrderNumber(ORDER_NUMBER)
             .Sku(SKU)
+            .Quantity(5)
+            .Country("US")
             .Execute()
             .ShouldSucceed();
 
