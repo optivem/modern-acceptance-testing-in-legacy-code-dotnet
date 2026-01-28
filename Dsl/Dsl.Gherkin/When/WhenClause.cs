@@ -2,7 +2,7 @@ using Dsl.Gherkin.Builders.When.PlaceOrder;
 using Dsl.Gherkin.Builders.When.CancelOrder;
 using Dsl.Gherkin.When;
 using Dsl.Gherkin.Then;
-using Optivem.Testing.Channels;
+using Optivem.Testing;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Gherkin;
 using Optivem.EShop.SystemTest.Core.Gherkin.When;

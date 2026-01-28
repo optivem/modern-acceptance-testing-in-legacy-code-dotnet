@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Optivem.Testing.Channels.Tests;
+namespace Optivem.Testing.Tests;
 
 /// <summary>
 /// Manual validation tests for negative scenarios.

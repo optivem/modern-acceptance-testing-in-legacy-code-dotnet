@@ -1,5 +1,5 @@
 using Optivem.Commons.Dsl;
-using Optivem.Testing.Channels;
+using Optivem.Testing;
 
 namespace Dsl.Gherkin.Then;
 

@@ -1,7 +1,7 @@
 using Shouldly;
 using Xunit;
 
-namespace Optivem.Testing.Channels.Tests;
+namespace Optivem.Testing.Tests;
 
 /// <summary>
 /// Unit tests verifying all ChannelData patterns work correctly.

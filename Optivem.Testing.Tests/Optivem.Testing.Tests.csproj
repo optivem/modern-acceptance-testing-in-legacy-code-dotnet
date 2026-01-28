@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
+    <ProjectReference Include="..\Optivem.Testing\Optivem.Testing.csproj" />
   </ItemGroup>
 
 </Project>

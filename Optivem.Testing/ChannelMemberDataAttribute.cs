@@ -1,4 +1,4 @@
-namespace Optivem.Testing.Channels;
+namespace Optivem.Testing;
 
 /// <summary>
 /// Specifies a member-based test data provider for use with [ChannelData].

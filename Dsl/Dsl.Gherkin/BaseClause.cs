@@ -1,4 +1,4 @@
-﻿using Optivem.Testing.Channels;
+using Optivem.Testing;
 
 namespace Dsl.Gherkin
 {

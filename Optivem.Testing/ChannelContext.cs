@@ -1,4 +1,4 @@
-namespace Optivem.Testing.Channels;
+namespace Optivem.Testing;
 
 public static class ChannelContext
 {

@@ -1,4 +1,4 @@
-using Optivem.Testing.Channels;
+using Optivem.Testing;
 using E2eTests.Providers;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 using Optivem.EShop.SystemTest.Core;

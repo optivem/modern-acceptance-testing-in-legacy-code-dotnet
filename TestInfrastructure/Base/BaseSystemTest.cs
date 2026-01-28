@@ -3,7 +3,7 @@ using Optivem.Commons.Dsl;
 using Optivem.EShop.SystemTest.Configuration;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Gherkin;
-using Optivem.Testing.Channels;
+using Optivem.Testing;
 using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base;

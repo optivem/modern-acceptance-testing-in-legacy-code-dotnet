@@ -2,8 +2,8 @@ using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Gherkin;
 using Optivem.EShop.SystemTest.Core.Shop;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
-using Optivem.Testing.Channels;
-using Channel = Optivem.Testing.Channels.Channel;
+using Optivem.Testing;
+using Channel = Optivem.Testing.Channel;
 using Optivem.EShop.SystemTest.Base;
 
 namespace SmokeTests;

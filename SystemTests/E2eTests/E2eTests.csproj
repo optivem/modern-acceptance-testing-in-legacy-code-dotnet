@@ -27,7 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\TestInfrastructure\TestInfrastructure.csproj" />
     <ProjectReference Include="..\..\Optivem.Commons\Optivem.Commons.csproj" />
-    <ProjectReference Include="..\..\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
+    <ProjectReference Include="..\..\Optivem.Testing\Optivem.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

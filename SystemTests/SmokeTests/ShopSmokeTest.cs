@@ -1,5 +1,5 @@
-using Optivem.Testing.Channels;
-using Channel = Optivem.Testing.Channels.Channel;
+using Optivem.Testing;
+using Channel = Optivem.Testing.Channel;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Shop;
 using Optivem.EShop.SystemTest.Base;

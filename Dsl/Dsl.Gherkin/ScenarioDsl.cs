@@ -1,7 +1,7 @@
 using Dsl.Gherkin.Given;
 using Dsl.Gherkin.When;
 using Optivem.EShop.SystemTest.Core;
-using Optivem.Testing.Channels;
+using Optivem.Testing;
 using System;
 
 namespace Dsl.Gherkin;
