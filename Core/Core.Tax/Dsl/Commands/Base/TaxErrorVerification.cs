@@ -4,7 +4,7 @@ using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands.Base;
 
-public class TaxErrorVerification : ResponseVerification<TaxErrorResponse, UseCaseContext>
+public class TaxErrorVerification : ResponseVerification<TaxErrorResponse>
 {
     public TaxErrorVerification(TaxErrorResponse error, UseCaseContext context) 
         : base(error, context)

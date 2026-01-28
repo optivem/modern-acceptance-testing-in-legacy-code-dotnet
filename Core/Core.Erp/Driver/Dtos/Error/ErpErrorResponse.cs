@@ -10,4 +10,9 @@ public class ErpErrorResponse
     {
         return new ErpErrorResponse { Message = errorResponse.Message };
     }
+
+    public override string ToString()
+    {
+        return Message ?? string.Empty;
+    }
 }

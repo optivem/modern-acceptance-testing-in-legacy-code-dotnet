@@ -1,14 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Optivem.EShop.SystemTest.Core.Gherkin</RootNamespace>
-    <AssemblyName>Optivem.EShop.SystemTest.Core.Gherkin</AssemblyName>
+    <AssemblyName>Dsl.Gherkin</AssemblyName>
+    <RootNamespace>Dsl.Gherkin</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core.Shop\Core.Shop.csproj" />
     <ProjectReference Include="..\..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
     <ProjectReference Include="..\Dsl.System\Dsl.System.csproj" />
   </ItemGroup>

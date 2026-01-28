@@ -1,7 +1,7 @@
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Gherkin;
 using Optivem.EShop.SystemTest.Core.Shop;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 using Optivem.Testing.Channels;
 using Channel = Optivem.Testing.Channels.Channel;
 using Optivem.EShop.SystemTest.Base;
@@ -14,55 +14,50 @@ public class GherkinSmokeTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldPlaceOrderUsingGherkinStyle(Channel channel)
     {
-        Scenario
-            .Given(channel)
+        Scenario(channel)
+            .Given()
                 .Product()
-                    .Sku("GHERKIN-SKU")
-                    .UnitPrice(25.00m)
-                    .And()
+                    .WithSku("GHERKIN-SKU")
+                    .WithUnitPrice(25.00m)
             .When()
                 .PlaceOrder()
-                    .OrderNumber("GHERKIN-ORDER-001")
-                    .Sku("GHERKIN-SKU")
-                    .Quantity(3)
-                    .Execute()
+                    .WithOrderNumber("GHERKIN-ORDER-001")
+                    .WithSku("GHERKIN-SKU")
+                    .WithQuantity(3)
             .Then()
                 .Order("GHERKIN-ORDER-001")
-                    .Has()
-                    .Sku("GHERKIN-SKU")
-                    .Quantity(3)
-                    .SubtotalPrice(75.00m)
-                    .Status(OrderStatus.PLACED);
+                    .HasSku("GHERKIN-SKU")
+                    .HasQuantity(3)
+                    .HasSubtotalPrice(75.00m)
+                    .HasStatus(OrderStatus.Placed);
     }
 
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldCancelOrderUsingGherkinStyle(Channel channel)
     {
-        Scenario
-            .Given(channel)
+        Scenario(channel)
+            .Given()
                 .Product()
-                    .Sku("CANCEL-SKU")
-                    .UnitPrice(50.00m)
+                    .WithSku("CANCEL-SKU")
+                    .WithUnitPrice(50.00m)
                     .And()
             .When()
                 .PlaceOrder()
-                    .OrderNumber("CANCEL-ORDER-001")
-                    .Sku("CANCEL-SKU")
-                    .Quantity(2)
-                    .Execute()
+                    .WithOrderNumber("CANCEL-ORDER-001")
+                    .WithSku("CANCEL-SKU")
+                    .WithQuantity(2)
             .Then()
                 .Order("CANCEL-ORDER-001")
-                    .Status(OrderStatus.PLACED);
+                    .HasStatus(OrderStatus.Placed);
 
-        Scenario
-            .Given(channel)
+        Scenario(channel)
+            .Given()
             .When()
                 .CancelOrder()
-                    .OrderNumber("CANCEL-ORDER-001")
-                    .Execute()
+                    .WithOrderNumber("CANCEL-ORDER-001")
             .Then()
                 .Order("CANCEL-ORDER-001")
-                    .Status(OrderStatus.CANCELLED);
+                    .HasStatus(OrderStatus.Cancelled);
     }
 }

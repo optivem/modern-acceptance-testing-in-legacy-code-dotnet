@@ -7,7 +7,7 @@ using Optivem.Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands;
 
-public class ReturnsTaxRate : BaseTaxCommand<VoidValue, VoidVerification<UseCaseContext>>
+public class ReturnsTaxRate : BaseTaxCommand<VoidValue, VoidVerification>
 {
     private string? countryAlias;
     private string? taxRate;
@@ -17,13 +17,13 @@ public class ReturnsTaxRate : BaseTaxCommand<VoidValue, VoidVerification<UseCase
     {
     }
 
-    public ReturnsTaxRate Country(string countryAlias)
+    public ReturnsTaxRate Country(string? countryAlias)
     {
         this.countryAlias = countryAlias;
         return this;
     }
 
-    public ReturnsTaxRate TaxRate(string taxRate)
+    public ReturnsTaxRate TaxRate(string? taxRate)
     {
         this.taxRate = taxRate;
         return this;
@@ -34,7 +34,7 @@ public class ReturnsTaxRate : BaseTaxCommand<VoidValue, VoidVerification<UseCase
         return TaxRate(taxRate.ToString());
     }
 
-    public override TaxUseCaseResult<VoidValue, VoidVerification<UseCaseContext>> Execute()
+    public override TaxUseCaseResult<VoidValue, VoidVerification> Execute()
     {
         var country = _context.GetParamValueOrLiteral(countryAlias);
 
@@ -46,9 +46,9 @@ public class ReturnsTaxRate : BaseTaxCommand<VoidValue, VoidVerification<UseCase
 
         var result = _driver.ReturnsTaxRate(request);
         
-        return new TaxUseCaseResult<VoidValue, VoidVerification<UseCaseContext>>(
+        return new TaxUseCaseResult<VoidValue, VoidVerification>(
             result, 
             _context, 
-            (response, ctx) => new VoidVerification<UseCaseContext>(response, ctx));
+            (response, ctx) => new VoidVerification(response, ctx));
     }
 }

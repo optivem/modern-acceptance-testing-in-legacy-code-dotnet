@@ -1,19 +1,55 @@
-using Optivem.EShop.SystemTest.Core.Gherkin.Clauses;
+using Dsl.Gherkin.Given;
+using Dsl.Gherkin.When;
+using Optivem.EShop.SystemTest.Core;
 using Optivem.Testing.Channels;
+using System;
 
-namespace Optivem.EShop.SystemTest.Core.Gherkin;
+namespace Dsl.Gherkin;
 
-public class ScenarioDsl
+public class ScenarioDsl : IDisposable
 {
-    private readonly SystemDsl _systemDsl;
+    private readonly Channel _channel;
+    private readonly SystemDsl _app;
 
-    public ScenarioDsl(SystemDsl systemDsl)
+    private bool _executed = false;
+
+    public ScenarioDsl(Channel channel, SystemDsl app)
     {
-        _systemDsl = systemDsl;
+        _channel = channel;
+        _app = app;
     }
 
-    public GivenClause Given(Channel channel)
+    internal Channel Channel => _channel;
+
+    public GivenClause Given()
     {
-        return new GivenClause(_systemDsl, channel);
+        EnsureNotExecuted();
+        return new GivenClause(_channel, _app, this);
+    }
+
+    public WhenClause When()
+    {
+        EnsureNotExecuted();
+        return new WhenClause(_channel, _app, this);
+    }
+
+    public void MarkAsExecuted()
+    {
+        _executed = true;
+    }
+
+    private void EnsureNotExecuted()
+    {
+        if (_executed)
+        {
+            throw new InvalidOperationException("Scenario has already been executed. " +
+                "Each test method should contain only ONE scenario execution (Given-When-Then). " +
+                "Split multiple scenarios into separate test methods.");
+        }
+    }
+
+    public void Dispose()
+    {
+        _app?.Dispose();
     }
 }

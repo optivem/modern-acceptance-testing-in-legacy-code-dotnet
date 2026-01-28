@@ -22,7 +22,7 @@ public abstract class BaseErpDriver<TClient> : IErpDriver
 
     public virtual Result<VoidValue, ErpErrorResponse> GoToErp()
     {
-        return _client.CheckHealth().MapFailure(ErpErrorResponse.From);
+        return _client.CheckHealth().MapError(ErpErrorResponse.From);
     }
 
     public virtual Result<GetProductResponse, ErpErrorResponse> GetProduct(GetProductRequest request)
@@ -33,7 +33,7 @@ public abstract class BaseErpDriver<TClient> : IErpDriver
                 Sku = productDetails.Id!,
                 Price = productDetails.Price
             })
-            .MapFailure(ErpErrorResponse.From);
+            .MapError(ErpErrorResponse.From);
     }
     
     public abstract Result<VoidValue, ErpErrorResponse> ReturnsProduct(ReturnsProductRequest request);

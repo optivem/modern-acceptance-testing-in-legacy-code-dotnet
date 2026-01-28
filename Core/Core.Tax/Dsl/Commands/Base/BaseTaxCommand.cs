@@ -5,7 +5,7 @@ using Optivem.Commons.Dsl;
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands.Base;
 
 public abstract class BaseTaxCommand<TResponse, TVerification> 
-    : BaseUseCase<ITaxDriver, UseCaseContext, TResponse, TaxErrorResponse, TVerification, TaxErrorVerification>
+    : BaseUseCase<ITaxDriver, TResponse, TaxErrorResponse, TVerification, TaxErrorVerification>
 {
     protected BaseTaxCommand(ITaxDriver driver, UseCaseContext context) 
         : base(driver, context)

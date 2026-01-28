@@ -9,7 +9,7 @@ public class UseCaseContext
 
     public ExternalSystemMode ExternalSystemMode { get; }
 
-    public UseCaseContext(ExternalSystemMode externalSystemMode = ExternalSystemMode.Stub)
+    public UseCaseContext(ExternalSystemMode externalSystemMode)
     {
         ExternalSystemMode = externalSystemMode;
     }
@@ -57,8 +57,23 @@ public class UseCaseContext
         _resultMap[alias] = value;
     }
 
-    public string GetResultValue(string alias)
+    public void SetResultEntryFailed(string alias, string errorMessage)
     {
+        if (_resultMap.ContainsKey(alias))
+        {
+            throw new InvalidOperationException($"Alias already exists: {alias}");
+        }
+
+        _resultMap[alias] = $"FAILED: {errorMessage}";
+    }
+
+    public string? GetResultValue(string? alias)
+    {
+        if(string.IsNullOrWhiteSpace(alias))
+        {
+            return alias; 
+        }
+
         if (_resultMap.TryGetValue(alias, out var value))
         {
             return value;

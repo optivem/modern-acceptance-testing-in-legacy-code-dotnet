@@ -38,6 +38,6 @@ public class ClockStubClient : IDisposable
     public Result<VoidValue, ExtClockErrorResponse> ConfigureGetTime(ExtGetTimeResponse response)
     {
         return _wireMockClient.StubGet("/clock/api/time", 200, response)
-            .MapFailure(ExtClockErrorResponse.From);
+            .MapError(ExtClockErrorResponse.From);
     }
 }

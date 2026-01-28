@@ -1,7 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Clock.Dsl.Commands;
 using Optivem.EShop.SystemTest.Core.Clock.Driver;
-using Optivem.EShop.SystemTest.Core.Common;
-using Optivem.EShop.SystemTest.Core.Common.Dsl;
 using Optivem.Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Dsl;
@@ -11,15 +9,25 @@ public class ClockDsl : IDisposable
     private readonly IClockDriver _driver;
     private readonly UseCaseContext _context;
 
-    public ClockDsl(UseCaseContext context, SystemConfiguration configuration)
+    private ClockDsl(IClockDriver driver, UseCaseContext context)
     {
-        _driver = CreateDriver(configuration);
+        _driver = driver;
         _context = context;
     }
 
-    private static IClockDriver CreateDriver(SystemConfiguration configuration)
+    public ClockDsl(string baseUrl, UseCaseContext context)
+        : this(CreateDriver(baseUrl, context), context)
     {
-        return new ClockRealDriver();
+    }
+
+    private static IClockDriver CreateDriver(string baseUrl, UseCaseContext context)
+    {
+        return context.ExternalSystemMode switch
+        {
+            ExternalSystemMode.Real => new ClockRealDriver(),
+            ExternalSystemMode.Stub => new ClockStubDriver(baseUrl),
+            _ => throw new NotSupportedException($"External system mode '{context.ExternalSystemMode}' is not supported for ClockDsl.")
+        };
     }
 
     public void Dispose()

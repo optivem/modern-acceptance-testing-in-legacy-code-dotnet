@@ -1,6 +1,6 @@
 using Optivem.Commons.Util;
 using Optivem.Commons.Http;
-using Optivem.EShop.SystemTest.Core.Common.Error;
+using Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Api.Controllers;
 
@@ -15,9 +15,8 @@ public class HealthController
         _httpClient = httpClient;
     }
 
-    public Result<VoidValue, Error> CheckHealth()
+    public Result<VoidValue, ProblemDetailResponse> CheckHealth()
     {
-        return _httpClient.Get(Endpoint)
-            .MapFailure(ProblemDetailConverter.ToError);
+        return _httpClient.Get(Endpoint);
     }
 }

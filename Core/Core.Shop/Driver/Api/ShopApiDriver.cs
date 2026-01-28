@@ -1,9 +1,10 @@
 using Optivem.Commons.Util;
 using Optivem.Commons.Http;
-using Optivem.EShop.SystemTest.Core.Common.Error;
+using Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors;
 using Optivem.EShop.SystemTest.Core.Shop.Client.Api;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Requests;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Errors;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Internal;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Api.Internal;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Api;
 
@@ -11,32 +12,25 @@ public class ShopApiDriver : IShopDriver
 {
     private readonly JsonHttpClient<ProblemDetailResponse> _httpClient;
     private readonly ShopApiClient _apiClient;
+    private readonly IOrderDriver _orderDriver;
+    private readonly ICouponDriver _couponDriver;
 
     public ShopApiDriver(string baseUrl)
     {
-        var jsonHttpClient = new JsonHttpClient<ProblemDetailResponse>(baseUrl);
-        _apiClient = new ShopApiClient(jsonHttpClient);
+        _httpClient = new JsonHttpClient<ProblemDetailResponse>(baseUrl);
+        _apiClient = new ShopApiClient(_httpClient);
+        _orderDriver = new ShopApiOrderDriver(_apiClient);
+        _couponDriver = new ShopApiCouponDriver(_apiClient);
     }
 
-    public Result<VoidValue, Error> GoToShop()
+    public Result<VoidValue, SystemError> GoToShop()
     {
-        return _apiClient.Health().CheckHealth();
+        return _apiClient.Health().CheckHealth().MapError(SystemError.From);
     }
 
-    public Result<PlaceOrderResponse, Error> PlaceOrder(PlaceOrderRequest request)
-    {
-        return _apiClient.Orders().PlaceOrder(request);
-    }
-
-    public Result<VoidValue, Error> CancelOrder(string orderNumber)
-    {
-        return _apiClient.Orders().CancelOrder(orderNumber);
-    }
-
-    public Result<GetOrderResponse, Error> ViewOrder(string orderNumber)
-    {
-        return _apiClient.Orders().ViewOrder(orderNumber);
-    }
+    public IOrderDriver Orders() => _orderDriver;
+    
+    public ICouponDriver Coupons() => _couponDriver;
 
     public void Dispose()
     {

@@ -1,6 +1,6 @@
 using Optivem.Commons.Http;
 using Optivem.Commons.Playwright;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 

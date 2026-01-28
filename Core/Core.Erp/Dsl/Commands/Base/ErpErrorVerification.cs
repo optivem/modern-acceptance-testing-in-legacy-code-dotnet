@@ -4,7 +4,7 @@ using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands.Base;
 
-public class ErpErrorVerification : ResponseVerification<ErpErrorResponse, UseCaseContext>
+public class ErpErrorVerification : ResponseVerification<ErpErrorResponse>
 {
     public ErpErrorVerification(ErpErrorResponse error, UseCaseContext context) 
         : base(error, context)

@@ -7,6 +7,7 @@ public class HomePage : BasePage
 {
     private const string ShopButtonSelector = "a[href='/shop']";
     private const string OrderHistoryButtonSelector = "a[href='/order-history']";
+    private const string CouponManagementButtonSelector = "a[href='/admin-coupons']";
 
     public HomePage(PageClient pageClient) : base(pageClient)
     {
@@ -22,5 +23,11 @@ public class HomePage : BasePage
     {
         PageClient.Click(OrderHistoryButtonSelector);
         return new OrderHistoryPage(PageClient);
+    }
+
+    public CouponManagementPage ClickCouponManagement()
+    {
+        PageClient.Click(CouponManagementButtonSelector);
+        return new CouponManagementPage(PageClient);
     }
 }

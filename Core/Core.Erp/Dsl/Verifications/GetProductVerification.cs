@@ -4,7 +4,7 @@ using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Dsl.Verifications;
 
-public class GetProductVerification : ResponseVerification<GetProductResponse, UseCaseContext>
+public class GetProductVerification : ResponseVerification<GetProductResponse>
 {
     public GetProductVerification(GetProductResponse response, UseCaseContext context)
         : base(response, context)

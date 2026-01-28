@@ -24,7 +24,7 @@ public class ErpStubClient : BaseErpClient
     {
         var sku = response.Id;
         return _wireMockClient.StubGet($"/erp/api/products/{sku}", 200, response)
-            .MapFailure(ExtErpErrorResponse.From);
+            .MapError(ExtErpErrorResponse.From);
     }
 
 }

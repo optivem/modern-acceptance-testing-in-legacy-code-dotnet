@@ -12,7 +12,7 @@ public class SystemDsl : IDisposable
 {
     private readonly UseCaseContext _context;
     private readonly SystemConfiguration _configuration;
-    private readonly Dictionary<string, ShopDsl> _shopDsls;
+    private ShopDsl? _shop;
     private ErpDsl? _erp;
     private TaxDsl? _tax;
     private ClockDsl? _clock;
@@ -21,38 +21,39 @@ public class SystemDsl : IDisposable
     {
         _context = context;
         _configuration = configuration;
-        _shopDsls = new Dictionary<string, ShopDsl>();
     }
 
     public SystemDsl(SystemConfiguration configuration)
-        : this(new UseCaseContext(), configuration) { }
+        : this(new UseCaseContext(configuration.ExternalSystemMode), configuration) { }
 
     public ShopDsl Shop(Channel channel)
     {
-        if (!_shopDsls.TryGetValue(channel.Type, out var shop))
-        {
-            shop = new ShopDsl(channel, _context, _configuration);
-            _shopDsls[channel.Type] = shop;
-        }
-        return shop;
+        return GetOrCreate(ref _shop, () => new ShopDsl(
+            _configuration.ShopUiBaseUrl,
+            _configuration.ShopApiBaseUrl,
+            channel,
+            _context));
     }
 
-    public ErpDsl Erp => _erp ??= new ErpDsl(_configuration.ErpBaseUrl, _context);
+    public ErpDsl Erp() => GetOrCreate(ref _erp, () => new ErpDsl(_configuration.ErpBaseUrl, _context));
 
-    public TaxDsl Tax => _tax ??= new TaxDsl(_configuration.TaxBaseUrl, _context);
+    public TaxDsl Tax() => GetOrCreate(ref _tax, () => new TaxDsl(_configuration.TaxBaseUrl, _context));
 
-    public ClockDsl Clock => _clock ??= new ClockDsl(_context, _configuration);
+    public ClockDsl Clock() => GetOrCreate(ref _clock, () => new ClockDsl(_configuration.ClockBaseUrl, _context));
 
     public void Dispose()
     {
-        foreach (var shop in _shopDsls.Values)
-        {
-            shop?.Dispose();
-        }
+        _shop?.Dispose();
         _erp?.Dispose();
         _tax?.Dispose();
         _clock?.Dispose();
 
+        // TODO: VJ: Perhaps delete this?
         ChannelContext.Clear();
+    }
+
+    private static T GetOrCreate<T>(ref T? instance, Func<T> supplier) where T : class
+    {
+        return instance ??= supplier();
     }
 }

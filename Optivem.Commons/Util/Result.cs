@@ -59,12 +59,12 @@ public class Result<T, E>
         return Result<T, E2>.Failure(mapper(_error!));
     }
 
-    public Result<T, E2> MapFailure<E2>(Func<E, E2> mapper)
+    public Result<VoidValue, E> MapVoid()
     {
         if (_success)
         {
-            return Result<T, E2>.Success(_value!);
+            return Result<VoidValue, E>.Success(VoidValue.Empty);
         }
-        return Result<T, E2>.Failure(mapper(_error!));
+        return Result<VoidValue, E>.Failure(_error!);
     }
 }

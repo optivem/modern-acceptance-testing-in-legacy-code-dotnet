@@ -10,7 +10,7 @@ public class ClockSmokeTest : BaseSystemTest
     [Fact]
     public void ShouldBeAbleToGoToClock()
     {
-        App.Clock.GoToClock()
+        App.Clock().GoToClock()
             .Execute()
             .ShouldSucceed();
     }
@@ -18,7 +18,7 @@ public class ClockSmokeTest : BaseSystemTest
     [Fact]
     public void ShouldBeAbleToGetTime()
     {
-        App.Clock.GetTime()
+        App.Clock().GetTime()
             .Execute()
             .ShouldSucceed()
             .TimeIsNotNull();

@@ -1,0 +1,35 @@
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
+
+namespace Optivem.EShop.SystemTest.Core.Gherkin;
+
+/// <summary>
+/// Default values for Gherkin test builders.
+/// These defaults are used when test data is not explicitly specified.
+/// </summary>
+public static class GherkinDefaults
+{
+    // Product defaults
+    public const string DefaultSku = "DEFAULT-SKU";
+    public const string DefaultUnitPrice = "20.00";
+
+    // Order defaults
+    public const string DefaultOrderNumber = "DEFAULT-ORDER";
+    public const string DefaultQuantity = "1";
+    public const string DefaultCountry = "US";
+    public const OrderStatus DefaultOrderStatus = OrderStatus.Placed;
+
+    // Clock defaults
+    public const string DefaultTime = "2025-12-24T10:00:00Z";
+
+    // Tax defaults
+    public const string DefaultTaxRate = "0.07";
+
+    // Coupon defaults
+    public const string DefaultCouponCode = "DEFAULT-COUPON";
+    public const string DefaultDiscountRate = "0.10";
+    public const string DefaultValidFrom = "2024-01-01T00:00:00Z";
+    public const string DefaultValidTo = "2024-12-31T23:59:59Z";
+    public const string DefaultUsageLimit = "1000";
+
+    public const string Empty = "";
+}

@@ -1,11 +1,10 @@
 using Optivem.EShop.SystemTest.Core.Clock.Driver.Dtos;
-using Optivem.EShop.SystemTest.Core.Common.Dsl;
 using Optivem.Commons.Dsl;
 using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Dsl.Verifications;
 
-public class GetTimeVerification : ResponseVerification<GetTimeResponse, UseCaseContext>
+public class GetTimeVerification : ResponseVerification<GetTimeResponse>
 {
     public GetTimeVerification(GetTimeResponse response, UseCaseContext context) 
         : base(response, context)
@@ -14,7 +13,7 @@ public class GetTimeVerification : ResponseVerification<GetTimeResponse, UseCase
 
     public GetTimeVerification TimeIsNotNull()
     {
-        Response.Time.ShouldNotBe(default(DateTimeOffset), 
+        Response.Time.ShouldNotBe(default, 
             "Time should not be null or default");
         return this;
     }

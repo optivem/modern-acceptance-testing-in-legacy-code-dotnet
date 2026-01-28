@@ -8,7 +8,7 @@ public class ErpSmokeTest : BaseSystemTest
     [Fact]
     public void ShouldBeAbleToGoToErp()
     {
-        App.Erp.GoToErp()
+        App.Erp().GoToErp()
             .Execute()
             .ShouldSucceed();
     }

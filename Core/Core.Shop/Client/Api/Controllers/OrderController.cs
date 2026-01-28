@@ -1,8 +1,7 @@
 using Optivem.Commons.Util;
 using Optivem.Commons.Http;
-using Optivem.EShop.SystemTest.Core.Common.Error;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Requests;
+using Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Api.Controllers;
 
@@ -17,21 +16,18 @@ public class OrderController
         _httpClient = httpClient;
     }
 
-    public Result<PlaceOrderResponse, Error> PlaceOrder(PlaceOrderRequest request)
+    public Result<PlaceOrderResponse, ProblemDetailResponse> PlaceOrder(PlaceOrderRequest request)
     {
-        return _httpClient.Post<PlaceOrderResponse>(Endpoint, request)
-            .MapFailure(ProblemDetailConverter.ToError);
+        return _httpClient.Post<PlaceOrderResponse>(Endpoint, request);
     }
 
-    public Result<GetOrderResponse, Error> ViewOrder(string orderNumber)
+    public Result<ViewOrderResponse, ProblemDetailResponse> ViewOrder(string orderNumber)
     {
-        return _httpClient.Get<GetOrderResponse>($"{Endpoint}/{orderNumber}")
-            .MapFailure(ProblemDetailConverter.ToError);
+        return _httpClient.Get<ViewOrderResponse>($"{Endpoint}/{orderNumber}");
     }
 
-    public Result<VoidValue, Error> CancelOrder(string orderNumber)
+    public Result<VoidValue, ProblemDetailResponse> CancelOrder(string orderNumber)
     {
-        return _httpClient.Post($"{Endpoint}/{orderNumber}/cancel")
-            .MapFailure(ProblemDetailConverter.ToError);
+        return _httpClient.Post($"{Endpoint}/{orderNumber}/cancel");
     }
 }

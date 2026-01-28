@@ -6,7 +6,7 @@ using Optivem.Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands;
 
-public class ReturnsProduct : BaseErpCommand<VoidValue, VoidVerification<UseCaseContext>>
+public class ReturnsProduct : BaseErpCommand<VoidValue, VoidVerification>
 {
     private string? _skuParamAlias;
     private string? _unitPrice;
@@ -33,20 +33,21 @@ public class ReturnsProduct : BaseErpCommand<VoidValue, VoidVerification<UseCase
         return UnitPrice(price.ToString());
     }
 
-    public override ErpUseCaseResult<VoidValue, VoidVerification<UseCaseContext>> Execute()
+    public override ErpUseCaseResult<VoidValue, VoidVerification> Execute()
     {
         var sku = _context.GetParamValue(_skuParamAlias!);
 
         var request = new ReturnsProductRequest
         {
             Sku = sku,
-            Price = _unitPrice!
+            Price = _unitPrice
         };
 
         var result = _driver.ReturnsProduct(request);
-        return new ErpUseCaseResult<VoidValue, VoidVerification<UseCaseContext>>(
+
+        return new ErpUseCaseResult<VoidValue, VoidVerification>(
             result, 
             _context, 
-            (response, ctx) => new VoidVerification<UseCaseContext>(response, ctx));
+            (response, ctx) => new VoidVerification(response, ctx));
     }
 }

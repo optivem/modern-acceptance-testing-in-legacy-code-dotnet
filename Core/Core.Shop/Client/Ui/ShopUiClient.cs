@@ -1,13 +1,8 @@
 using Microsoft.Playwright;
-using Optivem.EShop.SystemTest.Core.Common.Error;
 using Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
-using Optivem.Commons.Http;
-using Optivem.Commons.Util;
-using Shouldly;
+using Optivem.Commons.Playwright;
 using System.Net;
-using System.Net.NetworkInformation;
 using PlaywrightGateway = Optivem.Commons.Playwright.PageClient;
-using GraphQL;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui;
 
@@ -36,8 +31,17 @@ public class ShopUiClient : IDisposable
         _baseUrl = baseUrl;
         _playwright = Microsoft.Playwright.Playwright.CreateAsync().Result;
         _browser = _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = IsHeadless }).Result;
-        _context = _browser.NewContextAsync().Result;
-        _page = _browser.NewPageAsync().Result;
+        
+        // Create isolated browser context with specific configuration
+        var contextOptions = new BrowserNewContextOptions
+        {
+            ViewportSize = new ViewportSize { Width = 1920, Height = 1080 },
+            StorageStatePath = null // Ensure complete isolation between parallel tests
+        };
+        _context = _browser.NewContextAsync(contextOptions).Result;
+        
+        // Each test gets its own page
+        _page = _context.NewPageAsync().Result;
         var pageClient = new PlaywrightGateway(_page, baseUrl);
         _homePage = new HomePage(pageClient);
     }
@@ -48,54 +52,35 @@ public class ShopUiClient : IDisposable
         return _homePage;
     }
 
-    public Result<VoidValue, Error> CheckStatusOk()
+    public bool IsStatusOk()
     {
-        if(_response?.Status == ((int)HttpStatusCode.OK))
-        {
-            return Results.Success();
-        }
-
-        return Results.Failure<VoidValue>("Could not open shop UI at url " + _baseUrl + " due to status code: " + _response?.Status);
+        return _response?.Status == ((int)HttpStatusCode.OK);
     }
 
-    public Result<VoidValue, Error> CheckPageLoaded()
+    public bool IsPageLoaded()
     {
-        var contentType = _response.Headers.ContainsKey(ContentType) ? _response.Headers[ContentType] : null;
-
-        if(contentType == null)
+        if (_response == null || _response.Status != ((int)HttpStatusCode.OK))
         {
-            return Results.Failure<VoidValue>(ContentType + " is missing or empty");
+            return false;
         }
 
-        if(!contentType.Equals(TextHtml))
+        var contentType = _response.Headers.ContainsKey(ContentType) ? _response.Headers[ContentType] : null;
+        if (contentType == null || !contentType.Equals(TextHtml))
         {
-            return Results.Failure<VoidValue>(ContentType + " is not " + TextHtml + " but instead " + contentType);
+            return false;
         }
 
         var pageContent = _page.ContentAsync().Result;
-
-        if(pageContent == null)
-        {
-            return Results.Failure<VoidValue>("Page content is missing");
-        }
-
-        if(!pageContent.Contains(HtmlOpeningTag))
-        {
-            return Results.Failure<VoidValue>("Page content " + pageContent + " does not contain " + HtmlOpeningTag);
-        }
-
-        if (!pageContent.Contains(HtmlClosingTag))
-        {
-            return Results.Failure<VoidValue>("Page content " + pageContent + " does not contain " + HtmlClosingTag);
-        }
-
-        return Results.Success();
+        return pageContent != null && 
+               pageContent.Contains(HtmlOpeningTag) && 
+               pageContent.Contains(HtmlClosingTag);
     }
 
     public void Dispose()
     {
         _page?.CloseAsync().Wait();
         _context?.CloseAsync().Wait();
+        // Keep browser and playwright disposal for C# version since we create our own instance
         _browser?.CloseAsync().Wait();
         _playwright?.Dispose();
     }

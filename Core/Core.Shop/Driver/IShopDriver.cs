@@ -1,16 +1,12 @@
 using Optivem.Commons.Util;
-using Optivem.Testing.Assertions;
-using Optivem.EShop.SystemTest.Core.Common.Error;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Responses;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Requests;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Errors;
+using Optivem.EShop.SystemTest.Core.Shop.Driver.Internal;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver;
 
 public interface IShopDriver : IDisposable
 {
-    Result<VoidValue, Error> GoToShop();
-    Result<PlaceOrderResponse, Error> PlaceOrder(PlaceOrderRequest request);
-    Result<VoidValue, Error> CancelOrder(string orderNumber);
-    Result<GetOrderResponse, Error> ViewOrder(string orderNumber);
+    Result<VoidValue, SystemError> GoToShop();
+    IOrderDriver Orders();
+    ICouponDriver Coupons();
 }

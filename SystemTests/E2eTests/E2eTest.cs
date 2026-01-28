@@ -1,6 +1,6 @@
 using Optivem.Testing.Channels;
 using E2eTests.Providers;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Shop;
 using Optivem.EShop.SystemTest.Base;
@@ -16,7 +16,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldPlaceOrderWithCorrectSubtotalPrice(Channel channel)
     {
-        App.Erp.ReturnsProduct()
+        App.Erp().ReturnsProduct()
             .Sku("ABC")
             .UnitPrice(20.00m)
             .Execute()
@@ -43,7 +43,7 @@ public class E2eTest : BaseSystemTest
     [ChannelInlineData("15.50", "2", "31.00")]
     public void ShouldPlaceOrderWithCorrectSubtotalPriceParameterized(Channel channel, string unitPrice, string quantity, string subtotalPrice)
     {
-        App.Erp.ReturnsProduct()
+        App.Erp().ReturnsProduct()
             .Sku("ABC")
             .UnitPrice(unitPrice)
             .Execute()
@@ -79,7 +79,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldPlaceOrder(Channel channel)
     {
-        App.Erp.ReturnsProduct()
+        App.Erp().ReturnsProduct()
             .Sku(SKU)
             .UnitPrice(20.00m)
             .Execute()
@@ -105,7 +105,7 @@ public class E2eTest : BaseSystemTest
             .Country("US")
             .UnitPrice(20.00m)
             .SubtotalPrice(100.00m)
-            .Status(OrderStatus.PLACED)
+            .Status(OrderStatus.Placed)
             .DiscountRateGreaterThanOrEqualToZero()
             .DiscountAmountGreaterThanOrEqualToZero()
             .SubtotalPriceGreaterThanZero()
@@ -118,7 +118,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldCancelOrder(Channel channel)
     {
-        App.Erp.ReturnsProduct()
+        App.Erp().ReturnsProduct()
             .Sku(SKU)
             .Execute()
             .ShouldSucceed();
@@ -140,7 +140,7 @@ public class E2eTest : BaseSystemTest
             .ShouldSucceed()
             .OrderNumber(ORDER_NUMBER)
             .Sku(SKU)
-            .Status(OrderStatus.CANCELLED);
+            .Status(OrderStatus.Cancelled);
     }
 
     [Theory]
@@ -255,7 +255,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public void ShouldRejectOrderWithUnsupportedCountry(Channel channel)
     {
-        App.Erp.ReturnsProduct()
+        App.Erp().ReturnsProduct()
             .Sku(SKU)
             .Execute()
             .ShouldSucceed();
@@ -323,7 +323,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.API)]
     public void ShouldNotCancelAlreadyCancelledOrder(Channel channel)
     {
-        App.Erp.ReturnsProduct()
+        App.Erp().ReturnsProduct()
             .Sku(SKU)
             .Execute()
             .ShouldSucceed();

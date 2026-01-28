@@ -1,7 +1,8 @@
 using Optivem.Commons.Http;
 using Optivem.Commons.Playwright;
 using Optivem.Commons.Util;
-using Optivem.EShop.SystemTest.Core.Common.Error;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Errors;
+using Optivem.EShop.SystemTest.Core.Shop.Commons;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 
@@ -13,6 +14,8 @@ public abstract class BasePage
     private const string ErrorNotificationSelector = "[role='alert'].notification.error";
     private const string ErrorMessageSelector = "[role='alert'].notification.error .error-message";
     private const string FieldErrorSelector = "[role='alert'].notification.error .field-error";
+    private const string NoNotificationErrorMessage = "No notification appeared";
+    private const string UnrecognizedNotificationErrorMessage = "Notification type is not recognized";
 
     protected readonly PageClient PageClient;
 
@@ -21,73 +24,59 @@ public abstract class BasePage
         PageClient = pageClient;
     }
 
-    public bool HasSuccessNotification()
+    private bool HasSuccessNotification()
     {
-        // Debug: Check for any notification first
-        Console.WriteLine($"[DEBUG] Checking for notifications with selector: {NotificationSelector}");
         var hasNotification = PageClient.IsVisible(NotificationSelector);
-        Console.WriteLine($"[DEBUG] Has any notification: {hasNotification}");
 
         if (!hasNotification)
         {
-            // Get page content for debugging
-            var pageContent = PageClient.GetPageContent();
-            Console.WriteLine($"[DEBUG] Page content sample: {pageContent?.Substring(0, Math.Min(500, pageContent?.Length ?? 0))}");
-            throw new InvalidOperationException("No notification appeared");
+            throw new InvalidOperationException(NoNotificationErrorMessage);
         }
 
-        // Debug: Check for success notification
-        Console.WriteLine($"[DEBUG] Checking for success notification with selector: {SuccessNotificationSelector}");
         var isSuccess = PageClient.IsVisible(SuccessNotificationSelector);
-        Console.WriteLine($"[DEBUG] Has success notification: {isSuccess}");
 
         if (isSuccess)
         {
             return true;
         }
 
-        // Debug: Check for error notification
-        Console.WriteLine($"[DEBUG] Checking for error notification with selector: {ErrorNotificationSelector}");
         var isError = PageClient.IsVisible(ErrorNotificationSelector);
-        Console.WriteLine($"[DEBUG] Has error notification: {isError}");
 
         if (isError)
         {
             return false;
         }
 
-        throw new InvalidOperationException("Notification type is not recognized");
+        throw new InvalidOperationException(UnrecognizedNotificationErrorMessage);
     }
 
-    public string ReadSuccessNotification()
+    private string ReadSuccessNotification()
     {
         return PageClient.ReadTextContent(SuccessNotificationSelector);
     }
 
-    public List<string> ReadErrorNotification()
-    {
-        var text = PageClient.ReadTextContent(ErrorNotificationSelector);
-        return text.Split('\n').ToList();
-    }
-
-    public string ReadGeneralErrorMessage()
+    private string ReadGeneralErrorMessage()
     {
         return PageClient.ReadTextContent(ErrorMessageSelector);
     }
 
-    public List<string> ReadFieldErrors()
+    private List<string> ReadFieldErrors()
     {
+        if (!PageClient.IsVisible(FieldErrorSelector))
+        {
+            return new List<string>();
+        }
         return PageClient.ReadAllTextContents(FieldErrorSelector);
     }
 
-    public Result<string, Error> GetResult()
+    public Result<string, SystemError> GetResult()
     {
         var isSuccess = HasSuccessNotification();
 
         if (isSuccess)
         {
             var successMessage = ReadSuccessNotification();
-            return Results.Success(successMessage);
+            return SystemResults.Success(successMessage);
         }
 
         var generalMessage = ReadGeneralErrorMessage();
@@ -95,7 +84,7 @@ public abstract class BasePage
 
         if (!fieldErrorTexts.Any())
         {
-            return Results.Failure<string>(Error.Of(generalMessage));
+            return SystemResults.Failure<string>(generalMessage);
         }
 
         var fieldErrors = fieldErrorTexts.Select(text =>
@@ -103,13 +92,13 @@ public abstract class BasePage
             var parts = text.Split(':', 2);
             if (parts.Length == 2)
             {
-                return new Error.FieldError(parts[0].Trim(), parts[1].Trim());
+                return new SystemError.FieldError(parts[0].Trim(), parts[1].Trim());
             }
-            return new Error.FieldError("unknown", text);
-        }).ToArray();
+            return new SystemError.FieldError("unknown", text);
+        }).ToList();
 
-        var error = Error.Of(generalMessage, fieldErrors);
+        var error = SystemError.Of(generalMessage, fieldErrors);
 
-        return Results.Failure<string>(error);
+        return SystemResults.Failure<string>(error);
     }
 }

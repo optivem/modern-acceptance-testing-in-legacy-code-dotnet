@@ -1,5 +1,5 @@
 using Optivem.Commons.Playwright;
-using Optivem.EShop.SystemTest.Core.Shop.Driver.Dtos.Enums;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 
@@ -20,6 +20,7 @@ public class OrderDetailsPage : BasePage
     private const string TaxAmountOutputSelector = "[aria-label='Display Tax Amount']";
     private const string TotalPriceOutputSelector = "[aria-label='Display Total Price']";
     private const string StatusOutputSelector = "[aria-label='Display Status']";
+    private const string AppliedCouponOutputSelector = "[aria-label='Display Applied Coupon']";
     private const string CancelOrderOutputSelector = "[aria-label='Cancel Order']";
 
     // Display text constants
@@ -100,7 +101,13 @@ public class OrderDetailsPage : BasePage
     public OrderStatus GetStatus()
     {
         var status = PageClient.ReadTextContent(StatusOutputSelector);
-        return Enum.Parse<OrderStatus>(status);
+        return Enum.Parse<OrderStatus>(status, true); // true = ignore case
+    }
+
+    public string? GetAppliedCoupon()
+    {
+        var coupon = PageClient.ReadTextContent(AppliedCouponOutputSelector);
+        return TextNone.Equals(coupon) ? null : coupon;
     }
 
     public void ClickCancelOrder()

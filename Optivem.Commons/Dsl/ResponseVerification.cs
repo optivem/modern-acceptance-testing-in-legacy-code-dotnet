@@ -1,16 +1,16 @@
 namespace Optivem.Commons.Dsl;
 
-public class ResponseVerification<TResponse, TContext>
+public class ResponseVerification<TResponse>
 {
     protected readonly TResponse Response;
-    protected readonly TContext Context;
+    protected readonly UseCaseContext Context;
 
-    public ResponseVerification(TResponse response, TContext context)
+    public ResponseVerification(TResponse response, UseCaseContext context)
     {
         Response = response;
         Context = context;
     }
 
     public TResponse GetResponse() => Response;
-    public TContext GetContext() => Context;
+    public UseCaseContext GetContext() => Context;
 }

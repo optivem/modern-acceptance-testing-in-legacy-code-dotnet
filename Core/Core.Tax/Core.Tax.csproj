@@ -8,7 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core.Commons\Core.Commons.csproj" />
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Optivem.Commons\Optivem.Commons.csproj" />
     <ProjectReference Include="..\..\Optivem.Commons\Optivem.Commons.csproj" />
   </ItemGroup>

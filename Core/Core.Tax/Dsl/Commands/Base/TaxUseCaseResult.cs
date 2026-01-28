@@ -6,8 +6,8 @@ using Optivem.Commons.Dsl;
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands.Base;
 
 public class TaxUseCaseResult<TSuccessResponse, TSuccessVerification>
-    : UseCaseResult<TSuccessResponse, TaxErrorResponse, UseCaseContext, TSuccessVerification, TaxErrorVerification>
-    where TSuccessVerification : ResponseVerification<TSuccessResponse, UseCaseContext>
+    : UseCaseResult<TSuccessResponse, TaxErrorResponse, TSuccessVerification, TaxErrorVerification>
+    where TSuccessVerification : ResponseVerification<TSuccessResponse>
 {
     public TaxUseCaseResult(
         Result<TSuccessResponse, TaxErrorResponse> result,

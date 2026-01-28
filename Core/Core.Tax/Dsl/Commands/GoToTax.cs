@@ -6,21 +6,21 @@ using Optivem.Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands;
 
-public class GoToTax : BaseTaxCommand<VoidValue, VoidVerification<UseCaseContext>>
+public class GoToTax : BaseTaxCommand<VoidValue, VoidVerification>
 {
     public GoToTax(ITaxDriver driver, UseCaseContext context) 
         : base(driver, context)
     {
     }
 
-    public override UseCaseResult<VoidValue, TaxErrorResponse, UseCaseContext, VoidVerification<UseCaseContext>, TaxErrorVerification> Execute()
+    public override UseCaseResult<VoidValue, TaxErrorResponse, VoidVerification, TaxErrorVerification> Execute()
     {
         var result = _driver.GoToTax();
         
-        return new UseCaseResult<VoidValue, TaxErrorResponse, UseCaseContext, VoidVerification<UseCaseContext>, TaxErrorVerification>(
+        return new UseCaseResult<VoidValue, TaxErrorResponse, VoidVerification, TaxErrorVerification>(
             result, 
             _context, 
-            (response, ctx) => new VoidVerification<UseCaseContext>(response, ctx),
+            (response, ctx) => new VoidVerification(response, ctx),
             (error, ctx) => new TaxErrorVerification(error, ctx));
     }
 }

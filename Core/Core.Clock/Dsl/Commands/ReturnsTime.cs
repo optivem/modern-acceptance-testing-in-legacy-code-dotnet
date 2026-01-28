@@ -1,36 +1,27 @@
 using Optivem.EShop.SystemTest.Core.Clock.Dsl.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Clock.Driver;
 using Optivem.EShop.SystemTest.Core.Clock.Driver.Dtos;
-using Optivem.EShop.SystemTest.Core.Common.Dsl;
 using Optivem.Commons.Util;
 using Optivem.Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Dsl.Commands;
 
-public class ReturnsTime : BaseClockCommand<VoidValue, VoidVerification<UseCaseContext>>
+public class ReturnsTime : BaseClockCommand<VoidValue, VoidVerification>
 {
-    private static readonly DateTimeOffset DefaultTime = DateTimeOffset.Parse("2025-12-24T10:00:00Z");
-    
-    private DateTimeOffset _time = DefaultTime;
+    private string? _time;
 
     public ReturnsTime(IClockDriver driver, UseCaseContext context) 
         : base(driver, context)
     {
     }
 
-    public ReturnsTime Time(DateTimeOffset time)
+    public ReturnsTime Time(string? time)
     {
         _time = time;
         return this;
     }
 
-    public ReturnsTime Time(string timeString)
-    {
-        _time = DateTimeOffset.Parse(timeString);
-        return this;
-    }
-
-    public override ClockUseCaseResult<VoidValue, VoidVerification<UseCaseContext>> Execute()
+    public override ClockUseCaseResult<VoidValue, VoidVerification> Execute()
     {
         var request = new ReturnsTimeRequest
         {
@@ -39,9 +30,9 @@ public class ReturnsTime : BaseClockCommand<VoidValue, VoidVerification<UseCaseC
 
         var result = _driver.ReturnsTime(request);
         
-        return new ClockUseCaseResult<VoidValue, VoidVerification<UseCaseContext>>(
+        return new ClockUseCaseResult<VoidValue, VoidVerification>(
             result, 
             _context,
-            (response, ctx) => new VoidVerification<UseCaseContext>(response, ctx));
+            (response, ctx) => new VoidVerification(response, ctx));
     }
 }

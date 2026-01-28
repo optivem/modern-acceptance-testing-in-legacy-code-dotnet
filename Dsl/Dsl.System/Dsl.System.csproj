@@ -8,8 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Core\Core.Clock\Core.Clock.csproj" />
-    <ProjectReference Include="..\..\Core\Core.Commons\Core.Commons.csproj" />
     <ProjectReference Include="..\..\Core\Core.Erp\Core.Erp.csproj" />
     <ProjectReference Include="..\..\Core\Core.Shop\Core.Shop.csproj" />
     <ProjectReference Include="..\..\Core\Core.Tax\Core.Tax.csproj" />

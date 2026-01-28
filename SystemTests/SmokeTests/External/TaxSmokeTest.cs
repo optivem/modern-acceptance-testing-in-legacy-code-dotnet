@@ -8,7 +8,7 @@ public class TaxSmokeTest : BaseSystemTest
     [Fact]
     public void ShouldBeAbleToGoToTax()
     {
-        App.Tax.GoToTax()
+        App.Tax().GoToTax()
             .Execute()
             .ShouldSucceed();
     }

@@ -2,9 +2,9 @@ using Optivem.Commons.Util;
 
 namespace Optivem.Commons.Dsl;
 
-public class VoidVerification<TContext> : ResponseVerification<VoidValue, TContext>
+public class VoidVerification : ResponseVerification<VoidValue>
 {
-    public VoidVerification(VoidValue response, TContext context) 
+    public VoidVerification(VoidValue response, UseCaseContext context) 
         : base(response, context)
     {
     }

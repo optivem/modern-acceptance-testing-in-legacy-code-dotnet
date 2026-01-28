@@ -2,18 +2,18 @@ using Optivem.Commons.Util;
 
 namespace Optivem.Commons.Dsl;
 
-public class UseCaseResult<TSuccessResponse, TFailureResponse, TContext, TSuccessVerification, TFailureVerification>
+public class UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification>
 {
     private readonly Result<TSuccessResponse, TFailureResponse> _result;
-    private readonly TContext _context;
-    private readonly Func<TSuccessResponse, TContext, TSuccessVerification> _verificationFactory;
-    private readonly Func<TFailureResponse, TContext, TFailureVerification> _failureVerificationFactory;
+    private readonly UseCaseContext _context;
+    private readonly Func<TSuccessResponse, UseCaseContext, TSuccessVerification> _verificationFactory;
+    private readonly Func<TFailureResponse, UseCaseContext, TFailureVerification> _failureVerificationFactory;
 
     public UseCaseResult(
-        Result<TSuccessResponse, TFailureResponse> result, 
-        TContext context, 
-        Func<TSuccessResponse, TContext, TSuccessVerification> verificationFactory,
-        Func<TFailureResponse, TContext, TFailureVerification> failureVerificationFactory)
+        Result<TSuccessResponse, TFailureResponse> result,
+        UseCaseContext context, 
+        Func<TSuccessResponse, UseCaseContext, TSuccessVerification> verificationFactory,
+        Func<TFailureResponse, UseCaseContext, TFailureVerification> failureVerificationFactory)
     {
         _result = result;
         _context = context;
@@ -25,7 +25,7 @@ public class UseCaseResult<TSuccessResponse, TFailureResponse, TContext, TSucces
     {
         if (!_result.IsSuccess)
         {
-            throw new InvalidOperationException($"Expected result to be success but was failure");
+            throw new InvalidOperationException($"Expected result to be success but was failure, due to error: " + _result.Error.ToString());
         }
 
         return _verificationFactory(_result.Value, _context);

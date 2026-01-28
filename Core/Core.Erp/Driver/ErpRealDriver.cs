@@ -29,6 +29,6 @@ public class ErpRealDriver : BaseErpDriver<ErpRealClient>
             Price = request.Price
         };
 
-        return _client.CreateProduct(createProductRequest).MapFailure(ErpErrorResponse.From);
+        return _client.CreateProduct(createProductRequest).MapError(ErpErrorResponse.From);
     }
 }

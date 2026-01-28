@@ -18,6 +18,12 @@ public class ErpStubDriver : BaseErpDriver<ErpStubClient>
 
     public override Result<VoidValue, ErpErrorResponse> ReturnsProduct(ReturnsProductRequest request)
     {
+        // Handle null or empty price
+        if (string.IsNullOrEmpty(request.Price))
+        {
+            return Result<VoidValue, ErpErrorResponse>.Success(VoidValue.Empty);
+        }
+
         var extProductDetailsResponse = new ExtProductDetailsResponse
         {
             Id = request.Sku,
@@ -25,6 +31,6 @@ public class ErpStubDriver : BaseErpDriver<ErpStubClient>
         };
 
         return _client.ConfigureGetProduct(extProductDetailsResponse)
-            .MapFailure(ErpErrorResponse.From);
+            .MapError(ErpErrorResponse.From);
     }
 }

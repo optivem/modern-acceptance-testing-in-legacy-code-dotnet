@@ -5,8 +5,8 @@ using Optivem.Commons.Dsl;
 namespace Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands.Base;
 
 public class ErpUseCaseResult<TSuccessResponse, TSuccessVerification>
-    : UseCaseResult<TSuccessResponse, ErpErrorResponse, UseCaseContext, TSuccessVerification, ErpErrorVerification>
-    where TSuccessVerification : ResponseVerification<TSuccessResponse, UseCaseContext>
+    : UseCaseResult<TSuccessResponse, ErpErrorResponse, TSuccessVerification, ErpErrorVerification>
+    where TSuccessVerification : ResponseVerification<TSuccessResponse>
 {
     public ErpUseCaseResult(
         Result<TSuccessResponse, ErpErrorResponse> result,

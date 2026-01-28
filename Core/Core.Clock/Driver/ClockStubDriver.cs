@@ -2,6 +2,7 @@ using Optivem.EShop.SystemTest.Core.Clock.Driver.Dtos;
 using Optivem.EShop.SystemTest.Core.Clock.Client;
 using Optivem.Commons.Util;
 using ClientDtos = Optivem.EShop.SystemTest.Core.Clock.Client.Dtos;
+using Optivem.EShop.SystemTest.Core.Clock.Client.Dtos;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Driver;
 
@@ -34,9 +35,9 @@ public class ClockStubDriver : IClockDriver
 
     public Result<VoidValue, ClockErrorResponse> ReturnsTime(ReturnsTimeRequest request)
     {
-        var extResponse = new ClientDtos.ExtGetTimeResponse
+        var extResponse = new ExtGetTimeResponse
         {
-            Time = request.Time
+            Time = DateTimeOffset.Parse(request.Time!)
         };
         _client.ConfigureGetTime(extResponse);
         return Result<VoidValue, ClockErrorResponse>.Success(VoidValue.Empty);

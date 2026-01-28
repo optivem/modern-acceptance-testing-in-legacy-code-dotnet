@@ -18,6 +18,6 @@ public class TaxStubClient : BaseTaxClient
     {
         var country = response.Id;
         return _wireMockClient.StubGet($"/tax/api/countries/{country}", 200, response)
-            .MapFailure(ExtTaxErrorResponse.From);
+            .MapError(ExtTaxErrorResponse.From);
     }
 }
