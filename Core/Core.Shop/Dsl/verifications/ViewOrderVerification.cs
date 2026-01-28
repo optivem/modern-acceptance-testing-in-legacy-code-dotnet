@@ -141,11 +141,6 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
         return this;
     }
 
-    public ViewOrderVerification BasePrice(double expectedBasePrice)
-    {
-        return BasePrice((decimal)expectedBasePrice);
-    }
-
     public ViewOrderVerification BasePrice(string expectedBasePrice)
     {
         return BasePrice(decimal.Parse(expectedBasePrice));
@@ -166,11 +161,6 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
         return this;
     }
 
-    public ViewOrderVerification DiscountRate(double expectedDiscountRate)
-    {
-        return DiscountRate((decimal)expectedDiscountRate);
-    }
-
     public ViewOrderVerification DiscountRate(string expectedDiscountRate)
     {
         return DiscountRate(decimal.Parse(expectedDiscountRate));
@@ -182,11 +172,6 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
         Response.DiscountAmount.ShouldBe(expectedDiscountAmount, 
             $"Expected discount amount to be {expectedDiscountAmount}, but was {Response.DiscountAmount}");
         return this;
-    }
-
-    public ViewOrderVerification DiscountAmount(double expectedDiscountAmount)
-    {
-        return DiscountAmount((decimal)expectedDiscountAmount);
     }
 
     public ViewOrderVerification DiscountAmount(string expectedDiscountAmount)
@@ -202,11 +187,6 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
         return this;
     }
 
-    public ViewOrderVerification TaxRate(double expectedTaxRate)
-    {
-        return TaxRate((decimal)expectedTaxRate);
-    }
-
     public ViewOrderVerification TaxRate(string expectedTaxRate)
     {
         return TaxRate(decimal.Parse(expectedTaxRate));
@@ -220,11 +200,6 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
         return this;
     }
 
-    public ViewOrderVerification TaxAmount(double expectedTaxAmount)
-    {
-        return TaxAmount((decimal)expectedTaxAmount);
-    }
-
     public ViewOrderVerification TaxAmount(string expectedTaxAmount)
     {
         return TaxAmount(decimal.Parse(expectedTaxAmount));
@@ -236,11 +211,6 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
         Response.TotalPrice.ShouldBe(expectedTotalPrice, 
             $"Expected total price to be {expectedTotalPrice}, but was {Response.TotalPrice}");
         return this;
-    }
-
-    public ViewOrderVerification TotalPrice(double expectedTotalPrice)
-    {
-        return TotalPrice((decimal)expectedTotalPrice);
     }
 
     public ViewOrderVerification TotalPrice(string expectedTotalPrice)

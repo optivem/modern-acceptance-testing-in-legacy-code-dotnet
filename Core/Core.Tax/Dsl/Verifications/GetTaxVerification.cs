@@ -23,12 +23,6 @@ public class GetTaxVerification : ResponseVerification<GetTaxResponse>
         return this;
     }
 
-    public GetTaxVerification ShouldHaveTaxRate(double taxRate)
-    {
-        Response.TaxRate.ShouldBe((decimal)taxRate);
-        return this;
-    }
-
     public GetTaxVerification ShouldHaveCountry(string country)
     {
         var resolvedCountry = Context.GetParamValue(country) ?? country;

@@ -32,7 +32,7 @@ public class GivenCouponBuilder : BaseGivenBuilder
         return this;
     }
 
-    public GivenCouponBuilder WithDiscountRate(double discountRate)
+    public GivenCouponBuilder WithDiscountRate(decimal discountRate)
     {
         _discountRate = discountRate.ToString();
         return this;

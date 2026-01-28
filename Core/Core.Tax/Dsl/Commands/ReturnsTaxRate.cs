@@ -29,7 +29,7 @@ public class ReturnsTaxRate : BaseTaxCommand<VoidValue, VoidVerification>
         return this;
     }
 
-    public ReturnsTaxRate TaxRate(double taxRate)
+    public ReturnsTaxRate TaxRate(decimal taxRate)
     {
         return TaxRate(taxRate.ToString());
     }
