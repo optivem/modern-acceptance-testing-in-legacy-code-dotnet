@@ -28,8 +28,6 @@
     <ProjectReference Include="..\..\TestInfrastructure\TestInfrastructure.csproj" />
     <ProjectReference Include="..\..\Optivem.Commons\Optivem.Commons.csproj" />
     <ProjectReference Include="..\..\Libs\Optivem.Testing.Channels\Optivem.Testing.Channels.csproj" />
-    <ProjectReference Include="..\..\Libs\Optivem.Testing.Assertions\Optivem.Testing.Assertions.csproj" />
-    <ProjectReference Include="..\..\Optivem.Commons\Optivem.Commons.csproj" />
   </ItemGroup>
 
   <ItemGroup>
