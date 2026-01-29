@@ -6,18 +6,18 @@ public class UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerificat
 {
     private readonly Result<TSuccessResponse, TFailureResponse> _result;
     private readonly UseCaseContext _context;
-    private readonly Func<TSuccessResponse, UseCaseContext, TSuccessVerification> _verificationFactory;
+    private readonly Func<TSuccessResponse, UseCaseContext, TSuccessVerification> _successVerificationFactory;
     private readonly Func<TFailureResponse, UseCaseContext, TFailureVerification> _failureVerificationFactory;
 
     public UseCaseResult(
         Result<TSuccessResponse, TFailureResponse> result,
         UseCaseContext context, 
-        Func<TSuccessResponse, UseCaseContext, TSuccessVerification> verificationFactory,
+        Func<TSuccessResponse, UseCaseContext, TSuccessVerification> successVerificationFactory,
         Func<TFailureResponse, UseCaseContext, TFailureVerification> failureVerificationFactory)
     {
         _result = result;
         _context = context;
-        _verificationFactory = verificationFactory;
+        _successVerificationFactory = successVerificationFactory;
         _failureVerificationFactory = failureVerificationFactory;
     }
 
@@ -28,7 +28,7 @@ public class UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerificat
             throw new InvalidOperationException($"Expected result to be success but was failure, due to error: " + _result.Error!.ToString());
         }
 
-        return _verificationFactory(_result.Value, _context);
+        return _successVerificationFactory(_result.Value, _context);
     }
 
     public TFailureVerification ShouldFail()

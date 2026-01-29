@@ -76,6 +76,10 @@ public class UseCaseContext
 
         if (_resultMap.TryGetValue(alias, out var value))
         {
+            if (value.Contains("FAILED"))
+            {
+                throw new InvalidOperationException($"Cannot get result value for alias '{alias}' because the operation failed: {value}");
+            }
             return value;
         }
 
