@@ -8,9 +8,10 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui;
 
 public class ShopUiClient : IDisposable
 {
-    private static readonly bool IsHeadless = Environment.GetEnvironmentVariable("CI") == "true" 
-        || Environment.GetEnvironmentVariable("HEADLESS") == "true" 
-        || bool.Parse(Environment.GetEnvironmentVariable("PLAYWRIGHT_HEADLESS") ?? "false");
+    // Default: headless mode (browser not visible)
+    // To see browser during debugging, set: HEADED=true or PLAYWRIGHT_HEADED=true
+    private static readonly bool IsHeadless = Environment.GetEnvironmentVariable("HEADED") != "true" 
+        && Environment.GetEnvironmentVariable("PLAYWRIGHT_HEADED") != "true";
 
     private const string ContentType = "content-type";
     private const string TextHtml = "text/html";
