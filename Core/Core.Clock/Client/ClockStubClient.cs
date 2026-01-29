@@ -24,7 +24,7 @@ public class ClockStubClient : IDisposable
     }
 
     public Task<Result<VoidValue, ExtClockErrorResponse>> CheckHealth()
-        => _httpClient.Get<VoidValue>("/health");
+        => _httpClient.Get("/health");
 
     public Task<Result<ExtGetTimeResponse, ExtClockErrorResponse>> GetTime()
         => _httpClient.Get<ExtGetTimeResponse>("/api/time");
