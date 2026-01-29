@@ -15,9 +15,6 @@ public class TaxStubClient : BaseTaxClient
     }
 
     public async Task<Result<VoidValue, ExtTaxErrorResponse>> ConfigureGetCountry(ExtCountryDetailsResponse response)
-    {
-        var country = response.Id;
-        var result = await _wireMockClient.StubGetAsync($"/tax/api/countries/{country}", 200, response);
-        return result.MapError(ExtTaxErrorResponse.From);
-    }
+        => (await _wireMockClient.StubGetAsync($"/tax/api/countries/{response.Id}", 200, response))
+            .MapError(ExtTaxErrorResponse.From);
 }

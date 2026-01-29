@@ -21,10 +21,7 @@ public class ErpStubClient : BaseErpClient
     }
 
     public async Task<Result<VoidValue, ExtErpErrorResponse>> ConfigureGetProduct(ExtProductDetailsResponse response)
-    {
-        var sku = response.Id;
-        var result = await _wireMockClient.StubGetAsync($"/erp/api/products/{sku}", 200, response);
-        return result.MapError(ExtErpErrorResponse.From);
-    }
+        => (await _wireMockClient.StubGetAsync($"/erp/api/products/{response.Id}", 200, response))
+            .MapError(ExtErpErrorResponse.From);
 
 }
