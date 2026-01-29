@@ -23,15 +23,11 @@ public class ClockStubClient : IDisposable
         _wireMockClient.Dispose();
     }
 
-    public async Task<Result<VoidValue, ExtClockErrorResponse>> CheckHealth()
-    {
-        return await _httpClient.Get<VoidValue>("/health");
-    }
+    public Task<Result<VoidValue, ExtClockErrorResponse>> CheckHealth()
+        => _httpClient.Get<VoidValue>("/health");
 
-    public async Task<Result<ExtGetTimeResponse, ExtClockErrorResponse>> GetTime()
-    {
-        return await _httpClient.Get<ExtGetTimeResponse>("/api/time");
-    }
+    public Task<Result<ExtGetTimeResponse, ExtClockErrorResponse>> GetTime()
+        => _httpClient.Get<ExtGetTimeResponse>("/api/time");
 
     public async Task<Result<VoidValue, ExtClockErrorResponse>> ConfigureGetTime(ExtGetTimeResponse response)
     {

@@ -19,13 +19,9 @@ public abstract class BaseErpClient : IDisposable
         HttpClient?.Dispose();
     }
 
-    public async Task<Result<VoidValue, ExtErpErrorResponse>> CheckHealth()
-    {
-        return await HttpClient.Get("/health");
-    }
+    public Task<Result<VoidValue, ExtErpErrorResponse>> CheckHealth()
+        => HttpClient.Get("/health");
 
-    public async Task<Result<ExtProductDetailsResponse, ExtErpErrorResponse>> GetProduct(string sku)
-    {
-        return await HttpClient.Get<ExtProductDetailsResponse>($"/api/products/{sku}");
-    }
+    public Task<Result<ExtProductDetailsResponse, ExtErpErrorResponse>> GetProduct(string sku)
+        => HttpClient.Get<ExtProductDetailsResponse>($"/api/products/{sku}");
 }

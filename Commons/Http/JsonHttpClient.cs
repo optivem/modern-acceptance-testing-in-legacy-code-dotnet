@@ -32,58 +32,31 @@ public class JsonHttpClient<E> : IDisposable
     }
 
     public async Task<Result<T, E>> Get<T>(string path)
-    {
-        var httpResponse = await DoGet(path);
-        return await GetResultOrFailure<T>(httpResponse);
-    }
+        => await GetResultOrFailure<T>(await DoGet(path));
 
     public async Task<Result<VoidValue, E>> Get(string path)
-    {
-        var httpResponse = await DoGet(path);
-        return await GetResultOrFailure<VoidValue>(httpResponse);
-    }
+        => await GetResultOrFailure<VoidValue>(await DoGet(path));
 
     public async Task<Result<T, E>> Post<T>(string path, object request)
-    {
-        var httpResponse = await DoPost(path, request);
-        return await GetResultOrFailure<T>(httpResponse);
-    }
+        => await GetResultOrFailure<T>(await DoPost(path, request));
 
     public async Task<Result<VoidValue, E>> Post(string path, object request)
-    {
-        var httpResponse = await DoPost(path, request);
-        return await GetResultOrFailure<VoidValue>(httpResponse);
-    }
+        => await GetResultOrFailure<VoidValue>(await DoPost(path, request));
 
     public async Task<Result<VoidValue, E>> Post(string path)
-    {
-        var httpResponse = await DoPost(path);
-        return await GetResultOrFailure<VoidValue>(httpResponse);
-    }
+        => await GetResultOrFailure<VoidValue>(await DoPost(path));
 
     public async Task<Result<T, E>> Put<T>(string path, object request)
-    {
-        var httpResponse = await DoPut(path, request);
-        return await GetResultOrFailure<T>(httpResponse);
-    }
+        => await GetResultOrFailure<T>(await DoPut(path, request));
 
     public async Task<Result<VoidValue, E>> Put(string path, object request)
-    {
-        var httpResponse = await DoPut(path, request);
-        return await GetResultOrFailure<VoidValue>(httpResponse);
-    }
+        => await GetResultOrFailure<VoidValue>(await DoPut(path, request));
 
     public async Task<Result<T, E>> Delete<T>(string path)
-    {
-        var httpResponse = await DoDelete(path);
-        return await GetResultOrFailure<T>(httpResponse);
-    }
+        => await GetResultOrFailure<T>(await DoDelete(path));
 
     public async Task<Result<VoidValue, E>> Delete(string path)
-    {
-        var httpResponse = await DoDelete(path);
-        return await GetResultOrFailure<VoidValue>(httpResponse);
-    }
+        => await GetResultOrFailure<VoidValue>(await DoDelete(path));
 
     private async Task<HttpResponseMessage> DoGet(string path)
     {
@@ -138,10 +111,8 @@ public class JsonHttpClient<E> : IDisposable
         return await SendRequest(httpRequest);
     }
 
-    private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage httpRequest)
-    {
-        return await _httpClient.SendAsync(httpRequest);
-    }
+    private Task<HttpResponseMessage> SendRequest(HttpRequestMessage httpRequest)
+        => _httpClient.SendAsync(httpRequest);
 
     private static string SerializeRequest(object request)
     {

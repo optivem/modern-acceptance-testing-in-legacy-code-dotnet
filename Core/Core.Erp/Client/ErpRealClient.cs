@@ -11,8 +11,6 @@ public class ErpRealClient : BaseErpClient
     }
     
 
-    public async Task<Result<VoidValue, ExtErpErrorResponse>> CreateProduct(ExtCreateProductRequest request)
-    {
-        return await HttpClient.Post("/api/products", request);
-    }
+    public Task<Result<VoidValue, ExtErpErrorResponse>> CreateProduct(ExtCreateProductRequest request)
+        => HttpClient.Post("/api/products", request);
 }
