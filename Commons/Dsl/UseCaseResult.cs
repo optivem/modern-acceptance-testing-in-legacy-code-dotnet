@@ -23,21 +23,13 @@ public class UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerificat
 
     public TSuccessVerification ShouldSucceed()
     {
-        if (!_result.IsSuccess)
-        {
-            throw new InvalidOperationException($"Expected result to be success but was failure, due to error: " + _result.Error!.ToString());
-        }
-
+        _result.ShouldBeSuccess();
         return _successVerificationFactory(_result.Value, _context);
     }
 
     public TFailureVerification ShouldFail()
     {
-        if (_result.IsSuccess)
-        {
-            throw new InvalidOperationException("Expected result to be failure but was success");
-        }
-
+        _result.ShouldBeFailure();
         return _failureVerificationFactory(_result.Error, _context);
     }
 }
