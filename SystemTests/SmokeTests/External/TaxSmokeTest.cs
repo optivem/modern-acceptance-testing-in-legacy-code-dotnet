@@ -9,8 +9,8 @@ public class TaxSmokeTest : BaseSystemTest
     [Fact]
     public async Task ShouldBeAbleToGoToTax()
     {
-        await App.Tax().GoToTax()
-            .Execute()
+        (await App.Tax().GoToTax()
+            .Execute())
             .ShouldSucceed();
     }
 }

@@ -11,8 +11,8 @@ public class ClockSmokeTest : BaseSystemTest
     [Fact]
     public async Task ShouldBeAbleToGoToClock()
     {
-        await App.Clock().GoToClock()
-            .Execute()
+        (await App.Clock().GoToClock()
+            .Execute())
             .ShouldSucceed();
     }
 
