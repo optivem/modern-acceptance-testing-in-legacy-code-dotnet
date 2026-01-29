@@ -26,38 +26,30 @@ public class PageClient
 
     public void Fill(string selector, string? text)
     {
-        var input = _page.Locator(selector);
-        Wait(input);
-        var safeText = text ?? string.Empty;
-        input.FillAsync(safeText).Wait();
+        var locator = GetLocator(selector);
+        var processedValue = text ?? string.Empty;
+        locator.FillAsync(processedValue).Wait();
     }
 
     public void Click(string selector)
     {
-        var button = _page.Locator(selector);
-        Wait(button);
-        button.ClickAsync().Wait();
+        var locator = GetLocator(selector);
+        locator.ClickAsync().Wait();
     }
 
     public string ReadTextContent(string selector)
     {
-        var locator = _page.Locator(selector);
-        Wait(locator);
+        var locator = GetLocator(selector);
         return locator.TextContentAsync().Result ?? string.Empty;
     }
 
     public List<string> ReadAllTextContents(string selector)
     {
         var locator = _page.Locator(selector);
-        Wait(locator);
-        var count = locator.CountAsync().Result;
-        var texts = new List<string>();
-        for (int i = 0; i < count; i++)
-        {
-            var text = locator.Nth(i).TextContentAsync().Result ?? string.Empty;
-            texts.Add(text);
-        }
-        return texts;
+        // Wait for at least one element to be visible
+        // AllTextContentsAsync() doesn't trigger strict mode - it's designed for multiple elements
+        locator.First.WaitForAsync(GetDefaultWaitForOptions()).Wait();
+        return locator.AllTextContentsAsync().Result.ToList();
     }
 
     public bool IsVisible(string selector)
@@ -105,11 +97,5 @@ public class PageClient
             State = WaitForSelectorState.Visible,
             Timeout = _timeoutMilliseconds 
         };
-    }
-
-    private void Wait(ILocator locator)
-    {
-        var waitForOptions = GetDefaultWaitForOptions();
-        locator.WaitForAsync(waitForOptions).Wait();
     }
 }
