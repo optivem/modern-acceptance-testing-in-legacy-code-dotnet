@@ -90,11 +90,6 @@ public class JsonWireMockClient : IDisposable
         }
     }
 
-    public Result<VoidValue, string> StubGet<T>(string path, int statusCode, T response)
-    {
-        return StubGetAsync(path, statusCode, response).GetAwaiter().GetResult();
-    }
-
     private string Serialize<T>(T obj)
     {
         try
