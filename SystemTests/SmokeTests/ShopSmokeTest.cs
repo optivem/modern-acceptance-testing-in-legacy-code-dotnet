@@ -3,6 +3,7 @@ using Channel = Optivem.Testing.Channel;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Shop;
 using Optivem.EShop.SystemTest.Base;
+using Commons.Dsl;
 
 namespace SmokeTests;
 
@@ -12,8 +13,8 @@ public class ShopSmokeTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldBeAbleToGoToShop(Channel channel)
     {
-        (await App.Shop(channel).GoToShop()
-            .Execute())
+        await App.Shop(channel).GoToShop()
+            .Execute()
             .ShouldSucceed();
     }
 }
