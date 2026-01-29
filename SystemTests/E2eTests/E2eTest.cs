@@ -4,6 +4,7 @@ using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Shop;
 using Optivem.EShop.SystemTest.Base;
+using Commons.Dsl;
 
 namespace E2eTests;
 
@@ -281,11 +282,11 @@ public class E2eTest : BaseSystemTest
             .Execute())
             .ShouldSucceed();
 
-        (await App.Shop(channel).PlaceOrder()
+        await App.Shop(channel).PlaceOrder()
             .Sku(SKU)
             .Quantity(5)
             .Country("XX")
-            .Execute())
+            .Execute()
             .ShouldFail()
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("country", "Country does not exist: XX");
