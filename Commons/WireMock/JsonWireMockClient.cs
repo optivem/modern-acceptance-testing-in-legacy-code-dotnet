@@ -46,6 +46,18 @@ public class JsonWireMockClient : IDisposable
     }
 
     public async Task<Result<VoidValue, string>> StubGetAsync<T>(string path, int statusCode, T response)
+        => await RegisterStubAsync("GET", path, statusCode, response);
+
+    public async Task<Result<VoidValue, string>> StubPostAsync<T>(string path, int statusCode, T response)
+        => await RegisterStubAsync("POST", path, statusCode, response);
+
+    public async Task<Result<VoidValue, string>> StubPutAsync<T>(string path, int statusCode, T response)
+        => await RegisterStubAsync("PUT", path, statusCode, response);
+
+    public async Task<Result<VoidValue, string>> StubDeleteAsync<T>(string path, int statusCode, T response)
+        => await RegisterStubAsync("DELETE", path, statusCode, response);
+
+    private async Task<Result<VoidValue, string>> RegisterStubAsync<T>(string method, string path, int statusCode, T response)
     {
         try
         {
@@ -55,7 +67,7 @@ public class JsonWireMockClient : IDisposable
             {
                 request = new
                 {
-                    method = "GET",
+                    method = method,
                     urlPath = path
                 },
                 response = new
@@ -81,12 +93,12 @@ public class JsonWireMockClient : IDisposable
             else
             {
                 var errorContent = await apiResponse.Content.ReadAsStringAsync();
-                return Result<VoidValue, string>.Failure($"Failed to register stub for GET {path}: {errorContent}");
+                return Result<VoidValue, string>.Failure($"Failed to register stub for {method} {path}: {errorContent}");
             }
         }
         catch (Exception ex)
         {
-            return Result<VoidValue, string>.Failure($"Failed to configure GET stub for {path}: {ex.Message}");
+            return Result<VoidValue, string>.Failure($"Failed to configure {method} stub for {path}: {ex.Message}");
         }
     }
 
