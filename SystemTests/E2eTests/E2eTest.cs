@@ -33,8 +33,8 @@ public class E2eTest : BaseSystemTest
 
         (await App.Shop(channel).ViewOrder()
             .OrderNumber("ORDER-1001")
-            .Execute()
-            .ShouldSucceed())
+            .Execute())
+            .ShouldSucceed()
             .SubtotalPrice(100.00m);
     }
 
@@ -61,8 +61,8 @@ public class E2eTest : BaseSystemTest
 
         (await App.Shop(channel).ViewOrder()
             .OrderNumber("ORDER-1001")
-            .Execute()
-            .ShouldSucceed())
+            .Execute())
+            .ShouldSucceed()
             .SubtotalPrice(subtotalPrice);
     }
 
@@ -95,15 +95,15 @@ public class E2eTest : BaseSystemTest
             .Sku(SKU)
             .Quantity(5)
             .Country("US")
-            .Execute()
-            .ShouldSucceed())
+            .Execute())
+            .ShouldSucceed()
             .OrderNumber(ORDER_NUMBER)
             .OrderNumberStartsWith("ORD-");
 
         (await App.Shop(channel).ViewOrder()
             .OrderNumber(ORDER_NUMBER)
-            .Execute()
-            .ShouldSucceed())
+            .Execute())
+            .ShouldSucceed()
             .OrderNumber(ORDER_NUMBER)
             .Sku(SKU)
             .Quantity(5)
@@ -144,8 +144,8 @@ public class E2eTest : BaseSystemTest
 
         (await App.Shop(channel).ViewOrder()
             .OrderNumber(ORDER_NUMBER)
-            .Execute()
-            .ShouldSucceed())
+            .Execute())
+            .ShouldSucceed()
             .OrderNumber(ORDER_NUMBER)
             .Sku(SKU)
             .Status(OrderStatus.Cancelled);

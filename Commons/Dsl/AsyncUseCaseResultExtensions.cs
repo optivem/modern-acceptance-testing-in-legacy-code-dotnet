@@ -20,7 +20,6 @@ public static class AsyncUseCaseResultExtensions
 public class AsyncSuccessVerificationBuilder<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification>
 {
     private readonly Task<UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification>> _taskResult;
-    private readonly List<Action<TSuccessVerification>> _verifications = new();
 
     public AsyncSuccessVerificationBuilder(Task<UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification>> taskResult)
     {
@@ -30,14 +29,7 @@ public class AsyncSuccessVerificationBuilder<TSuccessResponse, TFailureResponse,
     private async Task<TSuccessVerification> ExecuteVerifications()
     {
         var result = await _taskResult;
-        var verification = result.ShouldSucceed();
-        
-        foreach (var verify in _verifications)
-        {
-            verify(verification);
-        }
-        
-        return verification;
+        return result.ShouldSucceed();
     }
 
     public TaskAwaiter<TSuccessVerification> GetAwaiter()
@@ -49,10 +41,6 @@ public class AsyncSuccessVerificationBuilder<TSuccessResponse, TFailureResponse,
     {
         return builder.ExecuteVerifications();
     }
-
-    // Forward verification methods to the underlying verification type through reflection/dynamic
-    // This is a simplified version - in practice, you'd need to handle all verification methods
-    // For now, we'll just make it awaitable and handle verifications in the actual verification classes
 }
 
 public class AsyncFailureVerificationBuilder<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification>

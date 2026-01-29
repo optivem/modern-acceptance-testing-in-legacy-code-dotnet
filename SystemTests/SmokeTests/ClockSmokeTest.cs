@@ -20,8 +20,8 @@ public class ClockSmokeTest : BaseSystemTest
     public async Task ShouldBeAbleToGetTime()
     {
         (await App.Clock().GetTime()
-            .Execute()
-            .ShouldSucceed())
+            .Execute())
+            .ShouldSucceed()
             .TimeIsNotNull();
     }
 }
