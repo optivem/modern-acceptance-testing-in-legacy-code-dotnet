@@ -7,19 +7,9 @@ public static class Converter
         return To(value, decimal.Parse);
     }
 
-    public static decimal ToBigDecimal(double value)
-    {
-        return (decimal)value;
-    }
-
     public static string? FromBigDecimal(decimal? value)
     {
         return From(value, v => v.ToString());
-    }
-
-    public static string FromDouble(double value)
-    {
-        return ((decimal)value).ToString();
     }
 
     public static int? ToInteger(string? value)
