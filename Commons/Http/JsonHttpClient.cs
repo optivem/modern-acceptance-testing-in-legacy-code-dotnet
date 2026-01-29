@@ -26,6 +26,11 @@ public class JsonHttpClient<E>
         _baseUrl = baseUrl;
     }
 
+    public void Dispose()
+    {
+        _httpClient?.Dispose();
+    }
+
     public Result<T, E> Get<T>(string path)
     {
         var httpResponse = DoGet(path);
@@ -83,52 +88,54 @@ public class JsonHttpClient<E>
     private HttpResponseMessage DoGet(string path)
     {
         var uri = GetUri(path);
-        var request = new HttpRequestMessage(HttpMethod.Get, uri);
-        return SendRequest(request);
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, uri);
+        return SendRequest(httpRequest);
     }
 
-    private HttpResponseMessage DoPost(string path, object requestBody)
+    #region Helpers
+
+    private Uri GetUri(string path)
+    {
+        return new Uri(_baseUrl + path);
+    }
+
+    private HttpResponseMessage DoPost(string path, object request)
     {
         var uri = GetUri(path);
-        var jsonBody = SerializeRequest(requestBody);
-        var request = new HttpRequestMessage(HttpMethod.Post, uri)
+        var jsonBody = SerializeRequest(request);
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, uri)
         {
             Content = new StringContent(jsonBody, Encoding.UTF8, ApplicationJson)
         };
-        return SendRequest(request);
+        return SendRequest(httpRequest);
     }
 
     private HttpResponseMessage DoPost(string path)
     {
         var uri = GetUri(path);
-        var request = new HttpRequestMessage(HttpMethod.Post, uri)
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, uri)
         {
             Content = new StringContent(string.Empty, Encoding.UTF8, ApplicationJson)
         };
-        return SendRequest(request);
+        return SendRequest(httpRequest);
     }
 
-    private HttpResponseMessage DoPut(string path, object requestBody)
+    private HttpResponseMessage DoPut(string path, object request)
     {
         var uri = GetUri(path);
-        var jsonBody = SerializeRequest(requestBody);
-        var request = new HttpRequestMessage(HttpMethod.Put, uri)
+        var jsonBody = SerializeRequest(request);
+        var httpRequest = new HttpRequestMessage(HttpMethod.Put, uri)
         {
             Content = new StringContent(jsonBody, Encoding.UTF8, ApplicationJson)
         };
-        return SendRequest(request);
+        return SendRequest(httpRequest);
     }
 
     private HttpResponseMessage DoDelete(string path)
     {
         var uri = GetUri(path);
-        var request = new HttpRequestMessage(HttpMethod.Delete, uri);
-        return SendRequest(request);
-    }
-
-    private Uri GetUri(string path)
-    {
-        return new Uri(_baseUrl + path);
+        var httpRequest = new HttpRequestMessage(HttpMethod.Delete, uri);
+        return SendRequest(httpRequest);
     }
 
     private HttpResponseMessage SendRequest(HttpRequestMessage httpRequest)
@@ -147,14 +154,9 @@ public class JsonHttpClient<E>
         return JsonSerializer.Deserialize<T>(responseBody, JsonOptions)!;
     }
 
-    private bool IsSuccessStatusCode(HttpResponseMessage httpResponse)
-    {
-        return httpResponse.IsSuccessStatusCode;
-    }
-
     private Result<T, E> GetResultOrFailure<T>(HttpResponseMessage httpResponse)
     {
-        if (!IsSuccessStatusCode(httpResponse))
+        if (!httpResponse.IsSuccessStatusCode)
         {
             var error = ReadResponse<E>(httpResponse);
             return Result<T, E>.Failure(error);
@@ -169,8 +171,5 @@ public class JsonHttpClient<E>
         return Result<T, E>.Success(response);
     }
 
-    public void Dispose()
-    {
-        _httpClient?.Dispose();
-    }
+    #endregion
 }
