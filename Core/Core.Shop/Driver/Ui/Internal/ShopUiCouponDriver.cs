@@ -20,47 +20,48 @@ public class ShopUiCouponDriver : ICouponDriver
         _pageNavigator = pageNavigator;
     }
 
-    public Task<Result<VoidValue, SystemError>> PublishCoupon(PublishCouponRequest request)
+    public async Task<Result<VoidValue, SystemError>> PublishCoupon(PublishCouponRequest request)
     {
-        EnsureOnCouponManagementPage();
+        await EnsureOnCouponManagementPageAsync();
         
-        _couponManagementPage!.InputCouponCode(request.Code);
-        _couponManagementPage.InputDiscountRate(request.DiscountRate);
-        _couponManagementPage.InputValidFrom(request.ValidFrom);
-        _couponManagementPage.InputValidTo(request.ValidTo);
-        _couponManagementPage.InputUsageLimit(request.UsageLimit);
-        _couponManagementPage.ClickPublishCoupon();
+        await _couponManagementPage!.InputCouponCodeAsync(request.Code);
+        await _couponManagementPage.InputDiscountRateAsync(request.DiscountRate);
+        await _couponManagementPage.InputValidFromAsync(request.ValidFrom);
+        await _couponManagementPage.InputValidToAsync(request.ValidTo);
+        await _couponManagementPage.InputUsageLimitAsync(request.UsageLimit);
+        await _couponManagementPage.ClickPublishCouponAsync();
         
-        return Task.FromResult(_couponManagementPage.GetResult().MapVoid());
+        var result = await _couponManagementPage.GetResultAsync();
+        return result.MapVoid();
     }
 
-    public Task<Result<BrowseCouponsResponse, SystemError>> BrowseCoupons(BrowseCouponsRequest request)
+    public async Task<Result<BrowseCouponsResponse, SystemError>> BrowseCoupons(BrowseCouponsRequest request)
     {
         // Always navigate fresh to ensure we get the latest coupon data (e.g., updated used counts)
-        NavigateToCouponManagementPage();
+        await NavigateToCouponManagementPageAsync();
         
-        var coupons = _couponManagementPage!.ReadCoupons();
+        var coupons = await _couponManagementPage!.ReadCouponsAsync();
         
         var response = new BrowseCouponsResponse
         {
             Coupons = coupons
         };
         
-        return Task.FromResult(Success(response));
+        return Success(response);
     }
 
-    private void EnsureOnCouponManagementPage()
+    private async Task EnsureOnCouponManagementPageAsync()
     {
         if (!_pageNavigator.IsOnPage(PageNavigator.Page.COUPON_MANAGEMENT))
         {
-            NavigateToCouponManagementPage();
+            await NavigateToCouponManagementPageAsync();
         }
     }
 
-    private void NavigateToCouponManagementPage()
+    private async Task NavigateToCouponManagementPageAsync()
     {
         var homePage = _homePageSupplier();
-        _couponManagementPage = homePage.ClickCouponManagement();
+        _couponManagementPage = await homePage.ClickCouponManagementAsync();
         _pageNavigator.SetCurrentPage(PageNavigator.Page.COUPON_MANAGEMENT);
     }
 }

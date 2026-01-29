@@ -19,29 +19,29 @@ public class NewOrderPage : BasePage
     {
     }
 
-    public void InputSku(string? sku)
+    public async Task InputSkuAsync(string? sku)
     {
-        PageClient.Fill(SkuInputSelector, sku);
+        await PageClient.FillAsync(SkuInputSelector, sku);
     }
 
-    public void InputQuantity(string? quantity)
+    public async Task InputQuantityAsync(string? quantity)
     {
-        PageClient.Fill(QuantityInputSelector, quantity);
+        await PageClient.FillAsync(QuantityInputSelector, quantity);
     }
 
-    public void InputCountry(string? country)
+    public async Task InputCountryAsync(string? country)
     {
-        PageClient.Fill(CountryInputSelector, country);
+        await PageClient.FillAsync(CountryInputSelector, country);
     }
 
-    public void InputCouponCode(string? couponCode)
+    public async Task InputCouponCodeAsync(string? couponCode)
     {
-        PageClient.Fill(CouponCodeInputSelector, couponCode);
+        await PageClient.FillAsync(CouponCodeInputSelector, couponCode);
     }
 
-    public void ClickPlaceOrder()
+    public async Task ClickPlaceOrderAsync()
     {
-        PageClient.Click(PlaceOrderButtonSelector);
+        await PageClient.ClickAsync(PlaceOrderButtonSelector);
     }
 
     public static string GetOrderNumber(string successMessageText)

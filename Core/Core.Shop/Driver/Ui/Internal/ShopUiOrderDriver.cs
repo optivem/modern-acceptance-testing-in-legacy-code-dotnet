@@ -22,25 +22,25 @@ public class ShopUiOrderDriver : IOrderDriver
         _pageNavigator = pageNavigator;
     }
 
-    public Task<Result<PlaceOrderResponse, SystemError>> PlaceOrder(PlaceOrderRequest request)
+    public async Task<Result<PlaceOrderResponse, SystemError>> PlaceOrder(PlaceOrderRequest request)
     {
         var sku = request.Sku;
         var quantity = request.Quantity;
         var country = request.Country;
         var couponCode = request.CouponCode;
 
-        EnsureOnNewOrderPage();
+        await EnsureOnNewOrderPageAsync();
 
-        _newOrderPage!.InputSku(sku);
-        _newOrderPage.InputQuantity(quantity);
-        _newOrderPage.InputCountry(country);
-        _newOrderPage.InputCouponCode(couponCode);
-        _newOrderPage.ClickPlaceOrder();
+        await _newOrderPage!.InputSkuAsync(sku);
+        await _newOrderPage.InputQuantityAsync(quantity);
+        await _newOrderPage.InputCountryAsync(country);
+        await _newOrderPage.InputCouponCodeAsync(couponCode);
+        await _newOrderPage.ClickPlaceOrderAsync();
 
-        var result = _newOrderPage.GetResult();
+        var result = await _newOrderPage.GetResultAsync();
         if (result.IsFailure)
         {
-            return Task.FromResult(Failure<PlaceOrderResponse>(result.Error));
+            return Failure<PlaceOrderResponse>(result.Error);
         }
 
         var orderNumberValue = NewOrderPage.GetOrderNumber(result.Value);
@@ -49,73 +49,73 @@ public class ShopUiOrderDriver : IOrderDriver
             OrderNumber = orderNumberValue
         };
 
-        return Task.FromResult(Success(response));
+        return Success(response);
     }
 
-    public Task<Result<VoidValue, SystemError>> CancelOrder(string? orderNumber)
+    public async Task<Result<VoidValue, SystemError>> CancelOrder(string? orderNumber)
     {
-        var result = EnsureOnOrderDetailsPage(orderNumber);
+        var result = await EnsureOnOrderDetailsPageAsync(orderNumber);
         if (result.IsFailure)
         {
-            return Task.FromResult(result.MapVoid());
+            return result.MapVoid();
         }
 
-        _orderDetailsPage!.ClickCancelOrder();
+        await _orderDetailsPage!.ClickCancelOrderAsync();
 
-        var cancelResult = _orderDetailsPage.GetResult();
+        var cancelResult = await _orderDetailsPage.GetResultAsync();
         if (cancelResult.IsFailure)
         {
-            return Task.FromResult(Failure<VoidValue>(cancelResult.Error));
+            return Failure<VoidValue>(cancelResult.Error);
         }
 
         var successMessage = cancelResult.Value;
         if (!successMessage.Contains("cancelled successfully!"))
         {
-            return Task.FromResult(Failure<VoidValue>("Did not receive expected cancellation success message"));
+            return Failure<VoidValue>("Did not receive expected cancellation success message");
         }
 
-        var displayStatusAfterCancel = _orderDetailsPage.GetStatus();
+        var displayStatusAfterCancel = await _orderDetailsPage.GetStatusAsync();
         if (displayStatusAfterCancel != OrderStatus.Cancelled)
         {
-            return Task.FromResult(Failure<VoidValue>("Order status not updated to CANCELLED"));
+            return Failure<VoidValue>("Order status not updated to CANCELLED");
         }
 
-        if (!_orderDetailsPage.IsCancelButtonHidden())
+        if (!await _orderDetailsPage.IsCancelButtonHiddenAsync())
         {
-            return Task.FromResult(Failure<VoidValue>("Cancel button still visible"));
+            return Failure<VoidValue>("Cancel button still visible");
         }
 
-        return Task.FromResult(Success());
+        return Success();
     }
 
-    public Task<Result<ViewOrderResponse, SystemError>> ViewOrder(string? orderNumber)
+    public async Task<Result<ViewOrderResponse, SystemError>> ViewOrder(string? orderNumber)
     {
-        var result = EnsureOnOrderDetailsPage(orderNumber);
+        var result = await EnsureOnOrderDetailsPageAsync(orderNumber);
         if (result.IsFailure)
         {
-            return Task.FromResult(Failure<ViewOrderResponse>(result.Error));
+            return Failure<ViewOrderResponse>(result.Error);
         }
 
-        var isSuccess = _orderDetailsPage!.IsLoadedSuccessfully();
+        var isSuccess = await _orderDetailsPage!.IsLoadedSuccessfullyAsync();
         if (!isSuccess)
         {
-            return Task.FromResult(Failure<ViewOrderResponse>(result.Error));
+            return Failure<ViewOrderResponse>(result.Error);
         }
 
-        var displayOrderNumber = _orderDetailsPage.GetOrderNumber();
-        var sku = _orderDetailsPage.GetSku();
-        var quantity = _orderDetailsPage.GetQuantity();
-        var country = _orderDetailsPage.GetCountry();
-        var unitPrice = _orderDetailsPage.GetUnitPrice();
-        var basePrice = _orderDetailsPage.GetBasePrice();
-        var discountRate = _orderDetailsPage.GetDiscountRate();
-        var discountAmount = _orderDetailsPage.GetDiscountAmount();
-        var subtotalPrice = _orderDetailsPage.GetSubtotalPrice();
-        var taxRate = _orderDetailsPage.GetTaxRate();
-        var taxAmount = _orderDetailsPage.GetTaxAmount();
-        var totalPrice = _orderDetailsPage.GetTotalPrice();
-        var status = _orderDetailsPage.GetStatus();
-        var appliedCouponCode = _orderDetailsPage.GetAppliedCoupon();
+        var displayOrderNumber = await _orderDetailsPage.GetOrderNumberAsync();
+        var sku = await _orderDetailsPage.GetSkuAsync();
+        var quantity = await _orderDetailsPage.GetQuantityAsync();
+        var country = await _orderDetailsPage.GetCountryAsync();
+        var unitPrice = await _orderDetailsPage.GetUnitPriceAsync();
+        var basePrice = await _orderDetailsPage.GetBasePriceAsync();
+        var discountRate = await _orderDetailsPage.GetDiscountRateAsync();
+        var discountAmount = await _orderDetailsPage.GetDiscountAmountAsync();
+        var subtotalPrice = await _orderDetailsPage.GetSubtotalPriceAsync();
+        var taxRate = await _orderDetailsPage.GetTaxRateAsync();
+        var taxAmount = await _orderDetailsPage.GetTaxAmountAsync();
+        var totalPrice = await _orderDetailsPage.GetTotalPriceAsync();
+        var status = await _orderDetailsPage.GetStatusAsync();
+        var appliedCouponCode = await _orderDetailsPage.GetAppliedCouponAsync();
 
         var response = new ViewOrderResponse
         {
@@ -136,43 +136,43 @@ public class ShopUiOrderDriver : IOrderDriver
             AppliedCouponCode = appliedCouponCode
         };
 
-        return Task.FromResult(Success(response));
+        return Success(response);
     }
 
-    private void EnsureOnNewOrderPage()
+    private async Task EnsureOnNewOrderPageAsync()
     {
         if (!_pageNavigator.IsOnPage(PageNavigator.Page.NEW_ORDER))
         {
             var homePage = _homePageSupplier();
-            _newOrderPage = homePage.ClickNewOrder();
+            _newOrderPage = await homePage.ClickNewOrderAsync();
             _pageNavigator.SetCurrentPage(PageNavigator.Page.NEW_ORDER);
         }
     }
 
-    private void EnsureOnOrderHistoryPage()
+    private async Task EnsureOnOrderHistoryPageAsync()
     {
         if (!_pageNavigator.IsOnPage(PageNavigator.Page.ORDER_HISTORY))
         {
             var homePage = _homePageSupplier();
-            _orderHistoryPage = homePage.ClickOrderHistory();
+            _orderHistoryPage = await homePage.ClickOrderHistoryAsync();
             _pageNavigator.SetCurrentPage(PageNavigator.Page.ORDER_HISTORY);
         }
     }
 
-    private Result<VoidValue, SystemError> EnsureOnOrderDetailsPage(string? orderNumber)
+    private async Task<Result<VoidValue, SystemError>> EnsureOnOrderDetailsPageAsync(string? orderNumber)
     {
-        EnsureOnOrderHistoryPage();
+        await EnsureOnOrderHistoryPageAsync();
         
-        _orderHistoryPage!.InputOrderNumber(orderNumber);
-        _orderHistoryPage.ClickSearch();
+        await _orderHistoryPage!.InputOrderNumberAsync(orderNumber);
+        await _orderHistoryPage.ClickSearchAsync();
         
-        var isOrderListed = _orderHistoryPage.IsOrderListed(orderNumber);
+        var isOrderListed = await _orderHistoryPage.IsOrderListedAsync(orderNumber);
         if (!isOrderListed)
         {
             return Failure<VoidValue>("Order " + orderNumber + " does not exist.");
         }
         
-        _orderDetailsPage = _orderHistoryPage.ClickViewOrderDetails(orderNumber);
+        _orderDetailsPage = await _orderHistoryPage.ClickViewOrderDetailsAsync(orderNumber);
         _pageNavigator.SetCurrentPage(PageNavigator.Page.ORDER_DETAILS);
         
         return Success();

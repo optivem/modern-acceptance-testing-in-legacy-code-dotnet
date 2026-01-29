@@ -17,27 +17,33 @@ public class ShopUiDriver : IShopDriver
     
     private HomePage? _homePage;
 
-    public ShopUiDriver(string baseUrl)
+    private ShopUiDriver(ShopUiClient client, PageNavigator pageNavigator)
     {
-        _client = new ShopUiClient(baseUrl);
-        
-        _pageNavigator = new PageNavigator();
+        _client = client;
+        _pageNavigator = pageNavigator;
         _orderDriver = new ShopUiOrderDriver(() => GetHomePage(), _pageNavigator);
         _couponDriver = new ShopUiCouponDriver(() => GetHomePage(), _pageNavigator);
     }
 
-    public Task<Result<VoidValue, SystemError>> GoToShop()
+    public static async Task<ShopUiDriver> CreateAsync(string baseUrl)
     {
-        _homePage = _client.OpenHomePage();
+        var client = await ShopUiClient.CreateAsync(baseUrl);
+        var pageNavigator = new PageNavigator();
+        return new ShopUiDriver(client, pageNavigator);
+    }
+
+    public async Task<Result<VoidValue, SystemError>> GoToShop()
+    {
+        _homePage = await _client.OpenHomePageAsync();
         
-        if (!_client.IsStatusOk() || !_client.IsPageLoaded())
+        if (!_client.IsStatusOk() || !await _client.IsPageLoadedAsync())
         {
-            return Task.FromResult(Failure<VoidValue>("Failed to load home page"));
+            return Failure<VoidValue>("Failed to load home page");
         }
         
         _pageNavigator.SetCurrentPage(PageNavigator.Page.HOME);
         
-        return Task.FromResult(Success());
+        return Success();
     }
 
     public IOrderDriver Orders() => _orderDriver;
@@ -48,7 +54,7 @@ public class ShopUiDriver : IShopDriver
     {
         if (_homePage == null || !_pageNavigator.IsOnPage(PageNavigator.Page.HOME))
         {
-            _homePage = _client.OpenHomePage();
+            _homePage = _client.OpenHomePageAsync().GetAwaiter().GetResult();
             _pageNavigator.SetCurrentPage(PageNavigator.Page.HOME);
         }
         return _homePage;

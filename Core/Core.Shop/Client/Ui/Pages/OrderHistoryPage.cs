@@ -15,28 +15,28 @@ public class OrderHistoryPage : BasePage
     {
     }
 
-    public void InputOrderNumber(string? orderNumber)
+    public async Task InputOrderNumberAsync(string? orderNumber)
     {
-        PageClient.Fill(OrderNumberInputSelector, orderNumber);
+        await PageClient.FillAsync(OrderNumberInputSelector, orderNumber);
     }
 
-    public void ClickSearch()
+    public async Task ClickSearchAsync()
     {
-        PageClient.Click(SearchButtonSelector);
+        await PageClient.ClickAsync(SearchButtonSelector);
     }
 
-    public bool IsOrderListed(string? orderNumber)
+    public async Task<bool> IsOrderListedAsync(string? orderNumber)
     {
         var rowSelector = GetRowSelector(orderNumber);
-        return PageClient.IsVisible(rowSelector);
+        return await PageClient.IsVisibleAsync(rowSelector);
     }
 
-    public OrderDetailsPage ClickViewOrderDetails(string? orderNumber)
+    public async Task<OrderDetailsPage> ClickViewOrderDetailsAsync(string? orderNumber)
     {
         var rowSelector = GetRowSelector(orderNumber);
         // Find the link by its text content
         var viewDetailsLinkSelector = rowSelector + "//a[contains(text(), '" + ViewDetailsLinkText + "')]";
-        PageClient.Click(viewDetailsLinkSelector);
+        await PageClient.ClickAsync(viewDetailsLinkSelector);
         return new OrderDetailsPage(PageClient);
     }
 

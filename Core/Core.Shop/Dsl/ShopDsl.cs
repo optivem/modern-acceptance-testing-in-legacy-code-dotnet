@@ -23,7 +23,7 @@ public class ShopDsl : IDisposable
     {
         return channel.Type switch
         {
-            ChannelType.UI => new ShopUiDriver(uiBaseUrl),
+            ChannelType.UI => ShopUiDriver.CreateAsync(uiBaseUrl).GetAwaiter().GetResult(),
             ChannelType.API => new ShopApiDriver(apiBaseUrl),
             _ => throw new InvalidOperationException($"Unknown channel: {channel}")
         };

@@ -6,7 +6,7 @@ using PlaywrightGateway = Commons.Playwright.PageClient;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui;
 
-public class ShopUiClient : IDisposable
+public class ShopUiClient : IDisposable, IAsyncDisposable
 {
     // Default: headless mode (browser not visible)
     // To see browser during debugging, set: HEADED=true or PLAYWRIGHT_HEADED=true
@@ -27,11 +27,20 @@ public class ShopUiClient : IDisposable
 
     private IResponse? _response;
 
-    public ShopUiClient(string baseUrl)
+    private ShopUiClient(string baseUrl, IPlaywright playwright, IBrowser browser, IBrowserContext context, IPage page, HomePage homePage)
     {
         _baseUrl = baseUrl;
-        _playwright = Microsoft.Playwright.Playwright.CreateAsync().Result;
-        _browser = _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = IsHeadless }).Result;
+        _playwright = playwright;
+        _browser = browser;
+        _context = context;
+        _page = page;
+        _homePage = homePage;
+    }
+
+    public static async Task<ShopUiClient> CreateAsync(string baseUrl)
+    {
+        var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = IsHeadless });
         
         // Create isolated browser context with specific configuration
         var contextOptions = new BrowserNewContextOptions
@@ -39,17 +48,19 @@ public class ShopUiClient : IDisposable
             ViewportSize = new ViewportSize { Width = 1920, Height = 1080 },
             StorageStatePath = null // Ensure complete isolation between parallel tests
         };
-        _context = _browser.NewContextAsync(contextOptions).Result;
+        var context = await browser.NewContextAsync(contextOptions);
         
         // Each test gets its own page
-        _page = _context.NewPageAsync().Result;
-        var pageClient = new PlaywrightGateway(_page, baseUrl);
-        _homePage = new HomePage(pageClient);
+        var page = await context.NewPageAsync();
+        var pageClient = new PlaywrightGateway(page, baseUrl);
+        var homePage = new HomePage(pageClient);
+        
+        return new ShopUiClient(baseUrl, playwright, browser, context, page, homePage);
     }
 
-    public HomePage OpenHomePage()
+    public async Task<HomePage> OpenHomePageAsync()
     {
-        _response = _page.GotoAsync(_baseUrl).Result;
+        _response = await _page.GotoAsync(_baseUrl);
         return _homePage;
     }
 
@@ -58,7 +69,7 @@ public class ShopUiClient : IDisposable
         return _response?.Status == ((int)HttpStatusCode.OK);
     }
 
-    public bool IsPageLoaded()
+    public async Task<bool> IsPageLoadedAsync()
     {
         if (_response == null || _response.Status != ((int)HttpStatusCode.OK))
         {
@@ -71,18 +82,25 @@ public class ShopUiClient : IDisposable
             return false;
         }
 
-        var pageContent = _page.ContentAsync().Result;
+        var pageContent = await _page.ContentAsync();
         return pageContent != null && 
                pageContent.Contains(HtmlOpeningTag) && 
                pageContent.Contains(HtmlClosingTag);
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        if (_page != null)
+            await _page.CloseAsync();
+        if (_context != null)
+            await _context.CloseAsync();
+        if (_browser != null)
+            await _browser.CloseAsync();
+        _playwright?.Dispose();
+    }
+
     public void Dispose()
     {
-        _page?.CloseAsync().Wait();
-        _context?.CloseAsync().Wait();
-        // Keep browser and playwright disposal for C# version since we create our own instance
-        _browser?.CloseAsync().Wait();
-        _playwright?.Dispose();
+        DisposeAsync().AsTask().Wait();
     }
 }

@@ -13,21 +13,21 @@ public class HomePage : BasePage
     {
     }
 
-    public NewOrderPage ClickNewOrder()
+    public async Task<NewOrderPage> ClickNewOrderAsync()
     {
-        PageClient.Click(ShopButtonSelector);
+        await PageClient.ClickAsync(ShopButtonSelector);
         return new NewOrderPage(PageClient);
     }
 
-    public OrderHistoryPage ClickOrderHistory()
+    public async Task<OrderHistoryPage> ClickOrderHistoryAsync()
     {
-        PageClient.Click(OrderHistoryButtonSelector);
+        await PageClient.ClickAsync(OrderHistoryButtonSelector);
         return new OrderHistoryPage(PageClient);
     }
 
-    public CouponManagementPage ClickCouponManagement()
+    public async Task<CouponManagementPage> ClickCouponManagementAsync()
     {
-        PageClient.Click(CouponManagementButtonSelector);
+        await PageClient.ClickAsync(CouponManagementButtonSelector);
         return new CouponManagementPage(PageClient);
     }
 }

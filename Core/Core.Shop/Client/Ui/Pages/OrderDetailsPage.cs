@@ -32,104 +32,104 @@ public class OrderDetailsPage : BasePage
     {
     }
 
-    public bool IsLoadedSuccessfully()
+    public async Task<bool> IsLoadedSuccessfullyAsync()
     {
-        return PageClient.IsVisible(OrderNumberOutputSelector);
+        return await PageClient.IsVisibleAsync(OrderNumberOutputSelector);
     }
 
-    public string GetOrderNumber()
+    public async Task<string> GetOrderNumberAsync()
     {
-        return PageClient.ReadTextContent(OrderNumberOutputSelector);
+        return await PageClient.ReadTextContentAsync(OrderNumberOutputSelector);
     }
 
-    public string GetSku()
+    public async Task<string> GetSkuAsync()
     {
-        return PageClient.ReadTextContent(SkuOutputSelector);
+        return await PageClient.ReadTextContentAsync(SkuOutputSelector);
     }
 
-    public string GetCountry()
+    public async Task<string> GetCountryAsync()
     {
-        return PageClient.ReadTextContent(CountryOutputSelector);
+        return await PageClient.ReadTextContentAsync(CountryOutputSelector);
     }
 
-    public int GetQuantity()
+    public async Task<int> GetQuantityAsync()
     {
-        var textContent = PageClient.ReadTextContent(QuantityOutputSelector);
+        var textContent = await PageClient.ReadTextContentAsync(QuantityOutputSelector);
         return int.Parse(textContent);
     }
 
-    public decimal GetUnitPrice()
+    public async Task<decimal> GetUnitPriceAsync()
     {
-        return ReadTextMoney(UnitPriceOutputSelector);
+        return await ReadTextMoneyAsync(UnitPriceOutputSelector);
     }
 
-    public decimal GetBasePrice()
+    public async Task<decimal> GetBasePriceAsync()
     {
-        return ReadTextMoney(BasePriceOutputSelector);
+        return await ReadTextMoneyAsync(BasePriceOutputSelector);
     }
 
-    public decimal GetDiscountRate()
+    public async Task<decimal> GetDiscountRateAsync()
     {
-        return ReadTextPercentage(DiscountRateOutputSelector);
+        return await ReadTextPercentageAsync(DiscountRateOutputSelector);
     }
 
-    public decimal GetDiscountAmount()
+    public async Task<decimal> GetDiscountAmountAsync()
     {
-        return ReadTextMoney(DiscountAmountOutputSelector);
+        return await ReadTextMoneyAsync(DiscountAmountOutputSelector);
     }
 
-    public decimal GetSubtotalPrice()
+    public async Task<decimal> GetSubtotalPriceAsync()
     {
-        return ReadTextMoney(SubtotalPriceOutputSelector);
+        return await ReadTextMoneyAsync(SubtotalPriceOutputSelector);
     }
 
-    public decimal GetTaxRate()
+    public async Task<decimal> GetTaxRateAsync()
     {
-        return ReadTextPercentage(TaxRateOutputSelector);
+        return await ReadTextPercentageAsync(TaxRateOutputSelector);
     }
 
-    public decimal GetTaxAmount()
+    public async Task<decimal> GetTaxAmountAsync()
     {
-        return ReadTextMoney(TaxAmountOutputSelector);
+        return await ReadTextMoneyAsync(TaxAmountOutputSelector);
     }
 
-    public decimal GetTotalPrice()
+    public async Task<decimal> GetTotalPriceAsync()
     {
-        return ReadTextMoney(TotalPriceOutputSelector);
+        return await ReadTextMoneyAsync(TotalPriceOutputSelector);
     }
 
-    public OrderStatus GetStatus()
+    public async Task<OrderStatus> GetStatusAsync()
     {
-        var status = PageClient.ReadTextContent(StatusOutputSelector);
+        var status = await PageClient.ReadTextContentAsync(StatusOutputSelector);
         return Enum.Parse<OrderStatus>(status, true); // true = ignore case
     }
 
-    public string? GetAppliedCoupon()
+    public async Task<string?> GetAppliedCouponAsync()
     {
-        var coupon = PageClient.ReadTextContent(AppliedCouponOutputSelector);
+        var coupon = await PageClient.ReadTextContentAsync(AppliedCouponOutputSelector);
         return TextNone.Equals(coupon) ? null : coupon;
     }
 
-    public void ClickCancelOrder()
+    public async Task ClickCancelOrderAsync()
     {
-        PageClient.Click(CancelOrderOutputSelector);
+        await PageClient.ClickAsync(CancelOrderOutputSelector);
     }
 
-    public bool IsCancelButtonHidden()
+    public async Task<bool> IsCancelButtonHiddenAsync()
     {
-        return PageClient.IsHidden(CancelOrderOutputSelector);
+        return await PageClient.IsHiddenAsync(CancelOrderOutputSelector);
     }
 
-    private decimal ReadTextMoney(string selector)
+    private async Task<decimal> ReadTextMoneyAsync(string selector)
     {
-        var textContent = PageClient.ReadTextContent(selector);
+        var textContent = await PageClient.ReadTextContentAsync(selector);
         var cleaned = textContent.Replace(DollarSymbol, "").Trim();
         return decimal.Parse(cleaned);
     }
 
-    private decimal ReadTextPercentage(string selector)
+    private async Task<decimal> ReadTextPercentageAsync(string selector)
     {
-        var textContent = PageClient.ReadTextContent(selector);
+        var textContent = await PageClient.ReadTextContentAsync(selector);
         var cleaned = textContent.Replace(PercentSymbol, "").Trim();
         var value = decimal.Parse(cleaned);
         return value / 100; // Convert percentage to decimal (e.g., 15% -> 0.15)

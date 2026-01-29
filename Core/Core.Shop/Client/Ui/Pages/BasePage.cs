@@ -24,23 +24,23 @@ public abstract class BasePage
         PageClient = pageClient;
     }
 
-    private bool HasSuccessNotification()
+    private async Task<bool> HasSuccessNotificationAsync()
     {
-        var hasNotification = PageClient.IsVisible(NotificationSelector);
+        var hasNotification = await PageClient.IsVisibleAsync(NotificationSelector);
 
         if (!hasNotification)
         {
             throw new InvalidOperationException(NoNotificationErrorMessage);
         }
 
-        var isSuccess = PageClient.IsVisible(SuccessNotificationSelector);
+        var isSuccess = await PageClient.IsVisibleAsync(SuccessNotificationSelector);
 
         if (isSuccess)
         {
             return true;
         }
 
-        var isError = PageClient.IsVisible(ErrorNotificationSelector);
+        var isError = await PageClient.IsVisibleAsync(ErrorNotificationSelector);
 
         if (isError)
         {
@@ -50,37 +50,37 @@ public abstract class BasePage
         throw new InvalidOperationException(UnrecognizedNotificationErrorMessage);
     }
 
-    private string ReadSuccessNotification()
+    private async Task<string> ReadSuccessNotificationAsync()
     {
-        return PageClient.ReadTextContent(SuccessNotificationSelector);
+        return await PageClient.ReadTextContentAsync(SuccessNotificationSelector);
     }
 
-    private string ReadGeneralErrorMessage()
+    private async Task<string> ReadGeneralErrorMessageAsync()
     {
-        return PageClient.ReadTextContent(ErrorMessageSelector);
+        return await PageClient.ReadTextContentAsync(ErrorMessageSelector);
     }
 
-    private List<string> ReadFieldErrors()
+    private async Task<List<string>> ReadFieldErrorsAsync()
     {
-        if (!PageClient.IsVisible(FieldErrorSelector))
+        if (!await PageClient.IsVisibleAsync(FieldErrorSelector))
         {
             return new List<string>();
         }
-        return PageClient.ReadAllTextContents(FieldErrorSelector);
+        return await PageClient.ReadAllTextContentsAsync(FieldErrorSelector);
     }
 
-    public Result<string, SystemError> GetResult()
+    public async Task<Result<string, SystemError>> GetResultAsync()
     {
-        var isSuccess = HasSuccessNotification();
+        var isSuccess = await HasSuccessNotificationAsync();
 
         if (isSuccess)
         {
-            var successMessage = ReadSuccessNotification();
+            var successMessage = await ReadSuccessNotificationAsync();
             return SystemResults.Success(successMessage);
         }
 
-        var generalMessage = ReadGeneralErrorMessage();
-        var fieldErrorTexts = ReadFieldErrors();
+        var generalMessage = await ReadGeneralErrorMessageAsync();
+        var fieldErrorTexts = await ReadFieldErrorsAsync();
 
         if (!fieldErrorTexts.Any())
         {

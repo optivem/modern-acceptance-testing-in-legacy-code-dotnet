@@ -24,40 +24,41 @@ public class PageClient
     {
     }
 
-    public void Fill(string selector, string? text)
+    public async Task FillAsync(string selector, string? text)
     {
-        var locator = GetLocator(selector);
+        var locator = await GetLocatorAsync(selector);
         var processedValue = text ?? string.Empty;
-        locator.FillAsync(processedValue).Wait();
+        await locator.FillAsync(processedValue);
     }
 
-    public void Click(string selector)
+    public async Task ClickAsync(string selector)
     {
-        var locator = GetLocator(selector);
-        locator.ClickAsync().Wait();
+        var locator = await GetLocatorAsync(selector);
+        await locator.ClickAsync();
     }
 
-    public string ReadTextContent(string selector)
+    public async Task<string> ReadTextContentAsync(string selector)
     {
-        var locator = GetLocator(selector);
-        return locator.TextContentAsync().Result ?? string.Empty;
+        var locator = await GetLocatorAsync(selector);
+        return await locator.TextContentAsync() ?? string.Empty;
     }
 
-    public List<string> ReadAllTextContents(string selector)
+    public async Task<List<string>> ReadAllTextContentsAsync(string selector)
     {
         var locator = _page.Locator(selector);
         // Wait for at least one element to be visible
         // AllTextContentsAsync() doesn't trigger strict mode - it's designed for multiple elements
-        locator.First.WaitForAsync(GetDefaultWaitForOptions()).Wait();
-        return locator.AllTextContentsAsync().Result.ToList();
+        await locator.First.WaitForAsync(GetDefaultWaitForOptions());
+        var contents = await locator.AllTextContentsAsync();
+        return contents.ToList();
     }
 
-    public bool IsVisible(string selector)
+    public async Task<bool> IsVisibleAsync(string selector)
     {
         try
         {
-            var locator = GetLocator(selector);
-            return locator.CountAsync().Result > 0;
+            var locator = await GetLocatorAsync(selector);
+            return await locator.CountAsync() > 0;
         }
         catch
         {
@@ -65,18 +66,18 @@ public class PageClient
         }
     }
 
-    public bool IsHidden(string selector)
+    public async Task<bool> IsHiddenAsync(string selector)
     {
         var locator = _page.Locator(selector);
-        return locator.CountAsync().Result == 0;
+        return await locator.CountAsync() == 0;
     }
 
-    private ILocator GetLocator(string selector, LocatorWaitForOptions waitForOptions)
+    private async Task<ILocator> GetLocatorAsync(string selector, LocatorWaitForOptions waitForOptions)
     {
         var locator = _page.Locator(selector);
-        locator.WaitForAsync(waitForOptions).Wait();
+        await locator.WaitForAsync(waitForOptions);
 
-        if (locator.CountAsync().Result == 0)
+        if (await locator.CountAsync() == 0)
         {
             throw new Exception($"No elements found for selector: {selector}");
         }
@@ -84,10 +85,10 @@ public class PageClient
         return locator;
     }
 
-    private ILocator GetLocator(string selector)
+    private async Task<ILocator> GetLocatorAsync(string selector)
     {
         var waitForOptions = GetDefaultWaitForOptions();
-        return GetLocator(selector, waitForOptions);
+        return await GetLocatorAsync(selector, waitForOptions);
     }
 
     private LocatorWaitForOptions GetDefaultWaitForOptions()

@@ -38,46 +38,46 @@ public class CouponManagementPage : BasePage
     {
     }
 
-    public void InputCouponCode(string? couponCode)
+    public async Task InputCouponCodeAsync(string? couponCode)
     {
-        PageClient.Fill(CouponCodeInputSelector, couponCode);
+        await PageClient.FillAsync(CouponCodeInputSelector, couponCode);
     }
 
-    public void InputDiscountRate(string? discountRate)
+    public async Task InputDiscountRateAsync(string? discountRate)
     {
-        PageClient.Fill(DiscountRateInputSelector, discountRate);
+        await PageClient.FillAsync(DiscountRateInputSelector, discountRate);
     }
 
-    public void InputValidFrom(string? validFrom)
+    public async Task InputValidFromAsync(string? validFrom)
     {
         var datetimeValue = GetValidFromDateTimeString(validFrom);
-        PageClient.Fill(ValidFromInputSelector, datetimeValue);
+        await PageClient.FillAsync(ValidFromInputSelector, datetimeValue);
     }
 
-    public void InputValidTo(string? validTo)
+    public async Task InputValidToAsync(string? validTo)
     {
         var datetimeValue = GetValidToDateTimeString(validTo);
-        PageClient.Fill(ValidToInputSelector, datetimeValue);
+        await PageClient.FillAsync(ValidToInputSelector, datetimeValue);
     }
 
-    public void InputUsageLimit(string? usageLimit)
+    public async Task InputUsageLimitAsync(string? usageLimit)
     {
-        PageClient.Fill(UsageLimitInputSelector, usageLimit);
+        await PageClient.FillAsync(UsageLimitInputSelector, usageLimit);
     }
 
-    public void ClickPublishCoupon()
+    public async Task ClickPublishCouponAsync()
     {
-        PageClient.Click(PublishCouponButtonSelector);
+        await PageClient.ClickAsync(PublishCouponButtonSelector);
     }
 
-    public bool HasCouponsTable()
+    public async Task<bool> HasCouponsTableAsync()
     {
-        return PageClient.IsVisible(CouponsTableSelector);
+        return await PageClient.IsVisibleAsync(CouponsTableSelector);
     }
 
-    public List<CouponDto> ReadCoupons()
+    public async Task<List<CouponDto>> ReadCouponsAsync()
     {
-        if (!HasCouponsTable())
+        if (!await HasCouponsTableAsync())
         {
             return new List<CouponDto>();
         }
@@ -86,7 +86,7 @@ public class CouponManagementPage : BasePage
 
         // Use readAllTextContents to avoid strict mode violations
         // These selectors intentionally match multiple elements (one per table row)
-        var codes = PageClient.ReadAllTextContents(TableCellCodeSelector);
+        var codes = await PageClient.ReadAllTextContentsAsync(TableCellCodeSelector);
         
         // If no codes found, table is empty
         if (!codes.Any())
@@ -94,11 +94,11 @@ public class CouponManagementPage : BasePage
             return new List<CouponDto>();
         }
         
-        var discountRates = PageClient.ReadAllTextContents(TableCellDiscountSelector);
-        var validFroms = PageClient.ReadAllTextContents(TableCellValidFromSelector);
-        var validTos = PageClient.ReadAllTextContents(TableCellValidToSelector);
-        var usageLimits = PageClient.ReadAllTextContents(TableCellUsageLimitSelector);
-        var usedCounts = PageClient.ReadAllTextContents(TableCellUsedCountSelector);
+        var discountRates = await PageClient.ReadAllTextContentsAsync(TableCellDiscountSelector);
+        var validFroms = await PageClient.ReadAllTextContentsAsync(TableCellValidFromSelector);
+        var validTos = await PageClient.ReadAllTextContentsAsync(TableCellValidToSelector);
+        var usageLimits = await PageClient.ReadAllTextContentsAsync(TableCellUsageLimitSelector);
+        var usedCounts = await PageClient.ReadAllTextContentsAsync(TableCellUsedCountSelector);
 
         var rowCount = codes.Count;
         
