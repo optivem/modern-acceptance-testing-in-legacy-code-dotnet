@@ -22,13 +22,14 @@ public class ClockStubDriver : IClockDriver
 
     public Result<VoidValue, ClockErrorResponse> GoToClock()
     {
-        return _client.CheckHealth()
-            .MapError(ClockErrorResponse.From);
+        var result = _client.CheckHealth().GetAwaiter().GetResult();
+        return result.MapError(ClockErrorResponse.From);
     }
 
     public Result<GetTimeResponse, ClockErrorResponse> GetTime()
     {
-        return _client.GetTime()
+        var result = _client.GetTime().GetAwaiter().GetResult();
+        return result
             .Map(GetTimeResponse.From)
             .MapError(ClockErrorResponse.From);
     }
@@ -39,7 +40,7 @@ public class ClockStubDriver : IClockDriver
         {
             Time = DateTimeOffset.Parse(request.Time!)
         };
-        _client.ConfigureGetTime(extResponse);
+        _client.ConfigureGetTime(extResponse).GetAwaiter().GetResult();
         return Result<VoidValue, ClockErrorResponse>.Success(VoidValue.Empty);
     }
 

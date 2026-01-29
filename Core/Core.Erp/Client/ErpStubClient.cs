@@ -20,11 +20,11 @@ public class ErpStubClient : BaseErpClient
         _wireMockClient?.Dispose();
     }
 
-    public Result<VoidValue, ExtErpErrorResponse> ConfigureGetProduct(ExtProductDetailsResponse response)
+    public async Task<Result<VoidValue, ExtErpErrorResponse>> ConfigureGetProduct(ExtProductDetailsResponse response)
     {
         var sku = response.Id;
-        return _wireMockClient.StubGet($"/erp/api/products/{sku}", 200, response)
-            .MapError(ExtErpErrorResponse.From);
+        var result = await Task.Run(() => _wireMockClient.StubGet($"/erp/api/products/{sku}", 200, response));
+        return result.MapError(ExtErpErrorResponse.From);
     }
 
 }

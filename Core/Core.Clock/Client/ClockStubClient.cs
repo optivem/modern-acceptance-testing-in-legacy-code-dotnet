@@ -25,19 +25,19 @@ public class ClockStubClient : IDisposable
         // No need to dispose WireMock client - it just connects to running server
     }
 
-    public Result<VoidValue, ExtClockErrorResponse> CheckHealth()
+    public async Task<Result<VoidValue, ExtClockErrorResponse>> CheckHealth()
     {
-        return _httpClient.Get<VoidValue>("/health");
+        return await _httpClient.Get<VoidValue>("/health");
     }
 
-    public Result<ExtGetTimeResponse, ExtClockErrorResponse> GetTime()
+    public async Task<Result<ExtGetTimeResponse, ExtClockErrorResponse>> GetTime()
     {
-        return _httpClient.Get<ExtGetTimeResponse>("/api/time");
+        return await _httpClient.Get<ExtGetTimeResponse>("/api/time");
     }
 
-    public Result<VoidValue, ExtClockErrorResponse> ConfigureGetTime(ExtGetTimeResponse response)
+    public async Task<Result<VoidValue, ExtClockErrorResponse>> ConfigureGetTime(ExtGetTimeResponse response)
     {
-        return _wireMockClient.StubGet("/clock/api/time", 200, response)
-            .MapError(ExtClockErrorResponse.From);
+        var result = await Task.Run(() => _wireMockClient.StubGet("/clock/api/time", 200, response));
+        return result.MapError(ExtClockErrorResponse.From);
     }
 }

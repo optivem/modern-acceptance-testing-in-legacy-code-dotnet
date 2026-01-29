@@ -24,7 +24,7 @@ public class TaxStubDriver : BaseTaxDriver<TaxStubClient>
             CountryName = country
         };
 
-        return _client.ConfigureGetCountry(response)
-            .MapError(TaxErrorResponse.From);
+        var result = _client.ConfigureGetCountry(response).GetAwaiter().GetResult();
+        return result.MapError(TaxErrorResponse.From);
     }
 }

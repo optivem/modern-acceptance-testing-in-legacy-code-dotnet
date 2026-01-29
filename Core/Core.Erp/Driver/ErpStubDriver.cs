@@ -30,7 +30,7 @@ public class ErpStubDriver : BaseErpDriver<ErpStubClient>
             Price = decimal.Parse(request.Price)
         };
 
-        return _client.ConfigureGetProduct(extProductDetailsResponse)
-            .MapError(ErpErrorResponse.From);
+        var result = _client.ConfigureGetProduct(extProductDetailsResponse).GetAwaiter().GetResult();
+        return result.MapError(ErpErrorResponse.From);
     }
 }

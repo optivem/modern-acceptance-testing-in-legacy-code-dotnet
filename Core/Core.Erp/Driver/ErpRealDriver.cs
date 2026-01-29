@@ -29,6 +29,7 @@ public class ErpRealDriver : BaseErpDriver<ErpRealClient>
             Price = request.Price
         };
 
-        return _client.CreateProduct(createProductRequest).MapError(ErpErrorResponse.From);
+        var result = _client.CreateProduct(createProductRequest).GetAwaiter().GetResult();
+        return result.MapError(ErpErrorResponse.From);
     }
 }

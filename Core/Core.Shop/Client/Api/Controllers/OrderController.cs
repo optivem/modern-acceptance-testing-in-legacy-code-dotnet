@@ -16,18 +16,18 @@ public class OrderController
         _httpClient = httpClient;
     }
 
-    public Result<PlaceOrderResponse, ProblemDetailResponse> PlaceOrder(PlaceOrderRequest request)
+    public async Task<Result<PlaceOrderResponse, ProblemDetailResponse>> PlaceOrder(PlaceOrderRequest request)
     {
-        return _httpClient.Post<PlaceOrderResponse>(Endpoint, request);
+        return await _httpClient.Post<PlaceOrderResponse>(Endpoint, request);
     }
 
-    public Result<ViewOrderResponse, ProblemDetailResponse> ViewOrder(string? orderNumber)
+    public async Task<Result<ViewOrderResponse, ProblemDetailResponse>> ViewOrder(string orderNumber)
     {
-        return _httpClient.Get<ViewOrderResponse>($"{Endpoint}/{orderNumber}");
+        return await _httpClient.Get<ViewOrderResponse>($"{Endpoint}/{orderNumber}");
     }
 
-    public Result<VoidValue, ProblemDetailResponse> CancelOrder(string? orderNumber)
+    public async Task<Result<VoidValue, ProblemDetailResponse>> CancelOrder(string orderNumber)
     {
-        return _httpClient.Post($"{Endpoint}/{orderNumber}/cancel");
+        return await _httpClient.Post($"{Endpoint}/{orderNumber}/cancel");
     }
 }

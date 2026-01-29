@@ -31,65 +31,65 @@ public class JsonHttpClient<E>
         _httpClient?.Dispose();
     }
 
-    public Result<T, E> Get<T>(string path)
+    public async Task<Result<T, E>> Get<T>(string path)
     {
-        var httpResponse = DoGet(path);
-        return GetResultOrFailure<T>(httpResponse);
+        var httpResponse = await DoGet(path);
+        return await GetResultOrFailure<T>(httpResponse);
     }
 
-    public Result<VoidValue, E> Get(string path)
+    public async Task<Result<VoidValue, E>> Get(string path)
     {
-        var httpResponse = DoGet(path);
-        return GetResultOrFailure<VoidValue>(httpResponse);
+        var httpResponse = await DoGet(path);
+        return await GetResultOrFailure<VoidValue>(httpResponse);
     }
 
-    public Result<T, E> Post<T>(string path, object request)
+    public async Task<Result<T, E>> Post<T>(string path, object request)
     {
-        var httpResponse = DoPost(path, request);
-        return GetResultOrFailure<T>(httpResponse);
+        var httpResponse = await DoPost(path, request);
+        return await GetResultOrFailure<T>(httpResponse);
     }
 
-    public Result<VoidValue, E> Post(string path, object request)
+    public async Task<Result<VoidValue, E>> Post(string path, object request)
     {
-        var httpResponse = DoPost(path, request);
-        return GetResultOrFailure<VoidValue>(httpResponse);
+        var httpResponse = await DoPost(path, request);
+        return await GetResultOrFailure<VoidValue>(httpResponse);
     }
 
-    public Result<VoidValue, E> Post(string path)
+    public async Task<Result<VoidValue, E>> Post(string path)
     {
-        var httpResponse = DoPost(path);
-        return GetResultOrFailure<VoidValue>(httpResponse);
+        var httpResponse = await DoPost(path);
+        return await GetResultOrFailure<VoidValue>(httpResponse);
     }
 
-    public Result<T, E> Put<T>(string path, object request)
+    public async Task<Result<T, E>> Put<T>(string path, object request)
     {
-        var httpResponse = DoPut(path, request);
-        return GetResultOrFailure<T>(httpResponse);
+        var httpResponse = await DoPut(path, request);
+        return await GetResultOrFailure<T>(httpResponse);
     }
 
-    public Result<VoidValue, E> Put(string path, object request)
+    public async Task<Result<VoidValue, E>> Put(string path, object request)
     {
-        var httpResponse = DoPut(path, request);
-        return GetResultOrFailure<VoidValue>(httpResponse);
+        var httpResponse = await DoPut(path, request);
+        return await GetResultOrFailure<VoidValue>(httpResponse);
     }
 
-    public Result<T, E> Delete<T>(string path)
+    public async Task<Result<T, E>> Delete<T>(string path)
     {
-        var httpResponse = DoDelete(path);
-        return GetResultOrFailure<T>(httpResponse);
+        var httpResponse = await DoDelete(path);
+        return await GetResultOrFailure<T>(httpResponse);
     }
 
-    public Result<VoidValue, E> Delete(string path)
+    public async Task<Result<VoidValue, E>> Delete(string path)
     {
-        var httpResponse = DoDelete(path);
-        return GetResultOrFailure<VoidValue>(httpResponse);
+        var httpResponse = await DoDelete(path);
+        return await GetResultOrFailure<VoidValue>(httpResponse);
     }
 
-    private HttpResponseMessage DoGet(string path)
+    private async Task<HttpResponseMessage> DoGet(string path)
     {
         var uri = GetUri(path);
         var httpRequest = new HttpRequestMessage(HttpMethod.Get, uri);
-        return SendRequest(httpRequest);
+        return await SendRequest(httpRequest);
     }
 
     #region Helpers
@@ -99,7 +99,7 @@ public class JsonHttpClient<E>
         return new Uri(_baseUrl + path);
     }
 
-    private HttpResponseMessage DoPost(string path, object request)
+    private async Task<HttpResponseMessage> DoPost(string path, object request)
     {
         var uri = GetUri(path);
         var jsonBody = SerializeRequest(request);
@@ -107,20 +107,20 @@ public class JsonHttpClient<E>
         {
             Content = new StringContent(jsonBody, Encoding.UTF8, ApplicationJson)
         };
-        return SendRequest(httpRequest);
+        return await SendRequest(httpRequest);
     }
 
-    private HttpResponseMessage DoPost(string path)
+    private async Task<HttpResponseMessage> DoPost(string path)
     {
         var uri = GetUri(path);
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, uri)
         {
             Content = new StringContent(string.Empty, Encoding.UTF8, ApplicationJson)
         };
-        return SendRequest(httpRequest);
+        return await SendRequest(httpRequest);
     }
 
-    private HttpResponseMessage DoPut(string path, object request)
+    private async Task<HttpResponseMessage> DoPut(string path, object request)
     {
         var uri = GetUri(path);
         var jsonBody = SerializeRequest(request);
@@ -128,19 +128,19 @@ public class JsonHttpClient<E>
         {
             Content = new StringContent(jsonBody, Encoding.UTF8, ApplicationJson)
         };
-        return SendRequest(httpRequest);
+        return await SendRequest(httpRequest);
     }
 
-    private HttpResponseMessage DoDelete(string path)
+    private async Task<HttpResponseMessage> DoDelete(string path)
     {
         var uri = GetUri(path);
         var httpRequest = new HttpRequestMessage(HttpMethod.Delete, uri);
-        return SendRequest(httpRequest);
+        return await SendRequest(httpRequest);
     }
 
-    private HttpResponseMessage SendRequest(HttpRequestMessage httpRequest)
+    private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage httpRequest)
     {
-        return _httpClient.Send(httpRequest);
+        return await _httpClient.SendAsync(httpRequest);
     }
 
     private static string SerializeRequest(object request)
@@ -148,17 +148,17 @@ public class JsonHttpClient<E>
         return JsonSerializer.Serialize(request, JsonOptions);
     }
 
-    private T ReadResponse<T>(HttpResponseMessage httpResponse)
+    private async Task<T> ReadResponse<T>(HttpResponseMessage httpResponse)
     {
-        var responseBody = httpResponse.Content.ReadAsStringAsync().Result;
+        var responseBody = await httpResponse.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<T>(responseBody, JsonOptions)!;
     }
 
-    private Result<T, E> GetResultOrFailure<T>(HttpResponseMessage httpResponse)
+    private async Task<Result<T, E>> GetResultOrFailure<T>(HttpResponseMessage httpResponse)
     {
         if (!httpResponse.IsSuccessStatusCode)
         {
-            var error = ReadResponse<E>(httpResponse);
+            var error = await ReadResponse<E>(httpResponse);
             return Result<T, E>.Failure(error);
         }
 
@@ -167,7 +167,7 @@ public class JsonHttpClient<E>
             return Result<T, E>.Success(default!);
         }
 
-        var response = ReadResponse<T>(httpResponse);
+        var response = await ReadResponse<T>(httpResponse);
         return Result<T, E>.Success(response);
     }
 

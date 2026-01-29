@@ -22,12 +22,14 @@ public abstract class BaseErpDriver<TClient> : IErpDriver
 
     public virtual Result<VoidValue, ErpErrorResponse> GoToErp()
     {
-        return _client.CheckHealth().MapError(ErpErrorResponse.From);
+        var result = _client.CheckHealth().GetAwaiter().GetResult();
+        return result.MapError(ErpErrorResponse.From);
     }
 
     public virtual Result<GetProductResponse, ErpErrorResponse> GetProduct(GetProductRequest request)
     {
-        return _client.GetProduct(request.Sku)
+        var result = _client.GetProduct(request.Sku).GetAwaiter().GetResult();
+        return result
             .Map(productDetails => new GetProductResponse
             {
                 Sku = productDetails.Id!,

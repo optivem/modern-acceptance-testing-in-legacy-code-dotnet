@@ -16,13 +16,13 @@ public class CouponController
         _httpClient = httpClient;
     }
 
-    public Result<VoidValue, ProblemDetailResponse> PublishCoupon(PublishCouponRequest request)
+    public async Task<Result<VoidValue, ProblemDetailResponse>> PublishCoupon(PublishCouponRequest request)
     {
-        return _httpClient.Post(Endpoint, request);
+        return await _httpClient.Post(Endpoint, request);
     }
 
-    public Result<BrowseCouponsResponse, ProblemDetailResponse> BrowseCoupons(BrowseCouponsRequest request)
+    public async Task<Result<BrowseCouponsResponse, ProblemDetailResponse>> BrowseCoupons(BrowseCouponsRequest request)
     {
-        return _httpClient.Get<BrowseCouponsResponse>(Endpoint);
+        return await _httpClient.Get<BrowseCouponsResponse>(Endpoint);
     }
 }

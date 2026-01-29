@@ -25,7 +25,8 @@ public class ShopApiDriver : IShopDriver
 
     public Result<VoidValue, SystemError> GoToShop()
     {
-        return _apiClient.Health().CheckHealth().MapError(SystemError.From);
+        var result = _apiClient.Health().CheckHealth().GetAwaiter().GetResult();
+        return result.MapError(SystemError.From);
     }
 
     public IOrderDriver Orders() => _orderDriver;

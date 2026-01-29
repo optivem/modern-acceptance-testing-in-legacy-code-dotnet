@@ -19,13 +19,13 @@ public abstract class BaseTaxClient : IDisposable
         _httpClient?.Dispose();
     }
 
-    public Result<VoidValue, ExtTaxErrorResponse> CheckHealth()
+    public async Task<Result<VoidValue, ExtTaxErrorResponse>> CheckHealth()
     {
-        return _httpClient.Get("/health");
+        return await _httpClient.Get("/health");
     }
 
-    public Result<ExtCountryDetailsResponse, ExtTaxErrorResponse> GetCountry(string? country)
+    public async Task<Result<ExtCountryDetailsResponse, ExtTaxErrorResponse>> GetCountry(string country)
     {
-        return _httpClient.Get<ExtCountryDetailsResponse>($"/api/countries/{country}");
+        return await _httpClient.Get<ExtCountryDetailsResponse>($"/api/countries/{country}");
     }
 }

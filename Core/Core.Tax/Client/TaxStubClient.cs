@@ -14,10 +14,10 @@ public class TaxStubClient : BaseTaxClient
         _wireMockClient = new JsonWireMockClient(baseUrl);
     }
 
-    public Result<VoidValue, ExtTaxErrorResponse> ConfigureGetCountry(ExtCountryDetailsResponse response)
+    public async Task<Result<VoidValue, ExtTaxErrorResponse>> ConfigureGetCountry(ExtCountryDetailsResponse response)
     {
         var country = response.Id;
-        return _wireMockClient.StubGet($"/tax/api/countries/{country}", 200, response)
-            .MapError(ExtTaxErrorResponse.From);
+        var result = await Task.Run(() => _wireMockClient.StubGet($"/tax/api/countries/{country}", 200, response));
+        return result.MapError(ExtTaxErrorResponse.From);
     }
 }

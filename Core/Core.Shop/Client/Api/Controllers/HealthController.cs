@@ -15,8 +15,8 @@ public class HealthController
         _httpClient = httpClient;
     }
 
-    public Result<VoidValue, ProblemDetailResponse> CheckHealth()
+    public async Task<Result<VoidValue, ProblemDetailResponse>> CheckHealth()
     {
-        return _httpClient.Get(Endpoint);
+        return await _httpClient.Get(Endpoint);
     }
 }

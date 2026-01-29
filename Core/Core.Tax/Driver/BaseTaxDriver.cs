@@ -21,13 +21,14 @@ public abstract class BaseTaxDriver<TClient> : ITaxDriver where TClient : BaseTa
 
     public virtual Result<VoidValue, TaxErrorResponse> GoToTax()
     {
-        return _client.CheckHealth()
-            .MapError(TaxErrorResponse.From);
+        var result = _client.CheckHealth().GetAwaiter().GetResult();
+        return result.MapError(TaxErrorResponse.From);
     }
 
     public virtual Result<GetTaxResponse, TaxErrorResponse> GetTaxRate(string? country)
     {
-        return _client.GetCountry(country)
+        var result = _client.GetCountry(country).GetAwaiter().GetResult();
+        return result
             .Map(taxRateResponse => new GetTaxResponse
             {
                 Country = taxRateResponse.Id,
