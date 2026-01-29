@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.Playwright;
 
 namespace Commons.Playwright;
@@ -23,15 +22,6 @@ public class PageClient
     public PageClient(IPage page, string baseUrl) 
         : this(page, baseUrl, DefaultTimeoutMilliseconds)
     {
-    }
-
-    public string GetBaseUrl() => _baseUrl;
-
-    public IPage GetPage() => _page;
-    
-    public string? GetPageContent()
-    {
-        return _page.ContentAsync().Result;
     }
 
     public void Fill(string selector, string? text)
@@ -70,64 +60,17 @@ public class PageClient
         return texts;
     }
 
-    public bool Exists(string selector)
-    {
-        var locator = _page.Locator(selector);
-        try
-        {
-            Wait(locator);
-            return locator.CountAsync().Result > 0;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
     public bool IsVisible(string selector)
     {
         try
         {
-            var locator = _page.Locator(selector);
-            // Wait for element to appear or timeout - matches Java behavior
-            var waitForOptions = GetWaitForOptions();
-            waitForOptions.State = WaitForSelectorState.Visible;
-            waitForOptions.Timeout = _timeoutMilliseconds;
-            
-            locator.WaitForAsync(waitForOptions).Wait();
+            var locator = GetLocator(selector);
             return locator.CountAsync().Result > 0;
         }
         catch
         {
             return false;
         }
-    }
-
-    public string ReadInputValue(string selector)
-    {
-        var locator = _page.Locator(selector);
-        Wait(locator);
-        return locator.InputValueAsync().Result;
-    }
-
-    public int ReadInputIntegerValue(string selector)
-    {
-        var inputValue = ReadInputValue(selector);
-        return int.Parse(inputValue, CultureInfo.InvariantCulture);
-    }
-
-    public decimal ReadInputCurrencyDecimalValue(string selector)
-    {
-        var inputValue = ReadInputValue(selector);
-        inputValue = inputValue.Replace("$", "");
-        return decimal.Parse(inputValue, CultureInfo.InvariantCulture);
-    }
-
-    public decimal ReadInputPercentageDecimalValue(string selector)
-    {
-        var inputValue = ReadInputValue(selector);
-        inputValue = inputValue.Replace("%", "");
-        return decimal.Parse(inputValue, CultureInfo.InvariantCulture);
     }
 
     public bool IsHidden(string selector)
@@ -136,34 +79,37 @@ public class PageClient
         return locator.CountAsync().Result == 0;
     }
 
-    public void WaitForHidden(string selector)
+    private ILocator GetLocator(string selector, LocatorWaitForOptions waitForOptions)
     {
-        var waitForOptions = GetWaitForOptions();
-        waitForOptions.State = WaitForSelectorState.Hidden;
-        waitForOptions.Timeout = _timeoutMilliseconds;
-
         var locator = _page.Locator(selector);
         locator.WaitForAsync(waitForOptions).Wait();
+
+        if (locator.CountAsync().Result == 0)
+        {
+            throw new Exception($"No elements found for selector: {selector}");
+        }
+
+        return locator;
     }
 
-    public void WaitForVisible(string selector)
+    private ILocator GetLocator(string selector)
     {
-        var waitForOptions = GetWaitForOptions();
-        waitForOptions.State = WaitForSelectorState.Visible;
-        waitForOptions.Timeout = _timeoutMilliseconds;
+        var waitForOptions = GetDefaultWaitForOptions();
+        return GetLocator(selector, waitForOptions);
+    }
 
-        var locator = _page.Locator(selector);
-        locator.WaitForAsync(waitForOptions).Wait();
+    private LocatorWaitForOptions GetDefaultWaitForOptions()
+    {
+        return new LocatorWaitForOptions 
+        { 
+            State = WaitForSelectorState.Visible,
+            Timeout = _timeoutMilliseconds 
+        };
     }
 
     private void Wait(ILocator locator)
     {
-        var waitForOptions = GetWaitForOptions();
+        var waitForOptions = GetDefaultWaitForOptions();
         locator.WaitForAsync(waitForOptions).Wait();
-    }
-
-    private LocatorWaitForOptions GetWaitForOptions()
-    {
-        return new LocatorWaitForOptions { Timeout = _timeoutMilliseconds };
     }
 }
