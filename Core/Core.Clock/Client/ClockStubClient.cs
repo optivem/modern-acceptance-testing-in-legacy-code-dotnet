@@ -14,7 +14,6 @@ public class ClockStubClient : IDisposable
     public ClockStubClient(string baseUrl)
     {
         _httpClient = new JsonHttpClient<ExtClockErrorResponse>(baseUrl);
-        
         _wireMockClient = new JsonWireMockClient(baseUrl);
     }
 
@@ -22,7 +21,6 @@ public class ClockStubClient : IDisposable
     {
         _httpClient.Dispose();
         _wireMockClient.Dispose();
-        // No need to dispose WireMock client - it just connects to running server
     }
 
     public async Task<Result<VoidValue, ExtClockErrorResponse>> CheckHealth()

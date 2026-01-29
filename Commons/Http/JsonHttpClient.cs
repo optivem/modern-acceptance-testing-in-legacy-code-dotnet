@@ -6,7 +6,7 @@ using Commons.Util;
 
 namespace Commons.Http;
 
-public class JsonHttpClient<E>
+public class JsonHttpClient<E> : IDisposable
 {
     private const string ApplicationJson = "application/json";
 
