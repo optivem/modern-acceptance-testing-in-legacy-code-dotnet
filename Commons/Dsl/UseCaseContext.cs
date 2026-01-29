@@ -4,14 +4,16 @@ namespace Commons.Dsl;
 
 public class UseCaseContext
 {
-    private readonly Dictionary<string, string> _paramMap = new();
-    private readonly Dictionary<string, string> _resultMap = new();
+    private readonly Dictionary<string, string> _paramMap;
+    private readonly Dictionary<string, string> _resultMap;
 
     public ExternalSystemMode ExternalSystemMode { get; }
 
     public UseCaseContext(ExternalSystemMode externalSystemMode)
     {
         ExternalSystemMode = externalSystemMode;
+        _paramMap = new();
+        _resultMap = new();
     }
 
     public string? GetParamValue(string? alias)
@@ -49,6 +51,8 @@ public class UseCaseContext
 
     public void SetResultEntry(string alias, string value)
     {
+        EnsureAliasNotNullOrWhiteSpace(alias);
+
         if (_resultMap.ContainsKey(alias))
         {
             throw new InvalidOperationException($"Alias already exists: {alias}");
@@ -59,12 +63,8 @@ public class UseCaseContext
 
     public void SetResultEntryFailed(string alias, string errorMessage)
     {
-        if (_resultMap.ContainsKey(alias))
-        {
-            throw new InvalidOperationException($"Alias already exists: {alias}");
-        }
-
-        _resultMap[alias] = $"FAILED: {errorMessage}";
+        EnsureAliasNotNullOrWhiteSpace(alias);
+        SetResultEntry(alias, $"FAILED: {errorMessage}");
     }
 
     public string? GetResultValue(string? alias)
@@ -103,7 +103,16 @@ public class UseCaseContext
 
     private static string GenerateParamValue(string alias)
     {
+        EnsureAliasNotNullOrWhiteSpace(alias);
         var suffix = Guid.NewGuid().ToString()[..8];
         return $"{alias}-{suffix}";
+    }
+
+    private static void EnsureAliasNotNullOrWhiteSpace(string alias)
+    {
+        if (string.IsNullOrWhiteSpace(alias))
+        {
+            throw new ArgumentException("Alias cannot be null or blank");
+        }
     }
 }
