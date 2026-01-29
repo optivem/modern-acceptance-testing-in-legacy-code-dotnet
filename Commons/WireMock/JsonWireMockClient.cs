@@ -47,8 +47,6 @@ public class JsonWireMockClient : IDisposable
 
     public async Task<Result<VoidValue, string>> StubGetAsync<T>(string path, int statusCode, T response)
     {
-        // TODO: VJ: Try more idiomatic approach?
-
         try
         {
             var responseBody = Serialize(response);
@@ -108,6 +106,4 @@ public class JsonWireMockClient : IDisposable
             throw new InvalidOperationException("Failed to serialize object", ex);
         }
     }
-
-
 }
