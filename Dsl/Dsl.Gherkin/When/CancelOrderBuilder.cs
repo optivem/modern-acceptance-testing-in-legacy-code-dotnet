@@ -16,7 +16,7 @@ public class CancelOrderBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
 {
     private string? _orderNumber;
 
-    public CancelOrderBuilder(SystemDsl app, ScenarioDsl scenario) : base(app, scenario)
+    public CancelOrderBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task>? ensureDefaults = null) : base(app, scenario, ensureDefaults)
     {
         WithOrderNumber(DefaultOrderNumber);
     }
@@ -27,9 +27,9 @@ public class CancelOrderBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
         return this;
     }
 
-    protected override ExecutionResult<VoidValue, VoidVerification> Execute(SystemDsl app)
+    protected override async Task<ExecutionResult<VoidValue, VoidVerification>> Execute(SystemDsl app)
     {
-        var result = app.Shop(Channel).CancelOrder()
+        var result = await app.Shop(Channel).CancelOrder()
             .OrderNumber(_orderNumber)
             .Execute();
 

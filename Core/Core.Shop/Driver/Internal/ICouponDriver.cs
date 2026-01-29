@@ -6,6 +6,6 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Internal;
 
 public interface ICouponDriver
 {
-    Result<VoidValue, SystemError> PublishCoupon(PublishCouponRequest request);
-    Result<BrowseCouponsResponse, SystemError> BrowseCoupons(BrowseCouponsRequest request);
+    Task<Result<VoidValue, SystemError>> PublishCoupon(PublishCouponRequest request);
+    Task<Result<BrowseCouponsResponse, SystemError>> BrowseCoupons(BrowseCouponsRequest request);
 }

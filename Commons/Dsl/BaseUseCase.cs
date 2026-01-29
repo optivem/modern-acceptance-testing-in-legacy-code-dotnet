@@ -1,7 +1,7 @@
 namespace Commons.Dsl;
 
 public abstract class BaseUseCase<TDriver, TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification> 
-    : IUseCase<UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification>>
+    : IUseCase<Task<UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification>>>
 {
     protected readonly TDriver _driver;
     protected readonly UseCaseContext _context;
@@ -12,5 +12,5 @@ public abstract class BaseUseCase<TDriver, TSuccessResponse, TFailureResponse, T
         _context = context;
     }
 
-    public abstract UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification> Execute();
+    public abstract Task<UseCaseResult<TSuccessResponse, TFailureResponse, TSuccessVerification, TFailureVerification>> Execute();
 }

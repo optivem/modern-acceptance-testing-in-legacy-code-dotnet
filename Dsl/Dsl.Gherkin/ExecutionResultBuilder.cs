@@ -1,6 +1,8 @@
 using Commons.Dsl;
 using Commons.Util;
+using Optivem.EShop.SystemTest.Core.Common.Dsl;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands.Base;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +18,10 @@ namespace Dsl.Gherkin
         private string? _orderNumber;
         private string? _couponCode;
 
-        internal ExecutionResultBuilder(ShopUseCaseResult<TSuccessResponse, TSuccessVerification> result)
+        internal ExecutionResultBuilder(UseCaseResult<TSuccessResponse, SystemError, TSuccessVerification, ErrorFailureVerification> result)
         {
-            _result = result;
+            // Cast to derived type - the result is always a ShopUseCaseResult at runtime
+            _result = (ShopUseCaseResult<TSuccessResponse, TSuccessVerification>)result;
         }
 
         public ExecutionResultBuilder<TSuccessResponse, TSuccessVerification> OrderNumber(string? orderNumber)

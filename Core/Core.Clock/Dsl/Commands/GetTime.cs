@@ -13,9 +13,9 @@ public class GetTime : BaseClockCommand<GetTimeResponse, GetTimeVerification>
     {
     }
 
-    public override ClockUseCaseResult<GetTimeResponse, GetTimeVerification> Execute()
+    public override async Task<UseCaseResult<GetTimeResponse, ClockErrorResponse, GetTimeVerification, ClockErrorVerification>> Execute()
     {
-        var result = _driver.GetTime();
+        var result = await _driver.GetTime();
 
         return new ClockUseCaseResult<GetTimeResponse, GetTimeVerification>(
             result, 

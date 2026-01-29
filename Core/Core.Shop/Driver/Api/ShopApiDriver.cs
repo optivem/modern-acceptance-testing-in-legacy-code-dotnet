@@ -23,9 +23,9 @@ public class ShopApiDriver : IShopDriver
         _couponDriver = new ShopApiCouponDriver(_apiClient);
     }
 
-    public Result<VoidValue, SystemError> GoToShop()
+    public async Task<Result<VoidValue, SystemError>> GoToShop()
     {
-        var result = _apiClient.Health().CheckHealth().GetAwaiter().GetResult();
+        var result = await _apiClient.Health().CheckHealth();
         return result.MapError(SystemError.From);
     }
 

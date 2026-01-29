@@ -18,7 +18,7 @@ public class PlaceOrderBuilder : BaseWhenBuilder<PlaceOrderResponse, PlaceOrderV
     private string? _country;
     private string? _couponCode;
 
-    public PlaceOrderBuilder(SystemDsl app, ScenarioDsl scenario) : base(app, scenario)
+    public PlaceOrderBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task>? ensureDefaults = null) : base(app, scenario, ensureDefaults)
     {
         WithOrderNumber(DefaultOrderNumber);
         WithSku(DefaultSku);
@@ -67,9 +67,9 @@ public class PlaceOrderBuilder : BaseWhenBuilder<PlaceOrderResponse, PlaceOrderV
         return WithCouponCode(DefaultCouponCode);
     }
 
-    protected override ExecutionResult<PlaceOrderResponse, PlaceOrderVerification> Execute(SystemDsl app)
+    protected override async Task<ExecutionResult<PlaceOrderResponse, PlaceOrderVerification>> Execute(SystemDsl app)
     {
-        var result = app.Shop(Channel).PlaceOrder()
+        var result = await app.Shop(Channel).PlaceOrder()
             .OrderNumber(_orderNumber)
             .Sku(_sku)
             .Quantity(_quantity)

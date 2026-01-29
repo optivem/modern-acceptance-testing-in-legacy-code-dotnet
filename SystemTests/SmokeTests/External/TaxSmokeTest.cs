@@ -6,10 +6,10 @@ namespace SmokeTests.External;
 public class TaxSmokeTest : BaseSystemTest
 {
     [Fact]
-    public void ShouldBeAbleToGoToTax()
+    public async Task ShouldBeAbleToGoToTax()
     {
-        App.Tax().GoToTax()
-            .Execute()
+        (await App.Tax().GoToTax()
+            .Execute())
             .ShouldSucceed();
     }
 }

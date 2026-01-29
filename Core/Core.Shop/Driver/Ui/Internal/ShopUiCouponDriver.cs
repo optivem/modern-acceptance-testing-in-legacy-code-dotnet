@@ -20,7 +20,7 @@ public class ShopUiCouponDriver : ICouponDriver
         _pageNavigator = pageNavigator;
     }
 
-    public Result<VoidValue, SystemError> PublishCoupon(PublishCouponRequest request)
+    public Task<Result<VoidValue, SystemError>> PublishCoupon(PublishCouponRequest request)
     {
         EnsureOnCouponManagementPage();
         
@@ -31,10 +31,10 @@ public class ShopUiCouponDriver : ICouponDriver
         _couponManagementPage.InputUsageLimit(request.UsageLimit);
         _couponManagementPage.ClickPublishCoupon();
         
-        return _couponManagementPage.GetResult().MapVoid();
+        return Task.FromResult(_couponManagementPage.GetResult().MapVoid());
     }
 
-    public Result<BrowseCouponsResponse, SystemError> BrowseCoupons(BrowseCouponsRequest request)
+    public Task<Result<BrowseCouponsResponse, SystemError>> BrowseCoupons(BrowseCouponsRequest request)
     {
         // Always navigate fresh to ensure we get the latest coupon data (e.g., updated used counts)
         NavigateToCouponManagementPage();
@@ -46,7 +46,7 @@ public class ShopUiCouponDriver : ICouponDriver
             Coupons = coupons
         };
         
-        return Success(response);
+        return Task.FromResult(Success(response));
     }
 
     private void EnsureOnCouponManagementPage()

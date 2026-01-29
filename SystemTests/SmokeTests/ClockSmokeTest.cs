@@ -8,18 +8,18 @@ namespace SmokeTests;
 public class ClockSmokeTest : BaseSystemTest
 {
     [Fact]
-    public void ShouldBeAbleToGoToClock()
+    public async Task ShouldBeAbleToGoToClock()
     {
-        App.Clock().GoToClock()
-            .Execute()
+        (await App.Clock().GoToClock()
+            .Execute())
             .ShouldSucceed();
     }
 
     [Fact]
-    public void ShouldBeAbleToGetTime()
+    public async Task ShouldBeAbleToGetTime()
     {
-        App.Clock().GetTime()
-            .Execute()
+        (await App.Clock().GetTime()
+            .Execute())
             .ShouldSucceed()
             .TimeIsNotNull();
     }

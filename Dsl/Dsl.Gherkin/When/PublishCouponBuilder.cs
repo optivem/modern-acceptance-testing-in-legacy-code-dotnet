@@ -18,7 +18,7 @@ public class PublishCouponBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
     private string? _validTo;
     private string? _usageLimit;
 
-    public PublishCouponBuilder(SystemDsl app, ScenarioDsl scenario) : base(app, scenario)
+    public PublishCouponBuilder(SystemDsl app, ScenarioDsl scenario) : base(app, scenario, null)
     {
         WithCouponCode(DefaultCouponCode);
         WithDiscountRate(DefaultDiscountRate);
@@ -69,9 +69,9 @@ public class PublishCouponBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
         return this;
     }
 
-    protected override ExecutionResult<VoidValue, VoidVerification> Execute(SystemDsl app)
+    protected override async Task<ExecutionResult<VoidValue, VoidVerification>> Execute(SystemDsl app)
     {
-        var result = app.Shop(Channel).PublishCoupon()
+        var result = await app.Shop(Channel).PublishCoupon()
             .CouponCode(_couponCode)
             .DiscountRate(_discountRate)
             .ValidFrom(_validFrom)

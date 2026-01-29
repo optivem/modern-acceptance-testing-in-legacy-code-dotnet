@@ -1,5 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Erp.Driver;
 using Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos;
+using Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos.Error;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl.Verifications;
 using Commons.Dsl;
@@ -21,7 +22,7 @@ public class GetProduct : BaseErpCommand<GetProductResponse, GetProductVerificat
         return this;
     }
 
-    public override ErpUseCaseResult<GetProductResponse, GetProductVerification> Execute()
+    public override async Task<UseCaseResult<GetProductResponse, ErpErrorResponse, GetProductVerification, ErpErrorVerification>> Execute()
     {
         var sku = _context.GetParamValue(_skuParamAlias);
 
@@ -30,7 +31,7 @@ public class GetProduct : BaseErpCommand<GetProductResponse, GetProductVerificat
             Sku = sku
         };
 
-        var result = _driver.GetProduct(request);
+        var result = await _driver.GetProduct(request);
 
         return new ErpUseCaseResult<GetProductResponse, GetProductVerification>(
             result, 

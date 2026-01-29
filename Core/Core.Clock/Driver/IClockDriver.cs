@@ -5,7 +5,7 @@ namespace Optivem.EShop.SystemTest.Core.Clock.Driver;
 
 public interface IClockDriver : IDisposable
 {
-    Result<VoidValue, ClockErrorResponse> GoToClock();
-    Result<GetTimeResponse, ClockErrorResponse> GetTime();
-    Result<VoidValue, ClockErrorResponse> ReturnsTime(ReturnsTimeRequest request);
+    Task<Result<VoidValue, ClockErrorResponse>> GoToClock();
+    Task<Result<GetTimeResponse, ClockErrorResponse>> GetTime();
+    Task<Result<VoidValue, ClockErrorResponse>> ReturnsTime(ReturnsTimeRequest request);
 }

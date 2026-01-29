@@ -9,40 +9,52 @@ namespace Dsl.Gherkin.Then
         : BaseThenBuilder<TSuccessResponse, TSuccessVerification>
         where TSuccessVerification : ResponseVerification<TSuccessResponse>
     {
-        private readonly BrowseCouponsVerification _verification;
+        private readonly SystemDsl _app;
         private readonly string _couponCode;
+        private BrowseCouponsVerification? _verification;
 
         public ThenCouponBuilder(ThenClause<TSuccessResponse, TSuccessVerification> thenClause, SystemDsl app, string couponCode) : base(thenClause)
         {
+            _app = app;
             _couponCode = couponCode;
-            _verification = app.Shop(Channel).BrowseCoupons()
-                .Execute()
-                .ShouldSucceed();
-
-            _verification.HasCouponWithCode(couponCode);
         }
 
-        public ThenCouponBuilder<TSuccessResponse, TSuccessVerification> HasDiscountRate(decimal discountRate)
+        private async Task<BrowseCouponsVerification> GetVerification()
         {
-            _verification.CouponHasDiscountRate(_couponCode, discountRate);
+            if (_verification == null)
+            {
+                var result = await _app.Shop(Channel).BrowseCoupons().Execute();
+                _verification = result.ShouldSucceed();
+                _verification.HasCouponWithCode(_couponCode);
+            }
+            return _verification;
+        }
+
+        public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> HasDiscountRate(decimal discountRate)
+        {
+            var verification = await GetVerification();
+            verification.CouponHasDiscountRate(_couponCode, discountRate);
             return this;
         }
 
-        public ThenCouponBuilder<TSuccessResponse, TSuccessVerification> IsValidFrom(string validFrom)
+        public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> IsValidFrom(string validFrom)
         {
-            _verification.CouponHasValidFrom(_couponCode, validFrom);
+            var verification = await GetVerification();
+            verification.CouponHasValidFrom(_couponCode, validFrom);
             return this;
         }
 
-        public ThenCouponBuilder<TSuccessResponse, TSuccessVerification> HasUsageLimit(int usageLimit)
+        public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> HasUsageLimit(int usageLimit)
         {
-            _verification.CouponHasUsageLimit(_couponCode, usageLimit);
+            var verification = await GetVerification();
+            verification.CouponHasUsageLimit(_couponCode, usageLimit);
             return this;
         }
 
-        public ThenCouponBuilder<TSuccessResponse, TSuccessVerification> HasUsedCount(int expectedUsedCount)
+        public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> HasUsedCount(int expectedUsedCount)
         {
-            _verification.CouponHasUsedCount(_couponCode, expectedUsedCount);
+            var verification = await GetVerification();
+            verification.CouponHasUsedCount(_couponCode, expectedUsedCount);
             return this;
         }
     }

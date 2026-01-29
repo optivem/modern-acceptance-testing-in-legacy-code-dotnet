@@ -6,7 +6,7 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Driver;
 
 public interface ITaxDriver : IDisposable
 {
-    Result<VoidValue, TaxErrorResponse> GoToTax();
-    Result<GetTaxResponse, TaxErrorResponse> GetTaxRate(string? country);
-    Result<VoidValue, TaxErrorResponse> ReturnsTaxRate(ReturnsTaxRateRequest request);
+    Task<Result<VoidValue, TaxErrorResponse>> GoToTax();
+    Task<Result<GetTaxResponse, TaxErrorResponse>> GetTaxRate(string? country);
+    Task<Result<VoidValue, TaxErrorResponse>> ReturnsTaxRate(ReturnsTaxRateRequest request);
 }

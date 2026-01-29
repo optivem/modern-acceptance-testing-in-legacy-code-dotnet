@@ -21,14 +21,14 @@ public class ReturnsTime : BaseClockCommand<VoidValue, VoidVerification>
         return this;
     }
 
-    public override ClockUseCaseResult<VoidValue, VoidVerification> Execute()
+    public override async Task<UseCaseResult<VoidValue, ClockErrorResponse, VoidVerification, ClockErrorVerification>> Execute()
     {
         var request = new ReturnsTimeRequest
         {
             Time = _time
         };
 
-        var result = _driver.ReturnsTime(request);
+        var result = await _driver.ReturnsTime(request);
         
         return new ClockUseCaseResult<VoidValue, VoidVerification>(
             result, 

@@ -6,10 +6,10 @@ namespace SmokeTests.External;
 public class ErpSmokeTest : BaseSystemTest
 {
     [Fact]
-    public void ShouldBeAbleToGoToErp()
+    public async Task ShouldBeAbleToGoToErp()
     {
-        App.Erp().GoToErp()
-            .Execute()
+        (await App.Erp().GoToErp()
+            .Execute())
             .ShouldSucceed();
     }
 }

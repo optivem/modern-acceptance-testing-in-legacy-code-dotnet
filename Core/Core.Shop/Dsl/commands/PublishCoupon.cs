@@ -1,8 +1,10 @@
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands.Base;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Coupons;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Errors;
+using Optivem.EShop.SystemTest.Core.Common.Dsl;
 using Commons.Dsl;
 using Commons.Util;
-using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Coupons;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;
 
@@ -55,7 +57,7 @@ public class PublishCoupon : BaseShopCommand<VoidValue, VoidVerification>
         return this;
     }
 
-    public override ShopUseCaseResult<VoidValue, VoidVerification> Execute()
+    public override async Task<UseCaseResult<VoidValue, SystemError, VoidVerification, ErrorFailureVerification>> Execute()
     {
         var couponCode = _context.GetParamValue(_couponCodeParamAlias);
 
@@ -68,7 +70,7 @@ public class PublishCoupon : BaseShopCommand<VoidValue, VoidVerification>
             UsageLimit = _usageLimit
         };
 
-        var result = _driver.Coupons().PublishCoupon(request);
+        var result = await _driver.Coupons().PublishCoupon(request);
 
         return new ShopUseCaseResult<VoidValue, VoidVerification>(
             result, 

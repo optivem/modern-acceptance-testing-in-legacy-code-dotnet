@@ -16,62 +16,65 @@ namespace Dsl.Gherkin.When
         private readonly ScenarioDsl _scenario;
         private bool _hasProduct;
         private bool _hasTaxRate;
+        private readonly Func<Task>? _givenSetup;
 
-
-
-        public WhenClause(Channel channel, SystemDsl app, ScenarioDsl scenario, bool hasProduct, bool hasTaxRate)
+        public WhenClause(Channel channel, SystemDsl app, ScenarioDsl scenario, bool hasProduct, bool hasTaxRate, Func<Task>? givenSetup = null)
             : base(channel)
         {
             _app = app;
             _scenario = scenario;
             _hasProduct = hasProduct;
             _hasTaxRate = hasTaxRate;
+            _givenSetup = givenSetup;
         }
 
         public WhenClause(Channel channel, SystemDsl app, ScenarioDsl scenario)
-            : this(channel, app, scenario, false, false)
+            : this(channel, app, scenario, false, false, null)
         {
         }
 
-        private void EnsureDefaults()
+        private async Task EnsureDefaults()
         {
+            // Execute Given setup first if provided
+            if (_givenSetup != null)
+            {
+                await _givenSetup();
+            }
+
             if (!_hasProduct)
             {
-                _app.Erp().ReturnsProduct()
+                var result = await _app.Erp().ReturnsProduct()
                     .Sku(DefaultSku)
                     .UnitPrice(DefaultUnitPrice)
-                    .Execute()
-                    .ShouldSucceed();
+                    .Execute();
+                result.ShouldSucceed();
                 _hasProduct = true;
             }
 
             if (!_hasTaxRate)
             {
-                _app.Tax().ReturnsTaxRate()
+                var result = await _app.Tax().ReturnsTaxRate()
                     .Country(DefaultCountry)
                     .TaxRate(DefaultTaxRate)
-                    .Execute()
-                    .ShouldSucceed();
+                    .Execute();
+                result.ShouldSucceed();
                 _hasTaxRate = true;
             }
         }
 
         public PlaceOrderBuilder PlaceOrder()
         {
-            EnsureDefaults();
-            return new PlaceOrderBuilder(_app, _scenario);
+            return new PlaceOrderBuilder(_app, _scenario, () => EnsureDefaults());
         }
 
         public CancelOrderBuilder CancelOrder()
         {
-            EnsureDefaults();
-            return new CancelOrderBuilder(_app, _scenario);
+            return new CancelOrderBuilder(_app, _scenario, () => EnsureDefaults());
         }
 
         public ViewOrderBuilder ViewOrder()
         {
-            EnsureDefaults();
-            return new ViewOrderBuilder(_app, _scenario);
+            return new ViewOrderBuilder(_app, _scenario, () => EnsureDefaults());
         }
 
         public PublishCouponBuilder PublishCoupon()

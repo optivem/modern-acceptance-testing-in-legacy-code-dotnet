@@ -1,5 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Erp.Driver;
 using Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos;
+using Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos.Error;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands.Base;
 using Commons.Util;
 using Commons.Dsl;
@@ -33,7 +34,7 @@ public class ReturnsProduct : BaseErpCommand<VoidValue, VoidVerification>
         return UnitPrice(price.ToString());
     }
 
-    public override ErpUseCaseResult<VoidValue, VoidVerification> Execute()
+    public override async Task<UseCaseResult<VoidValue, ErpErrorResponse, VoidVerification, ErpErrorVerification>> Execute()
     {
         var sku = _context.GetParamValue(_skuParamAlias!);
 
@@ -43,7 +44,7 @@ public class ReturnsProduct : BaseErpCommand<VoidValue, VoidVerification>
             Price = _unitPrice
         };
 
-        var result = _driver.ReturnsProduct(request);
+        var result = await _driver.ReturnsProduct(request);
 
         return new ErpUseCaseResult<VoidValue, VoidVerification>(
             result, 

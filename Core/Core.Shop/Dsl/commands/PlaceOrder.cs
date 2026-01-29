@@ -1,8 +1,10 @@
 using Optivem.EShop.SystemTest.Core.Shop.Driver;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
-using Commons.Dsl;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Errors;
+using Optivem.EShop.SystemTest.Core.Common.Dsl;
+using Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;
 
@@ -54,7 +56,7 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
         return this;
     }
 
-    public override ShopUseCaseResult<PlaceOrderResponse, PlaceOrderVerification> Execute()
+    public override async Task<UseCaseResult<PlaceOrderResponse, SystemError, PlaceOrderVerification, ErrorFailureVerification>> Execute()
     {
         var sku = _context.GetParamValue(_skuParamAlias!);
         var country = _context.GetParamValueOrLiteral(_countryAlias!);
@@ -68,7 +70,7 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
             CouponCode = couponCode
         };
 
-        var result = _driver.Orders().PlaceOrder(request);
+        var result = await _driver.Orders().PlaceOrder(request);
 
         if (_orderNumberResultAlias != null)
         {

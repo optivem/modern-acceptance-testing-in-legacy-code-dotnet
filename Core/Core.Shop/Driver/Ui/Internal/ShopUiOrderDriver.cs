@@ -22,7 +22,7 @@ public class ShopUiOrderDriver : IOrderDriver
         _pageNavigator = pageNavigator;
     }
 
-    public Result<PlaceOrderResponse, SystemError> PlaceOrder(PlaceOrderRequest request)
+    public Task<Result<PlaceOrderResponse, SystemError>> PlaceOrder(PlaceOrderRequest request)
     {
         var sku = request.Sku;
         var quantity = request.Quantity;
@@ -40,7 +40,7 @@ public class ShopUiOrderDriver : IOrderDriver
         var result = _newOrderPage.GetResult();
         if (result.IsFailure)
         {
-            return Failure<PlaceOrderResponse>(result.Error);
+            return Task.FromResult(Failure<PlaceOrderResponse>(result.Error));
         }
 
         var orderNumberValue = NewOrderPage.GetOrderNumber(result.Value);
@@ -49,15 +49,15 @@ public class ShopUiOrderDriver : IOrderDriver
             OrderNumber = orderNumberValue
         };
 
-        return Success(response);
+        return Task.FromResult(Success(response));
     }
 
-    public Result<VoidValue, SystemError> CancelOrder(string? orderNumber)
+    public Task<Result<VoidValue, SystemError>> CancelOrder(string? orderNumber)
     {
         var result = EnsureOnOrderDetailsPage(orderNumber);
         if (result.IsFailure)
         {
-            return result.MapVoid();
+            return Task.FromResult(result.MapVoid());
         }
 
         _orderDetailsPage!.ClickCancelOrder();
@@ -65,41 +65,41 @@ public class ShopUiOrderDriver : IOrderDriver
         var cancelResult = _orderDetailsPage.GetResult();
         if (cancelResult.IsFailure)
         {
-            return Failure<VoidValue>(cancelResult.Error);
+            return Task.FromResult(Failure<VoidValue>(cancelResult.Error));
         }
 
         var successMessage = cancelResult.Value;
         if (!successMessage.Contains("cancelled successfully!"))
         {
-            return Failure<VoidValue>("Did not receive expected cancellation success message");
+            return Task.FromResult(Failure<VoidValue>("Did not receive expected cancellation success message"));
         }
 
         var displayStatusAfterCancel = _orderDetailsPage.GetStatus();
         if (displayStatusAfterCancel != OrderStatus.Cancelled)
         {
-            return Failure<VoidValue>("Order status not updated to CANCELLED");
+            return Task.FromResult(Failure<VoidValue>("Order status not updated to CANCELLED"));
         }
 
         if (!_orderDetailsPage.IsCancelButtonHidden())
         {
-            return Failure<VoidValue>("Cancel button still visible");
+            return Task.FromResult(Failure<VoidValue>("Cancel button still visible"));
         }
 
-        return Success();
+        return Task.FromResult(Success());
     }
 
-    public Result<ViewOrderResponse, SystemError> ViewOrder(string? orderNumber)
+    public Task<Result<ViewOrderResponse, SystemError>> ViewOrder(string? orderNumber)
     {
         var result = EnsureOnOrderDetailsPage(orderNumber);
         if (result.IsFailure)
         {
-            return Failure<ViewOrderResponse>(result.Error);
+            return Task.FromResult(Failure<ViewOrderResponse>(result.Error));
         }
 
         var isSuccess = _orderDetailsPage!.IsLoadedSuccessfully();
         if (!isSuccess)
         {
-            return Failure<ViewOrderResponse>(result.Error);
+            return Task.FromResult(Failure<ViewOrderResponse>(result.Error));
         }
 
         var displayOrderNumber = _orderDetailsPage.GetOrderNumber();
@@ -136,7 +136,7 @@ public class ShopUiOrderDriver : IOrderDriver
             AppliedCouponCode = appliedCouponCode
         };
 
-        return Success(response);
+        return Task.FromResult(Success(response));
     }
 
     private void EnsureOnNewOrderPage()

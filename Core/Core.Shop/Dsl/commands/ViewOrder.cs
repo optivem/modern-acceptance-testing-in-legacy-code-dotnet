@@ -3,6 +3,8 @@ using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
 using Commons.Dsl;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
+using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Errors;
+using Optivem.EShop.SystemTest.Core.Common.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;
 
@@ -21,11 +23,11 @@ public class ViewOrder : BaseShopCommand<ViewOrderResponse, ViewOrderVerificatio
         return this;
     }
 
-    public override ShopUseCaseResult<ViewOrderResponse, ViewOrderVerification> Execute()
+    public override async Task<UseCaseResult<ViewOrderResponse, SystemError, ViewOrderVerification, ErrorFailureVerification>> Execute()
     {
         var orderNumber = _context.GetResultValue(_orderNumberResultAlias);
 
-        var result = _driver.Orders().ViewOrder(orderNumber);
+        var result = await _driver.Orders().ViewOrder(orderNumber);
         
         return new ShopUseCaseResult<ViewOrderResponse, ViewOrderVerification>(
             result, 

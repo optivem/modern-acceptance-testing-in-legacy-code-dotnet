@@ -63,22 +63,22 @@ public class GivenOrderBuilder : BaseGivenBuilder
         return this;
     }
 
-    internal override void Execute(SystemDsl app)
+    internal override async Task Execute(SystemDsl app)
     {
-        app.Shop(Channel).PlaceOrder()
+        (await app.Shop(Channel).PlaceOrder()
             .OrderNumber(_orderNumber)
             .Sku(_sku)
             .Quantity(_quantity)
             .Country(_country)
             .CouponCode(_couponCodeAlias)
-            .Execute()
+            .Execute())
             .ShouldSucceed();
 
         if (_status == OrderStatus.Cancelled)
         {
-            app.Shop(Channel).CancelOrder()
+            (await app.Shop(Channel).CancelOrder()
                 .OrderNumber(_orderNumber)
-                .Execute()
+                .Execute())
                 .ShouldSucceed();
         }
     }

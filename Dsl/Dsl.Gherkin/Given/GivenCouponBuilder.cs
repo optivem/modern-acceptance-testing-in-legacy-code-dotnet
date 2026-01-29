@@ -62,15 +62,15 @@ public class GivenCouponBuilder : BaseGivenBuilder
         return WithUsageLimit(usageLimit.ToString());
     }
 
-    internal override void Execute(SystemDsl app)
+    internal override async Task Execute(SystemDsl app)
     {
-        app.Shop(Channel).PublishCoupon()
+        (await app.Shop(Channel).PublishCoupon()
             .CouponCode(_couponCode)
             .DiscountRate(_discountRate)
             .ValidFrom(_validFrom)
             .ValidTo(_validTo)
             .UsageLimit(_usageLimit)
-            .Execute()
+            .Execute())
             .ShouldSucceed();
     }
 }

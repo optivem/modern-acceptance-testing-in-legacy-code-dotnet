@@ -10,20 +10,28 @@ public abstract class BaseWhenBuilder<TSuccessResponse, TSuccessVerification>
 {
     private readonly SystemDsl _app;
     private readonly ScenarioDsl _scenario;
+    private readonly Func<Task>? _ensureDefaults;
 
-    protected BaseWhenBuilder(SystemDsl app, ScenarioDsl scenario)
+    protected BaseWhenBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task>? ensureDefaults = null)
     {
         _app = app;
         _scenario = scenario;
+        _ensureDefaults = ensureDefaults;
     }
 
     public ThenClause<TSuccessResponse, TSuccessVerification> Then()
     {
-        var result = Execute(_app);
-        return new ThenClause<TSuccessResponse, TSuccessVerification>(Channel, _app, _scenario, result);
+        return new ThenClause<TSuccessResponse, TSuccessVerification>(Channel, _app, _scenario, async () =>
+        {
+            if (_ensureDefaults != null)
+            {
+                await _ensureDefaults();
+            }
+            return await Execute(_app);
+        });
     }
 
-    protected abstract ExecutionResult<TSuccessResponse, TSuccessVerification> Execute(SystemDsl app);
+    protected abstract Task<ExecutionResult<TSuccessResponse, TSuccessVerification>> Execute(SystemDsl app);
 
     protected Channel Channel => _scenario.Channel;
 }

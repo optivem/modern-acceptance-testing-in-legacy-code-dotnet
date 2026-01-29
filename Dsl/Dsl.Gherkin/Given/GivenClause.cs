@@ -63,20 +63,21 @@ namespace Dsl.Gherkin.Given
 
         public WhenClause When()
         {
-            SetupClock();
-            SetupErp();
-            SetupTax();
-            SetupShop();
-
-            return new WhenClause(Channel, _app, _scenario, _products.Count > 0, _countries.Count > 0);
+            return new WhenClause(Channel, _app, _scenario, _products.Count > 0, _countries.Count > 0, async () =>
+            {
+                await SetupClock();
+                await SetupErp();
+                await SetupTax();
+                await SetupShop();
+            });
         }
 
-        private void SetupClock()
+        private async Task SetupClock()
         {
-            _clock.Execute(_app);
+            await _clock.Execute(_app);
         }
 
-        private void SetupErp()
+        private async Task SetupErp()
         {
             if (_orders.Count > 0 && _products.Count == 0)
             {
@@ -86,11 +87,11 @@ namespace Dsl.Gherkin.Given
 
             foreach (var product in _products)
             {
-                product.Execute(_app);
+                await product.Execute(_app);
             }
         }
 
-        private void SetupTax()
+        private async Task SetupTax()
         {
             if (_orders.Count > 0 && _countries.Count == 0)
             {
@@ -100,17 +101,17 @@ namespace Dsl.Gherkin.Given
 
             foreach (var country in _countries)
             {
-                country.Execute(_app);
+                await country.Execute(_app);
             }
         }
 
-        private void SetupShop()
+        private async Task SetupShop()
         {
-            SetupCoupons();
-            SetupOrders();
+            await SetupCoupons();
+            await SetupOrders();
         }
 
-        private void SetupCoupons()
+        private async Task SetupCoupons()
         {
             if (_orders.Count > 0 && _coupons.Count == 0)
             {
@@ -120,15 +121,15 @@ namespace Dsl.Gherkin.Given
 
             foreach (var coupon in _coupons)
             {
-                coupon.Execute(_app);
+                await coupon.Execute(_app);
             }
         }
 
-        private void SetupOrders()
+        private async Task SetupOrders()
         {
             foreach (var order in _orders)
             {
-                order.Execute(_app);
+                await order.Execute(_app);
             }
         }
     }

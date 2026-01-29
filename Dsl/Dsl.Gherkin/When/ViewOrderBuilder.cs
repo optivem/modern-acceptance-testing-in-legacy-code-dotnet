@@ -11,7 +11,7 @@ public class ViewOrderBuilder : BaseWhenBuilder<ViewOrderResponse, ViewOrderVeri
 {
     private string? _orderNumber;
 
-    public ViewOrderBuilder(SystemDsl app, ScenarioDsl scenario) : base(app, scenario)
+    public ViewOrderBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task>? ensureDefaults = null) : base(app, scenario, ensureDefaults)
     {
         WithOrderNumber(DefaultOrderNumber);
     }
@@ -22,9 +22,9 @@ public class ViewOrderBuilder : BaseWhenBuilder<ViewOrderResponse, ViewOrderVeri
         return this;
     }
 
-    protected override ExecutionResult<ViewOrderResponse, ViewOrderVerification> Execute(SystemDsl app)
+    protected override async Task<ExecutionResult<ViewOrderResponse, ViewOrderVerification>> Execute(SystemDsl app)
     {
-        var result = app.Shop(Channel).ViewOrder()
+        var result = await app.Shop(Channel).ViewOrder()
             .OrderNumber(_orderNumber)
             .Execute();
 

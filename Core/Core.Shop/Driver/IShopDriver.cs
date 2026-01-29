@@ -6,7 +6,7 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Driver;
 
 public interface IShopDriver : IDisposable
 {
-    Result<VoidValue, SystemError> GoToShop();
+    Task<Result<VoidValue, SystemError>> GoToShop();
     IOrderDriver Orders();
     ICouponDriver Coupons();
 }

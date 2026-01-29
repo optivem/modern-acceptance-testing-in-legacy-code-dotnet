@@ -10,13 +10,13 @@ namespace Dsl.Gherkin.When;
 
 public class BrowseCouponsBuilder : BaseWhenBuilder<BrowseCouponsResponse, BrowseCouponsVerification>
 {
-    public BrowseCouponsBuilder(SystemDsl app, ScenarioDsl scenario) : base(app, scenario)
+    public BrowseCouponsBuilder(SystemDsl app, ScenarioDsl scenario) : base(app, scenario, null)
     {
     }
 
-    protected override ExecutionResult<BrowseCouponsResponse, BrowseCouponsVerification> Execute(SystemDsl app)
+    protected override async Task<ExecutionResult<BrowseCouponsResponse, BrowseCouponsVerification>> Execute(SystemDsl app)
     {
-        var result = app.Shop(Channel)
+        var result = await app.Shop(Channel)
             .BrowseCoupons()
             .Execute();
 

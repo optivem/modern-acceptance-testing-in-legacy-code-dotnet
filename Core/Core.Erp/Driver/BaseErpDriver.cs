@@ -20,15 +20,15 @@ public abstract class BaseErpDriver<TClient> : IErpDriver
         _client?.Dispose();
     }
 
-    public virtual Result<VoidValue, ErpErrorResponse> GoToErp()
+    public virtual async Task<Result<VoidValue, ErpErrorResponse>> GoToErp()
     {
-        var result = _client.CheckHealth().GetAwaiter().GetResult();
+        var result = await _client.CheckHealth();
         return result.MapError(ErpErrorResponse.From);
     }
 
-    public virtual Result<GetProductResponse, ErpErrorResponse> GetProduct(GetProductRequest request)
+    public virtual async Task<Result<GetProductResponse, ErpErrorResponse>> GetProduct(GetProductRequest request)
     {
-        var result = _client.GetProduct(request.Sku).GetAwaiter().GetResult();
+        var result = await _client.GetProduct(request.Sku);
         return result
             .Map(productDetails => new GetProductResponse
             {
@@ -38,5 +38,5 @@ public abstract class BaseErpDriver<TClient> : IErpDriver
             .MapError(ErpErrorResponse.From);
     }
     
-    public abstract Result<VoidValue, ErpErrorResponse> ReturnsProduct(ReturnsProductRequest request);
+    public abstract Task<Result<VoidValue, ErpErrorResponse>> ReturnsProduct(ReturnsProductRequest request);
 }

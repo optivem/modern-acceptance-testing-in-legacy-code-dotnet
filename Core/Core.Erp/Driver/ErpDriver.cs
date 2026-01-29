@@ -6,9 +6,9 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Driver;
 
 public interface IErpDriver : IDisposable
 {
-    Result<VoidValue, ErpErrorResponse> GoToErp();
+    Task<Result<VoidValue, ErpErrorResponse>> GoToErp();
 
-    Result<GetProductResponse, ErpErrorResponse> GetProduct(GetProductRequest request);
+    Task<Result<GetProductResponse, ErpErrorResponse>> GetProduct(GetProductRequest request);
 
-    Result<VoidValue, ErpErrorResponse> ReturnsProduct(ReturnsProductRequest request);
+    Task<Result<VoidValue, ErpErrorResponse>> ReturnsProduct(ReturnsProductRequest request);
 }

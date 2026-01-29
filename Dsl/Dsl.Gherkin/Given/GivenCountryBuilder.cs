@@ -32,12 +32,12 @@ public class GivenCountryBuilder : BaseGivenBuilder
         return WithTaxRate(taxRate.ToString());
     }
 
-    internal override void Execute(SystemDsl app)
+    internal override async Task Execute(SystemDsl app)
     {
-        app.Tax().ReturnsTaxRate()
+        (await app.Tax().ReturnsTaxRate()
             .Country(_country)
             .TaxRate(_taxRate)
-            .Execute()
+            .Execute())
             .ShouldSucceed();
     }
 }

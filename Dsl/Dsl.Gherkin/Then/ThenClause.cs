@@ -10,67 +10,83 @@ namespace Dsl.Gherkin.Then
     {
         private readonly SystemDsl _app;
         private readonly ScenarioDsl _scenario;
-        private readonly ExecutionResult<TSuccessResponse, TSuccessVerification> _executionResult;
+        private readonly Func<Task<ExecutionResult<TSuccessResponse, TSuccessVerification>>> _lazyExecute;
+        private ExecutionResult<TSuccessResponse, TSuccessVerification>? _executionResult;
 
-        public ThenClause(Channel channel, SystemDsl app, ScenarioDsl scenario, ExecutionResult<TSuccessResponse, TSuccessVerification> executionResult)
+        public ThenClause(Channel channel, SystemDsl app, ScenarioDsl scenario, Func<Task<ExecutionResult<TSuccessResponse, TSuccessVerification>>> lazyExecute)
             : base(channel)
         {
             _app = app;
             _scenario = scenario;
-            _executionResult = executionResult;
+            _lazyExecute = lazyExecute;
         }
 
-        public ThenSuccessBuilder<TSuccessResponse, TSuccessVerification> ShouldSucceed()
+        private async Task<ExecutionResult<TSuccessResponse, TSuccessVerification>> GetExecutionResult()
         {
             if (_executionResult == null)
+            {
+                _executionResult = await _lazyExecute();
+            }
+            return _executionResult;
+        }
+
+        public async Task<ThenSuccessBuilder<TSuccessResponse, TSuccessVerification>> ShouldSucceed()
+        {
+            var result = await GetExecutionResult();
+            if (result == null)
             {
                 throw new InvalidOperationException("Cannot verify success: no operation was executed");
             }
             _scenario.MarkAsExecuted();
-            var successVerification = _executionResult.Result.ShouldSucceed();
+            var successVerification = result.Result.ShouldSucceed();
             return new ThenSuccessBuilder<TSuccessResponse, TSuccessVerification>(this, successVerification);
         }
 
-        public ThenFailureBuilder<TSuccessResponse, TSuccessVerification> ShouldFail()
+        public async Task<ThenFailureBuilder<TSuccessResponse, TSuccessVerification>> ShouldFail()
         {
+            var result = await GetExecutionResult();
             _scenario.MarkAsExecuted();
-            return new ThenFailureBuilder<TSuccessResponse, TSuccessVerification>(this, _executionResult.Result);
+            return new ThenFailureBuilder<TSuccessResponse, TSuccessVerification>(this, result.Result);
         }
 
         public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> Order(string orderNumber)
         {
             _scenario.MarkAsExecuted();
-            return new ThenOrderBuilder<TSuccessResponse, TSuccessVerification>(this, _app, orderNumber);
+            return new ThenOrderBuilder<TSuccessResponse, TSuccessVerification>(this, _app, orderNumber, _lazyExecute);
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> Order()
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> Order()
         {
-            var orderNumber = _executionResult.OrderNumber;
+            var result = await GetExecutionResult();
+            var orderNumber = result.OrderNumber;
 
             if (orderNumber == null)
             {
                 throw new InvalidOperationException("Cannot verify order: no order number available from the executed operation");
             }
 
-            return Order(orderNumber);
+            _scenario.MarkAsExecuted();
+            return new ThenOrderBuilder<TSuccessResponse, TSuccessVerification>(this, _app, orderNumber, _lazyExecute);
         }
 
-        public ThenCouponBuilder<TSuccessResponse, TSuccessVerification> Coupon(string couponCode)
+        public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> Coupon(string couponCode)
         {
+            await GetExecutionResult(); // Ensure execution happened
             _scenario.MarkAsExecuted();
             return new ThenCouponBuilder<TSuccessResponse, TSuccessVerification>(this, _app, couponCode);
         }
 
-        public ThenCouponBuilder<TSuccessResponse, TSuccessVerification> Coupon()
+        public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> Coupon()
         {
-            var couponCode = _executionResult.CouponCode;
+            var result = await GetExecutionResult();
+            var couponCode = result.CouponCode;
 
             if (couponCode == null)
             {
                 throw new InvalidOperationException("Cannot verify coupon: no coupon code available from the executed operation");
             }
 
-            return Coupon(couponCode);
+            return await Coupon(couponCode);
         }
     }
 }

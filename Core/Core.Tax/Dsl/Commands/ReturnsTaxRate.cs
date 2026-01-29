@@ -34,7 +34,7 @@ public class ReturnsTaxRate : BaseTaxCommand<VoidValue, VoidVerification>
         return TaxRate(taxRate.ToString());
     }
 
-    public override TaxUseCaseResult<VoidValue, VoidVerification> Execute()
+    public override async Task<UseCaseResult<VoidValue, TaxErrorResponse, VoidVerification, TaxErrorVerification>> Execute()
     {
         var country = _context.GetParamValueOrLiteral(countryAlias);
 
@@ -44,7 +44,7 @@ public class ReturnsTaxRate : BaseTaxCommand<VoidValue, VoidVerification>
             TaxRate = taxRate
         };
 
-        var result = _driver.ReturnsTaxRate(request);
+        var result = await _driver.ReturnsTaxRate(request);
         
         return new TaxUseCaseResult<VoidValue, VoidVerification>(
             result, 

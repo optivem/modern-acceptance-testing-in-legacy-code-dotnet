@@ -1,4 +1,5 @@
 using Optivem.EShop.SystemTest.Core.Erp.Driver;
+using Optivem.EShop.SystemTest.Core.Erp.Driver.Dtos.Error;
 using Optivem.EShop.SystemTest.Core.Erp.Dsl.Commands.Base;
 using Commons.Util;
 using Commons.Dsl;
@@ -12,13 +13,13 @@ public class GoToErp : BaseErpCommand<VoidValue, VoidVerification>
     {
     }
 
-    public override ErpUseCaseResult<VoidValue, VoidVerification> Execute()
+    public override async Task<UseCaseResult<VoidValue, ErpErrorResponse, VoidVerification, ErpErrorVerification>> Execute()
     {
-        var result = _driver.GoToErp();
-        
+        var result = await _driver.GoToErp();
+
         return new ErpUseCaseResult<VoidValue, VoidVerification>(
             result, 
-            _context, 
+            _context,
             (response, ctx) => new VoidVerification(response, ctx));
     }
 }

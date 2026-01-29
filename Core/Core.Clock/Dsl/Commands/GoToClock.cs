@@ -1,5 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Clock.Dsl.Commands.Base;
 using Optivem.EShop.SystemTest.Core.Clock.Driver;
+using Optivem.EShop.SystemTest.Core.Clock.Driver.Dtos;
 using Commons.Util;
 using Commons.Dsl;
 
@@ -12,9 +13,9 @@ public class GoToClock : BaseClockCommand<VoidValue, VoidVerification>
     {
     }
 
-    public override ClockUseCaseResult<VoidValue, VoidVerification> Execute()
+    public override async Task<UseCaseResult<VoidValue, ClockErrorResponse, VoidVerification, ClockErrorVerification>> Execute()
     {
-        var result = _driver.GoToClock();
+        var result = await _driver.GoToClock();
 
         return new ClockUseCaseResult<VoidValue, VoidVerification>(
             result, 

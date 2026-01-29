@@ -22,11 +22,11 @@ public class GetTaxRate : BaseTaxCommand<GetTaxResponse, GetTaxVerification>
         return this;
     }
 
-    public override TaxUseCaseResult<GetTaxResponse, GetTaxVerification> Execute()
+    public override async Task<UseCaseResult<GetTaxResponse, TaxErrorResponse, GetTaxVerification, TaxErrorVerification>> Execute()
     {
         var countryValue = _context.GetParamValueOrLiteral(country);
         
-        var result = _driver.GetTaxRate(countryValue);
+        var result = await _driver.GetTaxRate(countryValue);
         
         return new TaxUseCaseResult<GetTaxResponse, GetTaxVerification>(
             result, 

@@ -19,11 +19,11 @@ public class GivenClockBuilder : BaseGivenBuilder
         return this;
     }
 
-    internal override void Execute(SystemDsl app)
+    internal override async Task Execute(SystemDsl app)
     {
-        app.Clock().ReturnsTime()
+        (await app.Clock().ReturnsTime()
             .Time(_time)
-            .Execute()
+            .Execute())
             .ShouldSucceed();
     }
 }

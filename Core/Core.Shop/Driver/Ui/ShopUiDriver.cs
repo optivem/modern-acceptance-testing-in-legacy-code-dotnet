@@ -26,18 +26,18 @@ public class ShopUiDriver : IShopDriver
         _couponDriver = new ShopUiCouponDriver(() => GetHomePage(), _pageNavigator);
     }
 
-    public Result<VoidValue, SystemError> GoToShop()
+    public Task<Result<VoidValue, SystemError>> GoToShop()
     {
         _homePage = _client.OpenHomePage();
         
         if (!_client.IsStatusOk() || !_client.IsPageLoaded())
         {
-            return Failure<VoidValue>("Failed to load home page");
+            return Task.FromResult(Failure<VoidValue>("Failed to load home page"));
         }
         
         _pageNavigator.SetCurrentPage(PageNavigator.Page.HOME);
         
-        return Success();
+        return Task.FromResult(Success());
     }
 
     public IOrderDriver Orders() => _orderDriver;

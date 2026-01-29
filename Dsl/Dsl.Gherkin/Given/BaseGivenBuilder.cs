@@ -23,7 +23,7 @@ public abstract class BaseGivenBuilder
         return _givenClause.When();
     }
 
-    internal abstract void Execute(SystemDsl app);
+    internal abstract Task Execute(SystemDsl app);
 
     protected Channel Channel => _givenClause.Channel;
 }
