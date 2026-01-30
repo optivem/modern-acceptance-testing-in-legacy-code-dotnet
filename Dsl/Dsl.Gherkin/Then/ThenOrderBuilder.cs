@@ -15,7 +15,6 @@ namespace Dsl.Gherkin.Then
         private readonly SystemDsl _app;
         private readonly string _orderNumber;
         private ViewOrderVerification? _orderVerification;
-        private readonly List<Action<ViewOrderVerification>> _validations = new();
         private readonly Func<Task<ExecutionResult<TSuccessResponse, TSuccessVerification>>> _lazyExecute;
 
         public ThenOrderBuilder(
@@ -34,6 +33,10 @@ namespace Dsl.Gherkin.Then
         {
             if (_orderVerification == null)
             {
+                // Execute the When clause first
+                await _lazyExecute();
+                
+                // Then get order verification
                 var shop = await _app.Shop(Channel);
                 var result = await shop.ViewOrder()
                     .OrderNumber(_orderNumber)
@@ -43,188 +46,182 @@ namespace Dsl.Gherkin.Then
             return _orderVerification;
         }
 
-        private async Task ExecuteValidations()
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasSku(string expectedSku)
         {
-            await ApplyValidations();
-        }
-
-        private async Task ApplyValidations()
-        {
-            // Execute the When clause first
-            await _lazyExecute();
-            
-            // Then get order verification and run validations
             var verification = await GetOrderVerification();
-            foreach (var validation in _validations)
-            {
-                validation(verification);
-            }
-        }
-
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasSku(string expectedSku)
-        {
-            _validations.Add(v => v.Sku(expectedSku));
+            verification.Sku(expectedSku);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasQuantity(int expectedQuantity)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasQuantity(int expectedQuantity)
         {
-            _validations.Add(v => v.Quantity(expectedQuantity));
+            var verification = await GetOrderVerification();
+            verification.Quantity(expectedQuantity);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasCountry(string expectedCountry)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasCountry(string expectedCountry)
         {
-            _validations.Add(v => v.Country(expectedCountry));
+            var verification = await GetOrderVerification();
+            verification.Country(expectedCountry);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasUnitPrice(decimal expectedUnitPrice)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasUnitPrice(decimal expectedUnitPrice)
         {
-            _validations.Add(v => v.UnitPrice(expectedUnitPrice));
+            var verification = await GetOrderVerification();
+            verification.UnitPrice(expectedUnitPrice);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasBasePrice(decimal expectedBasePrice)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasBasePrice(decimal expectedBasePrice)
         {
-            _validations.Add(v => v.BasePrice(expectedBasePrice));
+            var verification = await GetOrderVerification();
+            verification.BasePrice(expectedBasePrice);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasBasePrice(string basePrice)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasBasePrice(string basePrice)
         {
-            _validations.Add(v => v.BasePrice(basePrice));
+            var verification = await GetOrderVerification();
+            verification.BasePrice(basePrice);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasSubtotalPrice(decimal expectedSubtotalPrice)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasSubtotalPrice(decimal expectedSubtotalPrice)
         {
-            _validations.Add(v => v.SubtotalPrice(expectedSubtotalPrice));
+            var verification = await GetOrderVerification();
+            verification.SubtotalPrice(expectedSubtotalPrice);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasSubtotalPrice(string expectedSubtotalPrice)
+        public Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasSubtotalPrice(string expectedSubtotalPrice)
         {
             return HasSubtotalPrice(decimal.Parse(expectedSubtotalPrice));
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasTotalPrice(decimal expectedTotalPrice)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasTotalPrice(decimal expectedTotalPrice)
         {
-            _validations.Add(v => v.TotalPrice(expectedTotalPrice));
+            var verification = await GetOrderVerification();
+            verification.TotalPrice(expectedTotalPrice);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasStatus(OrderStatus expectedStatus)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasStatus(OrderStatus expectedStatus)
         {
-            _validations.Add(v => v.Status(expectedStatus));
+            var verification = await GetOrderVerification();
+            verification.Status(expectedStatus);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasDiscountRateGreaterThanOrEqualToZero()
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasDiscountRateGreaterThanOrEqualToZero()
         {
-            _validations.Add(v => v.DiscountRateGreaterThanOrEqualToZero());
+            var verification = await GetOrderVerification();
+            verification.DiscountRateGreaterThanOrEqualToZero();
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasDiscountRate(decimal expectedDiscountRate)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasDiscountRate(decimal expectedDiscountRate)
         {
-            _validations.Add(v => v.DiscountRate(expectedDiscountRate));
+            var verification = await GetOrderVerification();
+            verification.DiscountRate(expectedDiscountRate);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasDiscountAmount(decimal expectedDiscountAmount)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasDiscountAmount(decimal expectedDiscountAmount)
         {
-            _validations.Add(v => v.DiscountAmount(expectedDiscountAmount));
+            var verification = await GetOrderVerification();
+            verification.DiscountAmount(expectedDiscountAmount);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasDiscountAmount(string expectedDiscountAmount)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasDiscountAmount(string expectedDiscountAmount)
         {
-            _validations.Add(v => v.DiscountAmount(expectedDiscountAmount));
+            var verification = await GetOrderVerification();
+            verification.DiscountAmount(expectedDiscountAmount);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasAppliedCoupon(string expectedCouponCode)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasAppliedCoupon(string expectedCouponCode)
         {
-            _validations.Add(v => v.AppliedCouponCode(expectedCouponCode));
+            var verification = await GetOrderVerification();
+            verification.AppliedCouponCode(expectedCouponCode);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasAppliedCoupon()
+        public Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasAppliedCoupon()
         {
             return HasAppliedCoupon(GherkinDefaults.DefaultCouponCode);
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasDiscountAmountGreaterThanOrEqualToZero()
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasDiscountAmountGreaterThanOrEqualToZero()
         {
-            _validations.Add(v => v.DiscountAmountGreaterThanOrEqualToZero());
+            var verification = await GetOrderVerification();
+            verification.DiscountAmountGreaterThanOrEqualToZero();
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasSubtotalPriceGreaterThanZero()
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasSubtotalPriceGreaterThanZero()
         {
-            _validations.Add(v => v.SubtotalPriceGreaterThanZero());
+            var verification = await GetOrderVerification();
+            verification.SubtotalPriceGreaterThanZero();
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasTaxRate(decimal expectedTaxRate)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasTaxRate(decimal expectedTaxRate)
         {
-            _validations.Add(v => v.TaxRate(expectedTaxRate));
+            var verification = await GetOrderVerification();
+            verification.TaxRate(expectedTaxRate);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasTaxRate(string expectedTaxRate)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasTaxRate(string expectedTaxRate)
         {
-            _validations.Add(v => v.TaxRate(expectedTaxRate));
+            var verification = await GetOrderVerification();
+            verification.TaxRate(expectedTaxRate);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasTaxRateGreaterThanOrEqualToZero()
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasTaxRateGreaterThanOrEqualToZero()
         {
-            _validations.Add(v => v.TaxRateGreaterThanOrEqualToZero());
+            var verification = await GetOrderVerification();
+            verification.TaxRateGreaterThanOrEqualToZero();
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasTaxAmount(string expectedTaxAmount)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasTaxAmount(string expectedTaxAmount)
         {
-            _validations.Add(v => v.TaxAmount(expectedTaxAmount));
+            var verification = await GetOrderVerification();
+            verification.TaxAmount(expectedTaxAmount);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasTaxAmountGreaterThanOrEqualToZero()
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasTaxAmountGreaterThanOrEqualToZero()
         {
-            _validations.Add(v => v.TaxAmountGreaterThanOrEqualToZero());
+            var verification = await GetOrderVerification();
+            verification.TaxAmountGreaterThanOrEqualToZero();
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasTotalPrice(string expectedTotalPrice)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasTotalPrice(string expectedTotalPrice)
         {
-            _validations.Add(v => v.TotalPrice(expectedTotalPrice));
+            var verification = await GetOrderVerification();
+            verification.TotalPrice(expectedTotalPrice);
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasTotalPriceGreaterThanZero()
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasTotalPriceGreaterThanZero()
         {
-            _validations.Add(v => v.TotalPriceGreaterThanZero());
+            var verification = await GetOrderVerification();
+            verification.TotalPriceGreaterThanZero();
             return this;
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> HasOrderNumberPrefix(string expectedPrefix)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> HasOrderNumberPrefix(string expectedPrefix)
         {
-            _validations.Add(v => v.OrderNumberHasPrefix(expectedPrefix));
+            var verification = await GetOrderVerification();
+            verification.OrderNumberHasPrefix(expectedPrefix);
             return this;
-        }
-
-        // Make this awaitable by implementing GetAwaiter
-        public TaskAwaiter GetAwaiter()
-        {
-            return ExecuteValidations().GetAwaiter();
-        }
-
-        // Allow implicit conversion to Task for method return types
-        public static implicit operator Task(ThenOrderBuilder<TSuccessResponse, TSuccessVerification> builder)
-        {
-            return builder.ExecuteValidations();
         }
     }
 }

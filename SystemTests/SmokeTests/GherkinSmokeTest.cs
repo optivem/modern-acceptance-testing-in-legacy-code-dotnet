@@ -12,9 +12,9 @@ public class GherkinSmokeTest : BaseSystemTest
 {
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
-    public Task ShouldPlaceOrderUsingGherkinStyle(Channel channel)
+    public async Task ShouldPlaceOrderUsingGherkinStyle(Channel channel)
     {
-        return Scenario(channel)
+        var orderBuilder = await Scenario(channel)
             .Given()
                 .Product()
                     .WithSku("GHERKIN-SKU")
@@ -26,10 +26,11 @@ public class GherkinSmokeTest : BaseSystemTest
                     .WithQuantity(3)
             .Then()
                 .Order("GHERKIN-ORDER-001")
-                    .HasSku("GHERKIN-SKU")
-                    .HasQuantity(3)
-                    .HasSubtotalPrice(75.00m)
-                    .HasStatus(OrderStatus.Placed);
+                    .HasSku("GHERKIN-SKU");
+        
+        orderBuilder = await orderBuilder.HasQuantity(3);
+        orderBuilder = await orderBuilder.HasSubtotalPrice(75.00m);
+        await orderBuilder.HasStatus(OrderStatus.Placed);
     }
 
     // [Theory]
