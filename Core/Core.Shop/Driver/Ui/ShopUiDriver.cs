@@ -25,6 +25,12 @@ public class ShopUiDriver : IShopDriver
         _couponDriver = new ShopUiCouponDriver(() => GetHomePage(), _pageNavigator);
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        if (_client != null)
+            await _client.DisposeAsync();
+    }
+
     public static async Task<ShopUiDriver> CreateAsync(string baseUrl)
     {
         var client = await ShopUiClient.CreateAsync(baseUrl);
@@ -38,7 +44,7 @@ public class ShopUiDriver : IShopDriver
         
         if (!_client.IsStatusOk() || !await _client.IsPageLoadedAsync())
         {
-            return Failure<VoidValue>("Failed to load home page");
+            return Failure("Failed to load home page");
         }
         
         _pageNavigator.SetCurrentPage(PageNavigator.Page.HOME);
@@ -60,9 +66,4 @@ public class ShopUiDriver : IShopDriver
         return _homePage;
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        if (_client != null)
-            await _client.DisposeAsync();
-    }
 }

@@ -1,4 +1,5 @@
 using Commons.Playwright;
+using Commons.Util;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Coupons;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
@@ -121,10 +122,10 @@ public class CouponManagementPage : BasePage
             {
                 Code = code,
                 DiscountRate = ParseDiscountRate(discountRateText),
-                ValidFrom = ParseDateTime(validFromText),
-                ValidTo = ParseDateTime(validToText),
+                ValidFrom = ParseInstant(validFromText),
+                ValidTo = ParseInstant(validToText),
                 UsageLimit = ParseUsageLimit(usageLimitText),
-                UsedCount = int.Parse(usedCountText)
+                UsedCount = Converter.ToInteger(usedCountText) ?? 0
             };
 
             coupons.Add(coupon);
@@ -159,34 +160,19 @@ public class CouponManagementPage : BasePage
         return dateOnly + TimeEndOfDay;
     }
 
-    private static decimal ParseDiscountRate(string? text)
+    private decimal ParseDiscountRate(string? text)
     {
-        if(text == null || string.IsNullOrEmpty(text))
-        {
-            return 0.0m;
-        }
-
-        return decimal.Parse(text) / 100.0m; // Convert percentage to decimal
+        var value = Converter.ToBigDecimal(text);
+        return value == null ? 0.0m : value.Value / 100.0m; // Convert percentage to decimal
     }
 
-    private static DateTime? ParseDateTime(string text)
+    private DateTime? ParseInstant(string text)
     {
-        if (text == null || text.Equals(TextImmediate, StringComparison.OrdinalIgnoreCase) || 
-            text.Equals(TextNever, StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(text))
-        {
-            return null;
-        }
-
-        return DateTime.Parse(text);
+        return Converter.ParseInstant(text, TextImmediate, TextNever);
     }
 
-    private static int? ParseUsageLimit(string? text)
+    private int? ParseUsageLimit(string? text)
     {
-        if (text == null || text.Equals(TextUnlimited, StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(text))
-        {
-            return null;
-        }
-        
-        return int.Parse(text);
+        return Converter.ToInteger(text, TextUnlimited);
     }
 }

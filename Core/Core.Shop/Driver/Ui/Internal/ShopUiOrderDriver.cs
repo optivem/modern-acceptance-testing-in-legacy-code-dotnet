@@ -106,10 +106,10 @@ public class ShopUiOrderDriver : IOrderDriver
 
     public async Task<Result<VoidValue, SystemError>> CancelOrder(string? orderNumber)
     {
-        var result = await EnsureOnOrderDetailsPageAsync(orderNumber);
-        if (result.IsFailure)
+        var viewResult = await ViewOrder(orderNumber);
+        if (viewResult.IsFailure)
         {
-            return result.MapVoid();
+            return viewResult.MapVoid();
         }
 
         await _orderDetailsPage!.ClickCancelOrderAsync();
@@ -117,24 +117,24 @@ public class ShopUiOrderDriver : IOrderDriver
         var cancelResult = await _orderDetailsPage.GetResultAsync();
         if (cancelResult.IsFailure)
         {
-            return Failure<VoidValue>(cancelResult.Error);
+            return Failure(cancelResult.Error);
         }
 
         var successMessage = cancelResult.Value;
         if (!successMessage.Contains("cancelled successfully!"))
         {
-            return Failure<VoidValue>("Did not receive expected cancellation success message");
+            return Failure("Did not receive expected cancellation success message");
         }
 
         var displayStatusAfterCancel = await _orderDetailsPage.GetStatusAsync();
         if (displayStatusAfterCancel != OrderStatus.Cancelled)
         {
-            return Failure<VoidValue>("Order status not updated to CANCELLED");
+            return Failure("Order status not updated to CANCELLED");
         }
 
         if (!await _orderDetailsPage.IsCancelButtonHiddenAsync())
         {
-            return Failure<VoidValue>("Cancel button still visible");
+            return Failure("Cancel button still visible");
         }
 
         return Success();
@@ -170,7 +170,7 @@ public class ShopUiOrderDriver : IOrderDriver
         var isOrderListed = await _orderHistoryPage.IsOrderListedAsync(orderNumber);
         if (!isOrderListed)
         {
-            return Failure<VoidValue>("Order " + orderNumber + " does not exist.");
+            return Failure("Order " + orderNumber + " does not exist.");
         }
         
         _orderDetailsPage = await _orderHistoryPage.ClickViewOrderDetailsAsync(orderNumber);

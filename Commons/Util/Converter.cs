@@ -12,9 +12,19 @@ public static class Converter
         return From(value, v => v.ToString());
     }
 
-    public static int? ToInteger(string? value)
+    public static int? ToInteger(string? value, params string[] nullValues)
     {
-        return To(value, int.Parse);
+        if (string.IsNullOrEmpty(value))
+        {
+            return null;
+        }
+
+        if (nullValues != null && nullValues.Any(nv => value.Equals(nv, StringComparison.OrdinalIgnoreCase)))
+        {
+            return null;
+        }
+
+        return int.Parse(value);
     }
 
     public static string? FromInteger(int? value)
@@ -45,6 +55,45 @@ public static class Converter
     public static string? FromDateTimeOffset(DateTimeOffset? value)
     {
         return From(value, v => v.ToString("O")); // ISO 8601 format
+    }
+
+    public static DateTime? ParseInstant(string? text, params string[] nullValues)
+    {
+        if (text == null || string.IsNullOrEmpty(text))
+        {
+            return null;
+        }
+
+        if (nullValues != null && nullValues.Any(nv => text.Equals(nv, StringComparison.OrdinalIgnoreCase)))
+        {
+            return null;
+        }
+
+        // Try ISO format first
+        if (DateTime.TryParse(text, System.Globalization.CultureInfo.InvariantCulture, 
+            System.Globalization.DateTimeStyles.RoundtripKind, out var isoResult))
+        {
+            return isoResult;
+        }
+
+        // Try various locale-specific formats that JavaScript's toLocaleString() might produce
+        string[] formats = {
+            "M/d/yyyy, h:mm:ss tt",      // US format: 1/30/2026, 11:44:29 AM
+            "d/M/yyyy, HH:mm:ss",        // UK format
+            "yyyy-MM-dd HH:mm:ss",       // Generic
+            "M/d/yyyy h:mm:ss tt"
+        };
+
+        foreach (var format in formats)
+        {
+            if (DateTime.TryParseExact(text, format, System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out var result))
+            {
+                return result;
+            }
+        }
+
+        throw new FormatException($"Invalid date format: {text} - Expected ISO format or locale-specific format.");
     }
 
     private static string? From<TSource>(TSource? value, Func<TSource, string> converter)
