@@ -39,7 +39,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification Quantity(string expectedQuantity)
     {
-        return Quantity(Converter.ToInteger(expectedQuantity).Value);
+        return Quantity(Converter.ToInteger(expectedQuantity)!.Value);
     }
 
     public ViewOrderVerification Status(OrderStatus expectedStatus)

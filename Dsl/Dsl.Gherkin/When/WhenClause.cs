@@ -35,7 +35,6 @@ namespace Dsl.Gherkin.When
 
         private async Task EnsureDefaults()
         {
-            // Execute Given setup first if provided
             if (_givenSetup != null)
             {
                 await _givenSetup();

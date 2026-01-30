@@ -47,10 +47,10 @@ public class PlaceOrderBuilder : BaseWhenBuilder<PlaceOrderResponse, PlaceOrderV
 
     public PlaceOrderBuilder WithQuantity(int quantity)
     {
-        return WithQuantity(quantity.ToString());
+        return WithQuantity(Converter.FromInteger(quantity));
     }
 
-    public PlaceOrderBuilder WithCountry(string country)
+    public PlaceOrderBuilder WithCountry(string? country)
     {
         _country = country;
         return this;

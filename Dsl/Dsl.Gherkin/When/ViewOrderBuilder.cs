@@ -30,7 +30,7 @@ public class ViewOrderBuilder : BaseWhenBuilder<ViewOrderResponse, ViewOrderVeri
             .Execute();
 
         return new ExecutionResultBuilder<ViewOrderResponse, ViewOrderVerification>(result)
-            .OrderNumber(DefaultOrderNumber)
+            .OrderNumber(_orderNumber)
             .Build();
     }
 }

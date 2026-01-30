@@ -63,13 +63,15 @@ namespace Dsl.Gherkin.Given
 
         public WhenClause When()
         {
-            return new WhenClause(Channel, _app, _scenario, _products.Any(), _countries.Any(), async () =>
-            {
-                await SetupClock();
-                await SetupErp();
-                await SetupTax();
-                await SetupShop();
-            });
+            return new WhenClause(Channel, _app, _scenario, _products.Any(), _countries.Any(), SetupGiven);
+        }
+
+        private async Task SetupGiven()
+        {
+            await SetupClock();
+            await SetupErp();
+            await SetupTax();
+            await SetupShop();
         }
 
         private async Task SetupClock()

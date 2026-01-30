@@ -22,9 +22,6 @@ public class PublishCouponBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
     {
         WithCouponCode(DefaultCouponCode);
         WithDiscountRate(DefaultDiscountRate);
-        WithValidFrom(Empty);
-        WithValidTo(Empty);
-        WithUsageLimit(Empty);
     }
 
     public PublishCouponBuilder WithCouponCode(string? couponCode)
@@ -41,7 +38,7 @@ public class PublishCouponBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
 
     public PublishCouponBuilder WithDiscountRate(decimal discountRate)
     {
-        _discountRate = discountRate.ToString();
+        _discountRate = Converter.FromDecimal(discountRate);
         return this;
     }
 
@@ -65,7 +62,7 @@ public class PublishCouponBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
 
     public PublishCouponBuilder WithUsageLimit(int usageLimit)
     {
-        _usageLimit = usageLimit.ToString();
+        _usageLimit = Converter.FromInteger(usageLimit);
         return this;
     }
 
