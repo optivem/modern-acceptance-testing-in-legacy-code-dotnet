@@ -8,12 +8,11 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 
 public abstract class BasePage
 {
-    // Use role='alert' for semantic HTML and accessibility - matches Java reference
     private const string NotificationSelector = "[role='alert']";
-    private const string SuccessNotificationSelector = "[role='alert'].notification.success";
-    private const string ErrorNotificationSelector = "[role='alert'].notification.error";
-    private const string ErrorMessageSelector = "[role='alert'].notification.error .error-message";
-    private const string FieldErrorSelector = "[role='alert'].notification.error .field-error";
+    private const string NotificationSuccessSelector = "[role='alert'].notification.success";
+    private const string NotificationErrorSelector = "[role='alert'].notification.error";
+    private const string NotificationErrorMessageSelector = "[role='alert'].notification.error .error-message";
+    private const string NotificationErrorFieldSelector = "[role='alert'].notification.error .field-error";
     private const string NoNotificationErrorMessage = "No notification appeared";
     private const string UnrecognizedNotificationErrorMessage = "Notification type is not recognized";
 
@@ -33,14 +32,14 @@ public abstract class BasePage
             throw new InvalidOperationException(NoNotificationErrorMessage);
         }
 
-        var isSuccess = await PageClient.IsVisibleAsync(SuccessNotificationSelector);
+        var isSuccess = await PageClient.IsVisibleAsync(NotificationSuccessSelector);
 
         if (isSuccess)
         {
             return true;
         }
 
-        var isError = await PageClient.IsVisibleAsync(ErrorNotificationSelector);
+        var isError = await PageClient.IsVisibleAsync(NotificationErrorSelector);
 
         if (isError)
         {
@@ -52,21 +51,21 @@ public abstract class BasePage
 
     private async Task<string> ReadSuccessNotificationAsync()
     {
-        return await PageClient.ReadTextContentAsync(SuccessNotificationSelector);
+        return await PageClient.ReadTextContentAsync(NotificationSuccessSelector);
     }
 
     private async Task<string> ReadGeneralErrorMessageAsync()
     {
-        return await PageClient.ReadTextContentAsync(ErrorMessageSelector);
+        return await PageClient.ReadTextContentAsync(NotificationErrorMessageSelector);
     }
 
     private async Task<List<string>> ReadFieldErrorsAsync()
     {
-        if (!await PageClient.IsVisibleAsync(FieldErrorSelector))
+        if (!await PageClient.IsVisibleAsync(NotificationErrorFieldSelector))
         {
             return new List<string>();
         }
-        return await PageClient.ReadAllTextContentsAsync(FieldErrorSelector);
+        return await PageClient.ReadAllTextContentsAsync(NotificationErrorFieldSelector);
     }
 
     public async Task<Result<string, SystemError>> GetResultAsync()
