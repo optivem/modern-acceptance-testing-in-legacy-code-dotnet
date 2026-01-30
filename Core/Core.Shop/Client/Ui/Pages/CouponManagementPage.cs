@@ -20,7 +20,6 @@ public class CouponManagementPage : BasePage
     private const string TimeEndOfDay = "T23:59";
     
     // Table selectors
-    private const string TableRowSelector = "table.table tbody tr";
     private const string TableCellCodeSelector = "table.table tbody tr td:nth-child(1)";
     private const string TableCellDiscountSelector = "table.table tbody tr td:nth-child(2)";
     private const string TableCellValidFromSelector = "table.table tbody tr td:nth-child(3)";
@@ -122,8 +121,8 @@ public class CouponManagementPage : BasePage
             {
                 Code = code,
                 DiscountRate = ParseDiscountRate(discountRateText),
-                ValidFrom = ParseInstant(validFromText),
-                ValidTo = ParseInstant(validToText),
+                ValidFrom = ParseDateTime(validFromText),
+                ValidTo = ParseDateTime(validToText),
                 UsageLimit = ParseUsageLimit(usageLimitText),
                 UsedCount = int.Parse(usedCountText)
             };
@@ -167,33 +166,18 @@ public class CouponManagementPage : BasePage
             return 0.0m;
         }
 
-        try
-        {
-            return decimal.Parse(text) / 100.0m; // Convert percentage to decimal
-        }
-        catch (FormatException)
-        {
-            return 0.0m;
-        }
+        return decimal.Parse(text) / 100.0m; // Convert percentage to decimal
     }
 
-    private static DateTime? ParseInstant(string text)
+    private static DateTime? ParseDateTime(string text)
     {
         if (text == null || text.Equals(TextImmediate, StringComparison.OrdinalIgnoreCase) || 
             text.Equals(TextNever, StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(text))
         {
             return null;
         }
-        try
-        {
-            // Try to parse as ISO format first
-            return DateTime.Parse(text);
-        }
-        catch (Exception)
-        {
-            // If it fails, return null (UI might show formatted date)
-            return null;
-        }
+
+        return DateTime.Parse(text);
     }
 
     private static int? ParseUsageLimit(string? text)
@@ -202,13 +186,7 @@ public class CouponManagementPage : BasePage
         {
             return null;
         }
-        try
-        {
-            return int.Parse(text);
-        }
-        catch (FormatException)
-        {
-            return null;
-        }
+        
+        return int.Parse(text);
     }
 }

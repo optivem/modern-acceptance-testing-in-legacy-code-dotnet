@@ -89,11 +89,13 @@ public abstract class BasePage
         var fieldErrors = fieldErrorTexts.Select(text =>
         {
             var parts = text.Split(':', 2);
-            if (parts.Length == 2)
+
+            if(parts.Length != 2)
             {
-                return new SystemError.FieldError(parts[0].Trim(), parts[1].Trim());
+                throw new InvalidOperationException($"Invalid field error format: {text}");
             }
-            return new SystemError.FieldError("unknown", text);
+
+            return new SystemError.FieldError(parts[0].Trim(), parts[1].Trim());
         }).ToList();
 
         var error = SystemError.Of(generalMessage, fieldErrors);
