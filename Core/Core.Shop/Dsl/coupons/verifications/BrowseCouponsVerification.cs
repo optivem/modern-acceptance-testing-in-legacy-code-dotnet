@@ -38,8 +38,7 @@ public class BrowseCouponsVerification : ResponseVerification<BrowseCouponsRespo
     public BrowseCouponsVerification CouponHasUsageLimit(string couponCodeAlias, int expectedUsageLimit)
     {
         var coupon = FindCouponByCode(couponCodeAlias);
-
-        coupon.UsageLimit.ShouldNotBeNull($"Expected coupon '{couponCodeAlias}' to have a usage limit");
+        
         coupon.UsageLimit.ShouldBe(expectedUsageLimit, $"Expected coupon '{couponCodeAlias}' to have usage limit {expectedUsageLimit}");
         return this;
     }

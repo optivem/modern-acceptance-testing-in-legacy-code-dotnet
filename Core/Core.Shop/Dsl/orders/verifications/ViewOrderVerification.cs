@@ -3,6 +3,7 @@ using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 using Optivem.EShop.SystemTest.Core.Shop.Dsl.Commands;
 using Shouldly;
 using System.Globalization;
+using Commons.Util;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
 
@@ -38,7 +39,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification Quantity(string expectedQuantity)
     {
-        return Quantity(int.Parse(expectedQuantity));
+        return Quantity(Converter.ToInteger(expectedQuantity).Value);
     }
 
     public ViewOrderVerification Status(OrderStatus expectedStatus)
@@ -69,7 +70,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification UnitPrice(string expectedUnitPrice)
     {
-        return UnitPrice(decimal.Parse(expectedUnitPrice, CultureInfo.InvariantCulture));
+        return UnitPrice(Converter.ToBigDecimal(expectedUnitPrice)!.Value);
     }
 
     public ViewOrderVerification UnitPriceGreaterThanZero()
@@ -88,7 +89,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification SubtotalPrice(string expectedSubtotalPrice)
     {
-        return SubtotalPrice(decimal.Parse(expectedSubtotalPrice, CultureInfo.InvariantCulture));
+        return SubtotalPrice(Converter.ToBigDecimal(expectedSubtotalPrice)!.Value);
     }
 
     public ViewOrderVerification SubtotalPriceGreaterThanZero()
@@ -143,7 +144,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification BasePrice(string expectedBasePrice)
     {
-        return BasePrice(decimal.Parse(expectedBasePrice));
+        return BasePrice(Converter.ToBigDecimal(expectedBasePrice)!.Value);
     }
 
     public ViewOrderVerification BasePriceGreaterThanZero()
@@ -163,7 +164,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification DiscountRate(string expectedDiscountRate)
     {
-        return DiscountRate(decimal.Parse(expectedDiscountRate));
+        return DiscountRate(Converter.ToBigDecimal(expectedDiscountRate)!.Value);
     }
 
     // Discount Amount Methods  
@@ -176,7 +177,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification DiscountAmount(string expectedDiscountAmount)
     {
-        return DiscountAmount(decimal.Parse(expectedDiscountAmount));
+        return DiscountAmount(Converter.ToBigDecimal(expectedDiscountAmount)!.Value);
     }
 
     // Tax Rate Methods
@@ -189,7 +190,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification TaxRate(string expectedTaxRate)
     {
-        return TaxRate(decimal.Parse(expectedTaxRate));
+        return TaxRate(Converter.ToBigDecimal(expectedTaxRate)!.Value);
     }
 
     // Tax Amount Methods
@@ -202,7 +203,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification TaxAmount(string expectedTaxAmount)
     {
-        return TaxAmount(decimal.Parse(expectedTaxAmount));
+        return TaxAmount(Converter.ToBigDecimal(expectedTaxAmount)!.Value);
     }
 
     // Total Price Methods
@@ -215,7 +216,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification TotalPrice(string expectedTotalPrice)
     {
-        return TotalPrice(decimal.Parse(expectedTotalPrice));
+        return TotalPrice(Converter.ToBigDecimal(expectedTotalPrice)!.Value);
     }
 
     // Applied Coupon Code Methods
@@ -245,7 +246,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
     // Order Timestamp Method
     public ViewOrderVerification OrderTimestampIsNotNull()
     {
-        Response.OrderTimestamp.ShouldNotBe(default(DateTime), "Expected order timestamp to be set, but was null");
+        Response.OrderTimestamp.ShouldNotBe(default, "Expected order timestamp to be set, but was null");
         return this;
     }
 }
