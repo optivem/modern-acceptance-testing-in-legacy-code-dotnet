@@ -68,3 +68,12 @@ public class Result<T, E>
         return Result<VoidValue, E>.Failure(_error!);
     }
 }
+
+public static class Result
+{
+    public static Result<VoidValue, E> Success<E>() 
+        => Result<VoidValue, E>.Success(VoidValue.Empty);
+
+    public static Result<VoidValue, E> Failure<E>(E error) 
+        => Result<VoidValue, E>.Failure(error);
+}

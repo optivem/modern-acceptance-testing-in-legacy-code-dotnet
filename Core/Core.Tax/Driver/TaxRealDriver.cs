@@ -14,6 +14,6 @@ public class TaxRealDriver : BaseTaxDriver<TaxRealClient>
     public override Task<Result<VoidValue, TaxErrorResponse>> ReturnsTaxRate(ReturnsTaxRateRequest request)
     {
         // No-op for real driver - data already exists in real service
-        return Task.FromResult(Result<VoidValue, TaxErrorResponse>.Success(VoidValue.Empty));
+        return Task.FromResult(Result.Success<TaxErrorResponse>());
     }
 }

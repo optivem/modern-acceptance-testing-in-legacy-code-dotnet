@@ -36,7 +36,7 @@ public class ClockStubDriver : IClockDriver
             Time = DateTimeOffset.Parse(request.Time!)
         };
         await _client.ConfigureGetTime(extResponse);
-        return Result<VoidValue, ClockErrorResponse>.Success(VoidValue.Empty);
+        return Result.Success<ClockErrorResponse>();
     }
 
 

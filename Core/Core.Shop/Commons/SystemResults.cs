@@ -12,7 +12,7 @@ public static class SystemResults
 
     public static Result<VoidValue, SystemError> Success()
     {
-        return Result<VoidValue, SystemError>.Success(VoidValue.Empty);
+        return Result.Success<SystemError>();
     }
 
     public static Result<T, SystemError> Failure<T>(string message)

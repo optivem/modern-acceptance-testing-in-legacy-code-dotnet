@@ -21,7 +21,7 @@ public class ErpStubDriver : BaseErpDriver<ErpStubClient>
         // Handle null or empty price
         if (string.IsNullOrEmpty(request.Price))
         {
-            return Task.FromResult(Result<VoidValue, ErpErrorResponse>.Success(VoidValue.Empty));
+            return Task.FromResult(Result.Success<ErpErrorResponse>());
         }
 
         var extProductDetailsResponse = new ExtProductDetailsResponse
