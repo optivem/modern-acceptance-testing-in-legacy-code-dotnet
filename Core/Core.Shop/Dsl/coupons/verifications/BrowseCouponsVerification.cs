@@ -1,6 +1,7 @@
 using Commons.Dsl;
 using Shouldly;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Coupons;
+using Commons.Util;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl.Verifications;
 
@@ -11,13 +12,13 @@ public class BrowseCouponsVerification : ResponseVerification<BrowseCouponsRespo
     {
     }
 
-    public BrowseCouponsVerification HasCouponWithCode(string? couponCodeAlias)
+    public BrowseCouponsVerification HasCouponWithCode(string couponCodeAlias)
     {
-        FindCouponByCode(couponCodeAlias); // Throws if not found
+        FindCouponByCode(couponCodeAlias);
         return this;
     }
 
-    public BrowseCouponsVerification CouponHasDiscountRate(string? couponCodeAlias, decimal expectedDiscountRate)
+    public BrowseCouponsVerification CouponHasDiscountRate(string couponCodeAlias, decimal expectedDiscountRate)
     {
         var coupon = FindCouponByCode(couponCodeAlias);
 
@@ -25,16 +26,16 @@ public class BrowseCouponsVerification : ResponseVerification<BrowseCouponsRespo
         return this;
     }
 
-    public BrowseCouponsVerification CouponHasValidFrom(string? couponCodeAlias, string? expectedValidFrom)
+    public BrowseCouponsVerification CouponHasValidFrom(string couponCodeAlias, string? expectedValidFrom)
     {
         var coupon = FindCouponByCode(couponCodeAlias);
 
-        string? actualValidFromString = coupon.ValidFrom?.ToString() ?? null;
-        actualValidFromString.ShouldBe(expectedValidFrom, $"Expected coupon '{couponCodeAlias}' to have validFrom '{expectedValidFrom}'");
+        DateTime? expectedValidFromDateTime = Converter.ParseDateTime(expectedValidFrom);
+        coupon.ValidFrom.ShouldBe(expectedValidFromDateTime, $"Expected coupon '{couponCodeAlias}' to have validFrom '{expectedValidFrom}'");
         return this;
     }
 
-    public BrowseCouponsVerification CouponHasUsageLimit(string? couponCodeAlias, int expectedUsageLimit)
+    public BrowseCouponsVerification CouponHasUsageLimit(string couponCodeAlias, int expectedUsageLimit)
     {
         var coupon = FindCouponByCode(couponCodeAlias);
 
@@ -43,7 +44,7 @@ public class BrowseCouponsVerification : ResponseVerification<BrowseCouponsRespo
         return this;
     }
 
-    public BrowseCouponsVerification CouponHasUsedCount(string? couponCode, int expectedUsedCount)
+    public BrowseCouponsVerification CouponHasUsedCount(string couponCode, int expectedUsedCount)
     {
         var coupon = FindCouponByCode(couponCode);
 
@@ -51,16 +52,14 @@ public class BrowseCouponsVerification : ResponseVerification<BrowseCouponsRespo
         return this;
     }
 
-    private CouponDto FindCouponByCode(string? couponCodeAlias)
+    private CouponDto FindCouponByCode(string couponCodeAlias)
     {
         Response.ShouldNotBeNull();
         Response.Coupons.ShouldNotBeNull("No coupons found in response");
 
         var couponCode = Context.GetParamValue(couponCodeAlias);
 
-        var coupon = Response.Coupons
-            .Where(c => string.Equals(couponCode, c.Code))
-            .FirstOrDefault();
+        var coupon = Response.Coupons.FirstOrDefault(c => string.Equals(couponCode, c.Code));
         
         coupon.ShouldNotBeNull($"Coupon with code '{couponCode}' not found. Available coupons: [{string.Join(", ", Response.Coupons.Select(c => c.Code))}]");
         

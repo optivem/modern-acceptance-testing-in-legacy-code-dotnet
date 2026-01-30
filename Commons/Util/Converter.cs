@@ -57,7 +57,7 @@ public static class Converter
         return From(value, v => v.ToString("O")); // ISO 8601 format
     }
 
-    public static DateTime? ParseInstant(string? text, params string[] nullValues)
+    public static DateTime? ParseDateTime(string? text, params string[] nullValues)
     {
         if (text == null || string.IsNullOrEmpty(text))
         {
