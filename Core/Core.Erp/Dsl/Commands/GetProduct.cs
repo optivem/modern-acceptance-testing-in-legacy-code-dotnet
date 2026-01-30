@@ -16,7 +16,7 @@ public class GetProduct : BaseErpCommand<GetProductResponse, GetProductVerificat
     {
     }
 
-    public GetProduct Sku(string skuParamAlias)
+    public GetProduct Sku(string? skuParamAlias)
     {
         _skuParamAlias = skuParamAlias;
         return this;

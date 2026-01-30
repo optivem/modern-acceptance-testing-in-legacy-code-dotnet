@@ -21,7 +21,7 @@ public class ReturnsTime : BaseClockCommand<VoidValue, VoidVerification>
         return this;
     }
 
-    public override async Task<UseCaseResult<VoidValue, ClockErrorResponse, VoidVerification, ClockErrorVerification>> Execute()
+    public override async Task<ClockUseCaseResult<VoidValue, VoidVerification>> Execute()
     {
         var request = new ReturnsTimeRequest
         {

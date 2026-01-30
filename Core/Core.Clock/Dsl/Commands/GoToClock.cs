@@ -13,12 +13,12 @@ public class GoToClock : BaseClockCommand<VoidValue, VoidVerification>
     {
     }
 
-    public override async Task<UseCaseResult<VoidValue, ClockErrorResponse, VoidVerification, ClockErrorVerification>> Execute()
+    public override async Task<ClockUseCaseResult<VoidValue, VoidVerification>> Execute()
     {
         var result = await _driver.GoToClock();
 
         return new ClockUseCaseResult<VoidValue, VoidVerification>(
-            result, 
+            result,
             _context,
             (response, ctx) => new VoidVerification(response, ctx));
     }

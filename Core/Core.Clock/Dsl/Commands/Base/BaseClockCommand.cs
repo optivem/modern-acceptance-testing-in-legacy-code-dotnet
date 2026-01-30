@@ -5,10 +5,16 @@ using Commons.Dsl;
 namespace Optivem.EShop.SystemTest.Core.Clock.Dsl.Commands.Base;
 
 public abstract class BaseClockCommand<TResponse, TVerification> 
-    : BaseUseCase<IClockDriver, TResponse, ClockErrorResponse, TVerification, ClockErrorVerification>
+    where TVerification : ResponseVerification<TResponse>
 {
-    protected BaseClockCommand(IClockDriver driver, UseCaseContext context) 
-        : base(driver, context)
+    protected readonly IClockDriver _driver;
+    protected readonly UseCaseContext _context;
+
+    protected BaseClockCommand(IClockDriver driver, UseCaseContext context)
     {
+        _driver = driver;
+        _context = context;
     }
+
+    public abstract Task<ClockUseCaseResult<TResponse, TVerification>> Execute();
 }
