@@ -9,18 +9,16 @@ namespace Dsl.Gherkin.Then
         where TSuccessVerification : ResponseVerification<TSuccessResponse>
     {
         private readonly SystemDsl _app;
-        private readonly ScenarioDsl _scenario;
         private readonly Func<Task<ExecutionResult<TSuccessResponse, TSuccessVerification>>> _lazyExecute;
         private ExecutionResult<TSuccessResponse, TSuccessVerification>? _executionResult;
 
-        public ThenClause(Channel channel, SystemDsl app, ScenarioDsl scenario, Func<Task<ExecutionResult<TSuccessResponse, TSuccessVerification>>> lazyExecute)
+        public ThenClause(Channel channel, SystemDsl app, Func<Task<ExecutionResult<TSuccessResponse, TSuccessVerification>>> lazyExecute)
             : base(channel)
         {
             _app = app;
-            _scenario = scenario;
             _lazyExecute = lazyExecute;
         }
-        
+
         public async Task<ThenSuccessBuilder<TSuccessResponse, TSuccessVerification>> ShouldSucceed()
         {
             var result = await GetExecutionResult();
@@ -28,7 +26,6 @@ namespace Dsl.Gherkin.Then
             {
                 throw new InvalidOperationException("Cannot verify success: no operation was executed");
             }
-            _scenario.MarkAsExecuted();
             var successVerification = result.Result.ShouldSucceed();
             return new ThenSuccessBuilder<TSuccessResponse, TSuccessVerification>(this, successVerification);
         }
@@ -36,13 +33,11 @@ namespace Dsl.Gherkin.Then
         public async Task<ThenFailureBuilder<TSuccessResponse, TSuccessVerification>> ShouldFail()
         {
             var result = await GetExecutionResult();
-            _scenario.MarkAsExecuted();
             return new ThenFailureBuilder<TSuccessResponse, TSuccessVerification>(this, result.Result);
         }
 
         public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> Order(string orderNumber)
         {
-            _scenario.MarkAsExecuted();
             return new ThenOrderBuilder<TSuccessResponse, TSuccessVerification>(this, _app, orderNumber, _lazyExecute);
         }
 
@@ -56,14 +51,12 @@ namespace Dsl.Gherkin.Then
                 throw new InvalidOperationException("Cannot verify order: no order number available from the executed operation");
             }
 
-            _scenario.MarkAsExecuted();
             return new ThenOrderBuilder<TSuccessResponse, TSuccessVerification>(this, _app, orderNumber, _lazyExecute);
         }
 
         public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> Coupon(string couponCode)
         {
             await GetExecutionResult(); // Ensure execution happened
-            _scenario.MarkAsExecuted();
             return new ThenCouponBuilder<TSuccessResponse, TSuccessVerification>(this, _app, couponCode);
         }
 

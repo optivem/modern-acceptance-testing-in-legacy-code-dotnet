@@ -21,7 +21,7 @@ public abstract class BaseWhenBuilder<TSuccessResponse, TSuccessVerification>
 
     public ThenClause<TSuccessResponse, TSuccessVerification> Then()
     {
-        return new ThenClause<TSuccessResponse, TSuccessVerification>(Channel, _app, _scenario, async () =>
+        return new ThenClause<TSuccessResponse, TSuccessVerification>(Channel, _app, async () =>
         {
             if (_ensureDefaults != null)
             {
