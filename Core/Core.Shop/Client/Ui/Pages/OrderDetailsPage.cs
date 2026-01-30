@@ -6,6 +6,7 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 public class OrderDetailsPage : BasePage
 {
     private const string OrderNumberOutputSelector = "[aria-label='Display Order Number']";
+    private const string OrderTimestampOutputSelector = "[aria-label='Display Order Timestamp']"; 
     private const string SkuOutputSelector = "[aria-label='Display SKU']";
     private const string CountryOutputSelector = "[aria-label='Display Country']";
     private const string QuantityOutputSelector = "[aria-label='Display Quantity']";
@@ -41,6 +42,12 @@ public class OrderDetailsPage : BasePage
     public async Task<string> GetOrderNumberAsync()
     {
         return await PageClient.ReadTextContentAsync(OrderNumberOutputSelector);
+    }
+
+    public async Task<DateTimeOffset> GetOrderTimestampAsync()
+    {
+        var textContent = await PageClient.ReadTextContentAsync(OrderTimestampOutputSelector);
+        return DateTimeOffset.Parse(textContent);
     }
 
     public async Task<string> GetSkuAsync()

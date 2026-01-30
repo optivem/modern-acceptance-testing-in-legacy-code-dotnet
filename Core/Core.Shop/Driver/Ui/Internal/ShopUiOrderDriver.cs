@@ -67,6 +67,7 @@ public class ShopUiOrderDriver : IOrderDriver
         }
 
         var displayOrderNumber = await _orderDetailsPage.GetOrderNumberAsync();
+        var orderTimestamp = await _orderDetailsPage.GetOrderTimestampAsync();
         var sku = await _orderDetailsPage.GetSkuAsync();
         var quantity = await _orderDetailsPage.GetQuantityAsync();
         var country = await _orderDetailsPage.GetCountryAsync();
@@ -84,7 +85,7 @@ public class ShopUiOrderDriver : IOrderDriver
         var response = new ViewOrderResponse
         {
             OrderNumber = displayOrderNumber,
-            OrderTimestamp = DateTime.Now, // TODO: VJ: Actually implement this
+            OrderTimestamp = orderTimestamp.DateTime,
             Sku = sku,
             Quantity = quantity,
             Country = country,
