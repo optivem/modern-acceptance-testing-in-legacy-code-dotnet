@@ -8,5 +8,13 @@ public class ProblemDetailResponse
     public string? Detail { get; set; }
     public string? Instance { get; set; }
     public string? Timestamp { get; set; }
-    public List<ProblemDetailsFieldErrorResponse>? Errors { get; set; }
+    public List<FieldError>? Errors { get; set; }
+
+    public class FieldError
+    {
+        public string? Field { get; set; }
+        public string? Message { get; set; }
+        public string? Code { get; set; }
+        public object? RejectedValue { get; set; }
+    }
 }
