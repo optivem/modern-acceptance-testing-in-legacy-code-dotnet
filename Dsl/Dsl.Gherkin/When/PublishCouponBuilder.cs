@@ -71,7 +71,7 @@ public class PublishCouponBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
 
     protected override async Task<ExecutionResult<VoidValue, VoidVerification>> Execute(SystemDsl app)
     {
-        var result = await app.Shop(Channel).PublishCoupon()
+        var result = await (await app.Shop(Channel)).PublishCoupon()
             .CouponCode(_couponCode)
             .DiscountRate(_discountRate)
             .ValidFrom(_validFrom)

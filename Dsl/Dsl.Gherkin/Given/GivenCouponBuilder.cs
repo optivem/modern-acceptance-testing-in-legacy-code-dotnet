@@ -64,7 +64,7 @@ public class GivenCouponBuilder : BaseGivenBuilder
 
     internal override async Task Execute(SystemDsl app)
     {
-        (await app.Shop(Channel).PublishCoupon()
+        (await (await app.Shop(Channel)).PublishCoupon()
             .CouponCode(_couponCode)
             .DiscountRate(_discountRate)
             .ValidFrom(_validFrom)

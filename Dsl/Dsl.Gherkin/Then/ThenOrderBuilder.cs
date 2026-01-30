@@ -34,7 +34,7 @@ namespace Dsl.Gherkin.Then
         {
             if (_orderVerification == null)
             {
-                var result = await _app.Shop(Channel).ViewOrder()
+                var result = await (await _app.Shop(Channel)).ViewOrder()
                     .OrderNumber(_orderNumber)
                     .Execute();
                 _orderVerification = result.ShouldSucceed();

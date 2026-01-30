@@ -10,11 +10,11 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Internal;
 
 public class ShopUiCouponDriver : ICouponDriver
 {
-    private readonly Func<HomePage> _homePageSupplier;
+    private readonly Func<Task<HomePage>> _homePageSupplier;
     private readonly PageNavigator _pageNavigator;
     private CouponManagementPage? _couponManagementPage;
 
-    public ShopUiCouponDriver(Func<HomePage> homePageSupplier, PageNavigator pageNavigator)
+    public ShopUiCouponDriver(Func<Task<HomePage>> homePageSupplier, PageNavigator pageNavigator)
     {
         _homePageSupplier = homePageSupplier;
         _pageNavigator = pageNavigator;
@@ -60,7 +60,7 @@ public class ShopUiCouponDriver : ICouponDriver
 
     private async Task NavigateToCouponManagementPageAsync()
     {
-        var homePage = _homePageSupplier();
+        var homePage = await _homePageSupplier();
         _couponManagementPage = await homePage.ClickCouponManagementAsync();
         _pageNavigator.SetCurrentPage(PageNavigator.Page.COUPON_MANAGEMENT);
     }

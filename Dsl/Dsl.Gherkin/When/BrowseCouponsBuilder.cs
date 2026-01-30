@@ -16,7 +16,7 @@ public class BrowseCouponsBuilder : BaseWhenBuilder<BrowseCouponsResponse, Brows
 
     protected override async Task<ExecutionResult<BrowseCouponsResponse, BrowseCouponsVerification>> Execute(SystemDsl app)
     {
-        var result = await app.Shop(Channel)
+        var result = await (await app.Shop(Channel))
             .BrowseCoupons()
             .Execute();
 

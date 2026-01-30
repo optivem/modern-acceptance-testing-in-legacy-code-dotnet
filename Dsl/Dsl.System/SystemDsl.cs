@@ -26,13 +26,17 @@ public class SystemDsl : IAsyncDisposable
     public SystemDsl(SystemConfiguration configuration)
         : this(new UseCaseContext(configuration.ExternalSystemMode), configuration) { }
 
-    public ShopDsl Shop(Channel channel)
+    public async Task<ShopDsl> Shop(Channel channel)
     {
-        return GetOrCreate(ref _shop, () => new ShopDsl(
-            _configuration.ShopUiBaseUrl,
-            _configuration.ShopApiBaseUrl,
-            channel,
-            _context));
+        if (_shop == null)
+        {
+            _shop = await ShopDsl.CreateAsync(
+                _configuration.ShopUiBaseUrl,
+                _configuration.ShopApiBaseUrl,
+                channel,
+                _context);
+        }
+        return _shop;
     }
 
     public ErpDsl Erp() => GetOrCreate(ref _erp, () => new ErpDsl(_configuration.ErpBaseUrl, _context));

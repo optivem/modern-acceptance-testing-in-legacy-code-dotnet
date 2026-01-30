@@ -9,14 +9,14 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Ui.Internal;
 
 public class ShopUiOrderDriver : IOrderDriver
 {
-    private readonly Func<HomePage> _homePageSupplier;
+    private readonly Func<Task<HomePage>> _homePageSupplier;
     private readonly PageNavigator _pageNavigator;
     
     private NewOrderPage? _newOrderPage;
     private OrderHistoryPage? _orderHistoryPage;
     private OrderDetailsPage? _orderDetailsPage;
 
-    public ShopUiOrderDriver(Func<HomePage> homePageSupplier, PageNavigator pageNavigator)
+    public ShopUiOrderDriver(Func<Task<HomePage>> homePageSupplier, PageNavigator pageNavigator)
     {
         _homePageSupplier = homePageSupplier;
         _pageNavigator = pageNavigator;
@@ -144,7 +144,7 @@ public class ShopUiOrderDriver : IOrderDriver
     {
         if (!_pageNavigator.IsOnPage(PageNavigator.Page.NEW_ORDER))
         {
-            var homePage = _homePageSupplier();
+            var homePage = await _homePageSupplier();
             _newOrderPage = await homePage.ClickNewOrderAsync();
             _pageNavigator.SetCurrentPage(PageNavigator.Page.NEW_ORDER);
         }
@@ -154,7 +154,7 @@ public class ShopUiOrderDriver : IOrderDriver
     {
         if (!_pageNavigator.IsOnPage(PageNavigator.Page.ORDER_HISTORY))
         {
-            var homePage = _homePageSupplier();
+            var homePage = await _homePageSupplier();
             _orderHistoryPage = await homePage.ClickOrderHistoryAsync();
             _pageNavigator.SetCurrentPage(PageNavigator.Page.ORDER_HISTORY);
         }

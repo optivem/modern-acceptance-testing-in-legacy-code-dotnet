@@ -29,7 +29,7 @@ public class CancelOrderBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
 
     protected override async Task<ExecutionResult<VoidValue, VoidVerification>> Execute(SystemDsl app)
     {
-        var result = await app.Shop(Channel).CancelOrder()
+        var result = await (await app.Shop(Channel)).CancelOrder()
             .OrderNumber(_orderNumber)
             .Execute();
 

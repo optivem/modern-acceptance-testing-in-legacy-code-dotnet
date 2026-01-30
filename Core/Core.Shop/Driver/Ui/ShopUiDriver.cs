@@ -21,8 +21,8 @@ public class ShopUiDriver : IShopDriver
     {
         _client = client;
         _pageNavigator = pageNavigator;
-        _orderDriver = new ShopUiOrderDriver(() => GetHomePage(), _pageNavigator);
-        _couponDriver = new ShopUiCouponDriver(() => GetHomePage(), _pageNavigator);
+        _orderDriver = new ShopUiOrderDriver(() => GetHomePageAsync(), _pageNavigator);
+        _couponDriver = new ShopUiCouponDriver(() => GetHomePageAsync(), _pageNavigator);
     }
 
     public async ValueTask DisposeAsync()
@@ -56,11 +56,11 @@ public class ShopUiDriver : IShopDriver
     
     public ICouponDriver Coupons() => _couponDriver;
 
-    private HomePage GetHomePage()
+    private async Task<HomePage> GetHomePageAsync()
     {
         if (_homePage == null || !_pageNavigator.IsOnPage(PageNavigator.Page.HOME))
         {
-            _homePage = _client.OpenHomePageAsync().GetAwaiter().GetResult();
+            _homePage = await _client.OpenHomePageAsync();
             _pageNavigator.SetCurrentPage(PageNavigator.Page.HOME);
         }
         return _homePage;

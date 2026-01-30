@@ -65,7 +65,7 @@ public class GivenOrderBuilder : BaseGivenBuilder
 
     internal override async Task Execute(SystemDsl app)
     {
-        (await app.Shop(Channel).PlaceOrder()
+        (await (await app.Shop(Channel)).PlaceOrder()
             .OrderNumber(_orderNumber)
             .Sku(_sku)
             .Quantity(_quantity)
@@ -76,7 +76,7 @@ public class GivenOrderBuilder : BaseGivenBuilder
 
         if (_status == OrderStatus.Cancelled)
         {
-            (await app.Shop(Channel).CancelOrder()
+            (await (await app.Shop(Channel)).CancelOrder()
                 .OrderNumber(_orderNumber)
                 .Execute())
                 .ShouldSucceed();

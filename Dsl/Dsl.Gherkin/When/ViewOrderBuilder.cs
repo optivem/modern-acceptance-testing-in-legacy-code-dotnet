@@ -24,7 +24,7 @@ public class ViewOrderBuilder : BaseWhenBuilder<ViewOrderResponse, ViewOrderVeri
 
     protected override async Task<ExecutionResult<ViewOrderResponse, ViewOrderVerification>> Execute(SystemDsl app)
     {
-        var result = await app.Shop(Channel).ViewOrder()
+        var result = await (await app.Shop(Channel)).ViewOrder()
             .OrderNumber(_orderNumber)
             .Execute();
 

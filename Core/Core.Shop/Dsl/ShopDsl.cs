@@ -13,17 +13,23 @@ public class ShopDsl : IAsyncDisposable
     private readonly IShopDriver _driver;
     private readonly UseCaseContext _context;
 
-    public ShopDsl(string uiBaseUrl, string apiBaseUrl, Channel channel, UseCaseContext context)
+    private ShopDsl(IShopDriver driver, UseCaseContext context)
     {
-        _driver = CreateDriver(uiBaseUrl, apiBaseUrl, channel);
+        _driver = driver;
         _context = context;
     }
 
-    private static IShopDriver CreateDriver(string uiBaseUrl, string apiBaseUrl, Channel channel)
+    public static async Task<ShopDsl> CreateAsync(string uiBaseUrl, string apiBaseUrl, Channel channel, UseCaseContext context)
+    {
+        var driver = await CreateDriverAsync(uiBaseUrl, apiBaseUrl, channel);
+        return new ShopDsl(driver, context);
+    }
+
+    private static async Task<IShopDriver> CreateDriverAsync(string uiBaseUrl, string apiBaseUrl, Channel channel)
     {
         return channel.Type switch
         {
-            ChannelType.UI => ShopUiDriver.CreateAsync(uiBaseUrl).GetAwaiter().GetResult(),
+            ChannelType.UI => await ShopUiDriver.CreateAsync(uiBaseUrl),
             ChannelType.API => new ShopApiDriver(apiBaseUrl),
             _ => throw new InvalidOperationException($"Unknown channel: {channel}")
         };
