@@ -51,12 +51,11 @@ namespace Dsl.Gherkin.Then
                 throw new InvalidOperationException("Cannot verify order: no order number available from the executed operation");
             }
 
-            return new ThenOrderBuilder<TSuccessResponse, TSuccessVerification>(this, _app, orderNumber, _lazyExecute);
+            return Order(orderNumber);
         }
 
-        public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> Coupon(string couponCode)
+        public ThenCouponBuilder<TSuccessResponse, TSuccessVerification> Coupon(string couponCode)
         {
-            await GetExecutionResult(); // Ensure execution happened
             return new ThenCouponBuilder<TSuccessResponse, TSuccessVerification>(this, _app, couponCode);
         }
 
@@ -70,7 +69,7 @@ namespace Dsl.Gherkin.Then
                 throw new InvalidOperationException("Cannot verify coupon: no coupon code available from the executed operation");
             }
 
-            return await Coupon(couponCode);
+            return Coupon(couponCode);
         }
 
         private async Task<ExecutionResult<TSuccessResponse, TSuccessVerification>> GetExecutionResult()

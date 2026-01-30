@@ -45,6 +45,11 @@ namespace Dsl.Gherkin.Then
 
         private async Task ExecuteValidations()
         {
+            await ApplyValidations();
+        }
+
+        private async Task ApplyValidations()
+        {
             // Execute the When clause first
             await _lazyExecute();
             
