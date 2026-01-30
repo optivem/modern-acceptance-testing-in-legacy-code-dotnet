@@ -8,6 +8,10 @@ namespace Optivem.EShop.SystemTest.Core.Clock.Client;
 
 public class ClockStubClient : IDisposable
 {
+    private const string HealthEndpoint = "/health";
+    private const string TimeEndpoint = "/api/time";
+    private const string ClockTimeEndpoint = "/clock/api/time";
+
     private readonly JsonHttpClient<ExtClockErrorResponse> _httpClient;
     private readonly JsonWireMockClient _wireMockClient;
 
@@ -24,12 +28,12 @@ public class ClockStubClient : IDisposable
     }
 
     public Task<Result<VoidValue, ExtClockErrorResponse>> CheckHealth()
-        => _httpClient.Get("/health");
+        => _httpClient.Get(HealthEndpoint);
 
     public Task<Result<ExtGetTimeResponse, ExtClockErrorResponse>> GetTime()
-        => _httpClient.Get<ExtGetTimeResponse>("/api/time");
+        => _httpClient.Get<ExtGetTimeResponse>(TimeEndpoint);
 
     public Task<Result<VoidValue, ExtClockErrorResponse>> ConfigureGetTime(ExtGetTimeResponse response)
-        => _wireMockClient.StubGetAsync("/clock/api/time", HttpStatus.Ok, response)
+        => _wireMockClient.StubGetAsync(ClockTimeEndpoint, HttpStatus.Ok, response)
             .MapErrorAsync(ExtClockErrorResponse.From);
 }

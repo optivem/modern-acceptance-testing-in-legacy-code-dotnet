@@ -7,6 +7,9 @@ namespace Optivem.EShop.SystemTest.Core.Tax.Client;
 
 public abstract class BaseTaxClient : IDisposable
 {
+    private const string HealthEndpoint = "/health";
+    private const string CountriesEndpoint = "/api/countries";
+
     protected readonly JsonHttpClient<ExtTaxErrorResponse> _httpClient;
 
     protected BaseTaxClient(string baseUrl)
@@ -20,8 +23,8 @@ public abstract class BaseTaxClient : IDisposable
     }
 
     public Task<Result<VoidValue, ExtTaxErrorResponse>> CheckHealth()
-        => _httpClient.Get("/health");
+        => _httpClient.Get(HealthEndpoint);
 
     public Task<Result<ExtCountryDetailsResponse, ExtTaxErrorResponse>> GetCountry(string country)
-        => _httpClient.Get<ExtCountryDetailsResponse>($"/api/countries/{country}");
+        => _httpClient.Get<ExtCountryDetailsResponse>($"{CountriesEndpoint}/{country}");
 }

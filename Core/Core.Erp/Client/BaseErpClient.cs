@@ -7,6 +7,9 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Client;
 
 public abstract class BaseErpClient : IDisposable
 {
+    private const string HealthEndpoint = "/health";
+    private const string ProductsEndpoint = "/api/products";
+
     protected readonly JsonHttpClient<ExtErpErrorResponse> HttpClient;
 
     protected BaseErpClient(string baseUrl)
@@ -20,8 +23,8 @@ public abstract class BaseErpClient : IDisposable
     }
 
     public Task<Result<VoidValue, ExtErpErrorResponse>> CheckHealth()
-        => HttpClient.Get("/health");
+        => HttpClient.Get(HealthEndpoint);
 
     public Task<Result<ExtProductDetailsResponse, ExtErpErrorResponse>> GetProduct(string sku)
-        => HttpClient.Get<ExtProductDetailsResponse>($"/api/products/{sku}");
+        => HttpClient.Get<ExtProductDetailsResponse>($"{ProductsEndpoint}/{sku}");
 }

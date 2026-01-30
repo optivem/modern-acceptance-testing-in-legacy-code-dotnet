@@ -6,11 +6,13 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Client;
 
 public class ErpRealClient : BaseErpClient
 {
+    private const string ProductsEndpoint = "/api/products";
+
     public ErpRealClient(string baseUrl) : base(baseUrl)
     {
     }
     
 
     public Task<Result<VoidValue, ExtErpErrorResponse>> CreateProduct(ExtCreateProductRequest request)
-        => HttpClient.Post("/api/products", request);
+        => HttpClient.Post(ProductsEndpoint, request);
 }
