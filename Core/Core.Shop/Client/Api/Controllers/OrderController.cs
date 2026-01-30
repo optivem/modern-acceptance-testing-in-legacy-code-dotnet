@@ -19,9 +19,9 @@ public class OrderController
     public Task<Result<PlaceOrderResponse, ProblemDetailResponse>> PlaceOrder(PlaceOrderRequest request)
         => _httpClient.Post<PlaceOrderResponse>(Endpoint, request);
 
-    public Task<Result<ViewOrderResponse, ProblemDetailResponse>> ViewOrder(string orderNumber)
+    public Task<Result<ViewOrderResponse, ProblemDetailResponse>> ViewOrder(string? orderNumber)
         => _httpClient.Get<ViewOrderResponse>($"{Endpoint}/{orderNumber}");
 
-    public Task<Result<VoidValue, ProblemDetailResponse>> CancelOrder(string orderNumber)
+    public Task<Result<VoidValue, ProblemDetailResponse>> CancelOrder(string? orderNumber)
         => _httpClient.Post($"{Endpoint}/{orderNumber}/cancel");
 }

@@ -52,42 +52,6 @@ public class ShopUiOrderDriver : IOrderDriver
         return Success(response);
     }
 
-    public async Task<Result<VoidValue, SystemError>> CancelOrder(string? orderNumber)
-    {
-        var result = await EnsureOnOrderDetailsPageAsync(orderNumber);
-        if (result.IsFailure)
-        {
-            return result.MapVoid();
-        }
-
-        await _orderDetailsPage!.ClickCancelOrderAsync();
-
-        var cancelResult = await _orderDetailsPage.GetResultAsync();
-        if (cancelResult.IsFailure)
-        {
-            return Failure<VoidValue>(cancelResult.Error);
-        }
-
-        var successMessage = cancelResult.Value;
-        if (!successMessage.Contains("cancelled successfully!"))
-        {
-            return Failure<VoidValue>("Did not receive expected cancellation success message");
-        }
-
-        var displayStatusAfterCancel = await _orderDetailsPage.GetStatusAsync();
-        if (displayStatusAfterCancel != OrderStatus.Cancelled)
-        {
-            return Failure<VoidValue>("Order status not updated to CANCELLED");
-        }
-
-        if (!await _orderDetailsPage.IsCancelButtonHiddenAsync())
-        {
-            return Failure<VoidValue>("Cancel button still visible");
-        }
-
-        return Success();
-    }
-
     public async Task<Result<ViewOrderResponse, SystemError>> ViewOrder(string? orderNumber)
     {
         var result = await EnsureOnOrderDetailsPageAsync(orderNumber);
@@ -137,6 +101,42 @@ public class ShopUiOrderDriver : IOrderDriver
         };
 
         return Success(response);
+    }
+
+    public async Task<Result<VoidValue, SystemError>> CancelOrder(string? orderNumber)
+    {
+        var result = await EnsureOnOrderDetailsPageAsync(orderNumber);
+        if (result.IsFailure)
+        {
+            return result.MapVoid();
+        }
+
+        await _orderDetailsPage!.ClickCancelOrderAsync();
+
+        var cancelResult = await _orderDetailsPage.GetResultAsync();
+        if (cancelResult.IsFailure)
+        {
+            return Failure<VoidValue>(cancelResult.Error);
+        }
+
+        var successMessage = cancelResult.Value;
+        if (!successMessage.Contains("cancelled successfully!"))
+        {
+            return Failure<VoidValue>("Did not receive expected cancellation success message");
+        }
+
+        var displayStatusAfterCancel = await _orderDetailsPage.GetStatusAsync();
+        if (displayStatusAfterCancel != OrderStatus.Cancelled)
+        {
+            return Failure<VoidValue>("Order status not updated to CANCELLED");
+        }
+
+        if (!await _orderDetailsPage.IsCancelButtonHiddenAsync())
+        {
+            return Failure<VoidValue>("Cancel button still visible");
+        }
+
+        return Success();
     }
 
     private async Task EnsureOnNewOrderPageAsync()

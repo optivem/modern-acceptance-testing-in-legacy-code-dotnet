@@ -23,6 +23,12 @@ public class ShopApiDriver : IShopDriver
         _couponDriver = new ShopApiCouponDriver(_apiClient);
     }
 
+    public ValueTask DisposeAsync()
+    {
+        _httpClient?.Dispose();
+        return ValueTask.CompletedTask;
+    }
+
     public Task<Result<VoidValue, SystemError>> GoToShop()
         => _apiClient.Health().CheckHealth()
             .MapErrorAsync(SystemError.From);
@@ -30,10 +36,4 @@ public class ShopApiDriver : IShopDriver
     public IOrderDriver Orders() => _orderDriver;
     
     public ICouponDriver Coupons() => _couponDriver;
-
-    public ValueTask DisposeAsync()
-    {
-        _httpClient?.Dispose();
-        return ValueTask.CompletedTask;
-    }
 }
