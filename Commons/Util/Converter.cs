@@ -37,6 +37,16 @@ public static class Converter
         return From(value, v => v.ToString("O")); // ISO 8601 format
     }
 
+    public static DateTimeOffset? ToDateTimeOffset(string? value)
+    {
+        return To(value, DateTimeOffset.Parse);
+    }
+
+    public static string? FromDateTimeOffset(DateTimeOffset? value)
+    {
+        return From(value, v => v.ToString("O")); // ISO 8601 format
+    }
+
     private static string? From<TSource>(TSource? value, Func<TSource, string> converter)
         where TSource : struct
     {

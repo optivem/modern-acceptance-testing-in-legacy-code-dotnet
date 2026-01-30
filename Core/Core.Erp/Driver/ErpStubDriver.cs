@@ -18,16 +18,14 @@ public class ErpStubDriver : BaseErpDriver<ErpStubClient>
 
     public override Task<Result<VoidValue, ErpErrorResponse>> ReturnsProduct(ReturnsProductRequest request)
     {
-        // Handle null or empty price
-        if (string.IsNullOrEmpty(request.Price))
-        {
-            return Task.FromResult(Result.Success<ErpErrorResponse>());
-        }
-
         var extProductDetailsResponse = new ExtProductDetailsResponse
         {
-            Id = request.Sku,
-            Price = decimal.Parse(request.Price)
+            Id = request.Sku!,
+            Title = string.Empty,
+            Description = string.Empty,
+            Price = decimal.Parse(request.Price!),
+            Category = string.Empty,
+            Brand = string.Empty
         };
 
         return _client.ConfigureGetProduct(extProductDetailsResponse)

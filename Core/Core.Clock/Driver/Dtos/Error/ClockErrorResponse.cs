@@ -10,4 +10,9 @@ public class ClockErrorResponse
     {
         return new ClockErrorResponse { Message = errorResponse.Message };
     }
+
+    public override string ToString()
+    {
+        return Message ?? string.Empty;
+    }
 }

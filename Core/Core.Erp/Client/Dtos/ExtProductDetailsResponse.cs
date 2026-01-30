@@ -2,10 +2,10 @@ namespace Optivem.EShop.SystemTest.Core.Erp.Client.Dtos;
 
 public class ExtProductDetailsResponse
 {
-    public string? Id { get; set; }
-    public string? Title { get; set; }
-    public string? Description { get; set; }
+    public required string Id { get; set; }
+    public required string Title { get; set; }
+    public required string Description { get; set; }
     public decimal Price { get; set; }
-    public string? Category { get; set; }
-    public string? Brand { get; set; }
+    public required string Category { get; set; }
+    public required string Brand { get; set; }
 }

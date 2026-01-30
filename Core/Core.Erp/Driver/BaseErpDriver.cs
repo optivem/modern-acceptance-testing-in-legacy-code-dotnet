@@ -28,7 +28,7 @@ public abstract class BaseErpDriver<TClient> : IErpDriver
         => _client.GetProduct(request.Sku)
             .MapAsync(productDetails => new GetProductResponse
             {
-                Sku = productDetails.Id!,
+                Sku = productDetails.Id,
                 Price = productDetails.Price
             })
             .MapErrorAsync(ErpErrorResponse.From);

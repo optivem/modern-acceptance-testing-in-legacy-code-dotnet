@@ -1,5 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Clock.Driver.Dtos;
 using Commons.Dsl;
+using Commons.Util;
 using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Clock.Dsl.Verifications;
@@ -27,7 +28,7 @@ public class GetTimeVerification : ResponseVerification<GetTimeResponse>
 
     public GetTimeVerification Time(string expectedTimeString)
     {
-        var expectedTime = DateTimeOffset.Parse(expectedTimeString);
+        var expectedTime = Converter.ToDateTimeOffset(expectedTimeString)!.Value;
         return Time(expectedTime);
     }
 
@@ -40,7 +41,7 @@ public class GetTimeVerification : ResponseVerification<GetTimeResponse>
 
     public GetTimeVerification TimeIsAfter(string timeString)
     {
-        var time = DateTimeOffset.Parse(timeString);
+        var time = Converter.ToDateTimeOffset(timeString)!.Value;
         return TimeIsAfter(time);
     }
 
@@ -53,7 +54,7 @@ public class GetTimeVerification : ResponseVerification<GetTimeResponse>
 
     public GetTimeVerification TimeIsBefore(string timeString)
     {
-        var time = DateTimeOffset.Parse(timeString);
+        var time = Converter.ToDateTimeOffset(timeString)!.Value;
         return TimeIsBefore(time);
     }
 
@@ -68,8 +69,8 @@ public class GetTimeVerification : ResponseVerification<GetTimeResponse>
 
     public GetTimeVerification TimeIsBetween(string startString, string endString)
     {
-        var start = DateTimeOffset.Parse(startString);
-        var end = DateTimeOffset.Parse(endString);
+        var start = Converter.ToDateTimeOffset(startString)!.Value;
+        var end = Converter.ToDateTimeOffset(endString)!.Value;
         return TimeIsBetween(start, end);
     }
 }

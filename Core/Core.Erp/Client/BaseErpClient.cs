@@ -25,6 +25,6 @@ public abstract class BaseErpClient : IDisposable
     public Task<Result<VoidValue, ExtErpErrorResponse>> CheckHealth()
         => HttpClient.Get(HealthEndpoint);
 
-    public Task<Result<ExtProductDetailsResponse, ExtErpErrorResponse>> GetProduct(string sku)
+    public Task<Result<ExtProductDetailsResponse, ExtErpErrorResponse>> GetProduct(string? sku)
         => HttpClient.Get<ExtProductDetailsResponse>($"{ProductsEndpoint}/{sku}");
 }

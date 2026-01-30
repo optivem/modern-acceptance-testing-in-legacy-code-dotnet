@@ -8,4 +8,9 @@ public class ExtErpErrorResponse
     {
         return new ExtErpErrorResponse { Message = message };
     }
+
+    public override string ToString()
+    {
+        return Message ?? string.Empty;
+    }
 }

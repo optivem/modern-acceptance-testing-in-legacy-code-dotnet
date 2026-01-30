@@ -13,4 +13,9 @@ public class TaxErrorResponse
             Message = errorResponse.Message
         };
     }
+
+    public override string ToString()
+    {
+        return Message ?? string.Empty;
+    }
 }

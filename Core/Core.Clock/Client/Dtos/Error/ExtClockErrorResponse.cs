@@ -8,4 +8,9 @@ public class ExtClockErrorResponse
     {
         return new ExtClockErrorResponse { Message = message };
     }
+
+    public override string ToString()
+    {
+        return Message ?? string.Empty;
+    }
 }
