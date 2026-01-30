@@ -6,7 +6,7 @@ using PlaywrightGateway = Commons.Playwright.PageClient;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui;
 
-public class ShopUiClient : IDisposable, IAsyncDisposable
+public class ShopUiClient : IAsyncDisposable
 {
     // Default: headless mode (browser not visible)
     // To see browser during debugging, set: HEADED=true or PLAYWRIGHT_HEADED=true
@@ -39,7 +39,7 @@ public class ShopUiClient : IDisposable, IAsyncDisposable
 
     public static async Task<ShopUiClient> CreateAsync(string baseUrl)
     {
-        var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+        var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = IsHeadless });
         
         // Create isolated browser context with specific configuration
@@ -96,11 +96,7 @@ public class ShopUiClient : IDisposable, IAsyncDisposable
             await _context.CloseAsync();
         if (_browser != null)
             await _browser.CloseAsync();
-        _playwright?.Dispose();
-    }
 
-    public void Dispose()
-    {
-        DisposeAsync().AsTask().Wait();
+        _playwright?.Dispose();
     }
 }

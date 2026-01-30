@@ -6,7 +6,7 @@ using System;
 
 namespace Dsl.Gherkin;
 
-public class ScenarioDsl : IDisposable
+public class ScenarioDsl : IAsyncDisposable
 {
     private readonly Channel _channel;
     private readonly SystemDsl _app;
@@ -48,8 +48,9 @@ public class ScenarioDsl : IDisposable
         }
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        _app?.Dispose();
+        if (_app != null)
+            await _app.DisposeAsync();
     }
 }

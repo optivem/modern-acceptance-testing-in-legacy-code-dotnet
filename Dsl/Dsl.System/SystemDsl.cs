@@ -8,7 +8,7 @@ using Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core;
 
-public class SystemDsl : IDisposable
+public class SystemDsl : IAsyncDisposable
 {
     private readonly UseCaseContext _context;
     private readonly SystemConfiguration _configuration;
@@ -41,9 +41,11 @@ public class SystemDsl : IDisposable
 
     public ClockDsl Clock() => GetOrCreate(ref _clock, () => new ClockDsl(_configuration.ClockBaseUrl, _context));
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        _shop?.Dispose();
+        if (_shop != null)
+            await _shop.DisposeAsync();
+        
         _erp?.Dispose();
         _tax?.Dispose();
         _clock?.Dispose();

@@ -31,8 +31,9 @@ public class ShopApiDriver : IShopDriver
     
     public ICouponDriver Coupons() => _couponDriver;
 
-    public void Dispose()
+    public ValueTask DisposeAsync()
     {
         _httpClient?.Dispose();
+        return ValueTask.CompletedTask;
     }
 }

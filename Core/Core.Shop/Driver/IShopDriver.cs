@@ -4,7 +4,7 @@ using Optivem.EShop.SystemTest.Core.Shop.Driver.Internal;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Driver;
 
-public interface IShopDriver : IDisposable
+public interface IShopDriver : IAsyncDisposable
 {
     Task<Result<VoidValue, SystemError>> GoToShop();
     IOrderDriver Orders();

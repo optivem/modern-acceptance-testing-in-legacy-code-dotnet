@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base;
 
-public abstract class BaseSystemTest : IDisposable
+public abstract class BaseSystemTest : IAsyncDisposable
 {
     private readonly ScenarioDslFactory _scenarioFactory;
 
@@ -22,9 +22,11 @@ public abstract class BaseSystemTest : IDisposable
         _scenarioFactory = new ScenarioDslFactory(App);
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        App?.Dispose();
+        if (App != null)
+            await App.DisposeAsync();
+        
         GC.SuppressFinalize(this);
     }
 

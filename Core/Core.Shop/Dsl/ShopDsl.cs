@@ -8,7 +8,7 @@ using Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Shop.Dsl;
 
-public class ShopDsl : IDisposable
+public class ShopDsl : IAsyncDisposable
 {
     private readonly IShopDriver _driver;
     private readonly UseCaseContext _context;
@@ -29,9 +29,10 @@ public class ShopDsl : IDisposable
         };
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        _driver?.Dispose();
+        if (_driver != null)
+            await _driver.DisposeAsync();
     }
 
     public GoToShop GoToShop() => new(_driver, _context);

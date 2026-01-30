@@ -60,8 +60,9 @@ public class ShopUiDriver : IShopDriver
         return _homePage;
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        _client?.Dispose();
+        if (_client != null)
+            await _client.DisposeAsync();
     }
 }
