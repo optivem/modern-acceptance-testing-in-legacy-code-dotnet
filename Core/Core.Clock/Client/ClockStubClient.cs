@@ -27,24 +27,14 @@ public class ClockStubClient : IDisposable
         _wireMockClient.Dispose();
     }
 
-    public async Task<ExtClockResult> CheckHealth()
-    {
-        var result = await _httpClient.Get(HealthEndpoint);
-        return result.IsSuccess ? ExtClockResult.Success() : ExtClockResult.Failure(result.Error);
-    }
+    public Task<ClockClientResult> CheckHealth()
+        => _httpClient.Get(HealthEndpoint).ToResultAsync();
 
-    public async Task<ExtClockResult<ExtGetTimeResponse>> GetTime()
-    {
-        var result = await _httpClient.Get<ExtGetTimeResponse>(TimeEndpoint);
-        return result.IsSuccess 
-            ? ExtClockResult<ExtGetTimeResponse>.Success(result.Value) 
-            : ExtClockResult<ExtGetTimeResponse>.Failure(result.Error);
-    }
+    public Task<ClockClientResult<ExtGetTimeResponse>> GetTime()
+        => _httpClient.Get<ExtGetTimeResponse>(TimeEndpoint).ToResultAsync();
 
-    public async Task<ExtClockResult> ConfigureGetTime(ExtGetTimeResponse response)
-    {
-        var result = await _wireMockClient.StubGetAsync(ClockTimeEndpoint, HttpStatus.Ok, response)
-            .MapErrorAsync(ExtClockErrorResponse.From);
-        return result.IsSuccess ? ExtClockResult.Success() : ExtClockResult.Failure(result.Error);
-    }
+    public Task<ClockClientResult> ConfigureGetTime(ExtGetTimeResponse response)
+        => _wireMockClient.StubGetAsync(ClockTimeEndpoint, HttpStatus.Ok, response)
+            .MapErrorAsync(ExtClockErrorResponse.From)
+            .ToResultAsync();
 }
