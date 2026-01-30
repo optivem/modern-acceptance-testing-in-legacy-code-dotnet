@@ -25,15 +25,3 @@ public static class SystemResults
         return Result<T, SystemError>.Failure(error);
     }
 }
-
-public static class SystemResultExtensions
-{
-    public static Result<VoidValue, SystemError> MapVoid<T>(this Result<T, SystemError> result)
-    {
-        if (result.IsSuccess)
-        {
-            return SystemResults.Success();
-        }
-        return SystemResults.Failure<VoidValue>(result.Error);
-    }
-}
