@@ -13,7 +13,8 @@ public class ShopSmokeTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldBeAbleToGoToShop(Channel channel)
     {
-        (await (await App.Shop(channel)).GoToShop()
+        var shop = await App.Shop(channel);
+        (await shop.GoToShop()
             .Execute())
             .ShouldSucceed();
     }

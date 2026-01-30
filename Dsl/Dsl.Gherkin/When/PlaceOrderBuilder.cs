@@ -69,7 +69,8 @@ public class PlaceOrderBuilder : BaseWhenBuilder<PlaceOrderResponse, PlaceOrderV
 
     protected override async Task<ExecutionResult<PlaceOrderResponse, PlaceOrderVerification>> Execute(SystemDsl app)
     {
-        var result = await (await app.Shop(Channel)).PlaceOrder()
+        var shop = await app.Shop(Channel);
+        var result = await shop.PlaceOrder()
             .OrderNumber(_orderNumber)
             .Sku(_sku)
             .Quantity(_quantity)

@@ -23,7 +23,8 @@ namespace Dsl.Gherkin.Then
         {
             if (_verification == null)
             {
-                var result = await (await _app.Shop(Channel)).BrowseCoupons().Execute();
+                var shop = await _app.Shop(Channel);
+                var result = await shop.BrowseCoupons().Execute();
                 _verification = result.ShouldSucceed();
                 _verification.HasCouponWithCode(_couponCode);
             }
