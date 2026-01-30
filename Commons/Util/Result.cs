@@ -6,7 +6,7 @@ public class Result<T, E>
     private readonly T? _value;
     private readonly E? _error;
 
-    protected Result(bool success, T? value, E? error)
+    private Result(bool success, T? value, E? error)
     {
         _success = success;
         _value = value;
