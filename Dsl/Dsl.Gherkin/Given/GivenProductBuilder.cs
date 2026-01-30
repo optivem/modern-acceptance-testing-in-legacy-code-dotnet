@@ -1,3 +1,4 @@
+using Commons.Util;
 using Dsl.Gherkin.Given;
 using static Optivem.EShop.SystemTest.Core.Gherkin.GherkinDefaults;
 
@@ -27,9 +28,9 @@ public class GivenProductBuilder : BaseGivenBuilder
         return this;
     }
 
-    public GivenProductBuilder WithUnitPrice(decimal unitPrice)
+    public GivenProductBuilder WithUnitPrice(decimal? unitPrice)
     {
-        return WithUnitPrice(unitPrice.ToString());
+        return WithUnitPrice(Converter.FromDecimal(unitPrice));
     }
 
     internal override async Task Execute(SystemDsl app)

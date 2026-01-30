@@ -63,7 +63,7 @@ namespace Dsl.Gherkin.Given
 
         public WhenClause When()
         {
-            return new WhenClause(Channel, _app, _scenario, _products.Count > 0, _countries.Count > 0, async () =>
+            return new WhenClause(Channel, _app, _scenario, _products.Any(), _countries.Any(), async () =>
             {
                 await SetupClock();
                 await SetupErp();
@@ -79,7 +79,7 @@ namespace Dsl.Gherkin.Given
 
         private async Task SetupErp()
         {
-            if (_orders.Count > 0 && _products.Count == 0)
+            if (_orders.Any() && !_products.Any())
             {
                 var defaultProduct = new GivenProductBuilder(this);
                 _products.Add(defaultProduct);
@@ -93,7 +93,7 @@ namespace Dsl.Gherkin.Given
 
         private async Task SetupTax()
         {
-            if (_orders.Count > 0 && _countries.Count == 0)
+            if (_orders.Any() && !_countries.Any())
             {
                 var defaultCountry = new GivenCountryBuilder(this);
                 _countries.Add(defaultCountry);
@@ -113,7 +113,7 @@ namespace Dsl.Gherkin.Given
 
         private async Task SetupCoupons()
         {
-            if (_orders.Count > 0 && _coupons.Count == 0)
+            if (_orders.Any() && !_coupons.Any())
             {
                 var defaultCoupon = new GivenCouponBuilder(this);
                 _coupons.Add(defaultCoupon);

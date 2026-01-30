@@ -1,3 +1,4 @@
+using Commons.Util;
 using Dsl.Gherkin.Given;
 using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Orders;
 using static Optivem.EShop.SystemTest.Core.Gherkin.GherkinDefaults;
@@ -29,29 +30,30 @@ public class GivenOrderBuilder : BaseGivenBuilder
         return this;
     }
 
-    public GivenOrderBuilder WithSku(string sku)
+    public GivenOrderBuilder WithSku(string? sku)
     {
         _sku = sku;
         return this;
     }
 
-    public GivenOrderBuilder WithQuantity(string quantity)
+    public GivenOrderBuilder WithQuantity(string? quantity)
     {
         _quantity = quantity;
         return this;
     }
 
-    public GivenOrderBuilder WithQuantity(int quantity)
+    public GivenOrderBuilder WithQuantity(int? quantity)
     {
-        return WithQuantity(quantity.ToString());    }
+        return WithQuantity(Converter.FromInteger(quantity));    
+    }
 
-    public GivenOrderBuilder WithCountry(string country)
+    public GivenOrderBuilder WithCountry(string? country)
     {
         _country = country;
         return this;
     }
 
-    public GivenOrderBuilder WithCouponCode(string couponCodeAlias)
+    public GivenOrderBuilder WithCouponCode(string? couponCodeAlias)
     {
         _couponCodeAlias = couponCodeAlias;
         return this;
@@ -66,6 +68,7 @@ public class GivenOrderBuilder : BaseGivenBuilder
     internal override async Task Execute(SystemDsl app)
     {
         var shop = await app.Shop(Channel);
+        
         (await shop.PlaceOrder()
             .OrderNumber(_orderNumber)
             .Sku(_sku)

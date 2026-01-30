@@ -13,7 +13,7 @@ public class GivenClockBuilder : BaseGivenBuilder
         WithTime(DefaultTime);
     }
 
-    public GivenClockBuilder WithTime(string time)
+    public GivenClockBuilder WithTime(string? time)
     {
         _time = time;
         return this;

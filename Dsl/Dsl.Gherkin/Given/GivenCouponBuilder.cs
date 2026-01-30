@@ -1,3 +1,4 @@
+using Commons.Util;
 using Dsl.Gherkin.Given;
 using static Optivem.EShop.SystemTest.Core.Gherkin.GherkinDefaults;
 
@@ -20,46 +21,46 @@ public class GivenCouponBuilder : BaseGivenBuilder
         WithUsageLimit(Empty);
     }
 
-    public GivenCouponBuilder WithCouponCode(string couponCode)
+    public GivenCouponBuilder WithCouponCode(string? couponCode)
     {
         _couponCode = couponCode;
         return this;
     }
 
-    public GivenCouponBuilder WithDiscountRate(string discountRate)
+    public GivenCouponBuilder WithDiscountRate(string? discountRate)
     {
         _discountRate = discountRate;
         return this;
     }
 
-    public GivenCouponBuilder WithDiscountRate(decimal discountRate)
+    public GivenCouponBuilder WithDiscountRate(decimal? discountRate)
     {
-        _discountRate = discountRate.ToString();
+        _discountRate = Converter.FromDecimal(discountRate);
         return this;
     }
 
 
-    public GivenCouponBuilder WithValidFrom(string validFrom)
+    public GivenCouponBuilder WithValidFrom(string? validFrom)
     {
         _validFrom = validFrom;
         return this;
     }
 
-    public GivenCouponBuilder WithValidTo(string validTo)
+    public GivenCouponBuilder WithValidTo(string? validTo)
     {
         _validTo = validTo;
         return this;
     }
 
-    public GivenCouponBuilder WithUsageLimit(string usageLimit)
+    public GivenCouponBuilder WithUsageLimit(string? usageLimit)
     {
         _usageLimit = usageLimit;
         return this;
     }
 
-    public GivenCouponBuilder WithUsageLimit(int usageLimit)
+    public GivenCouponBuilder WithUsageLimit(int? usageLimit)
     {
-        return WithUsageLimit(usageLimit.ToString());
+        return WithUsageLimit(Converter.FromInteger(usageLimit));
     }
 
     internal override async Task Execute(SystemDsl app)
