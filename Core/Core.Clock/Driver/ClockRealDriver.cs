@@ -10,13 +10,13 @@ public class ClockRealDriver : IClockDriver
         // No resources to dispose
     }
 
-    public Task<Result<VoidValue, ClockErrorResponse>> GoToClock()
+    public Task<ClockResult> GoToClock()
     {
         var _ = DateTimeOffset.UtcNow;
-        return Task.FromResult(Result.Success<ClockErrorResponse>());
+        return Task.FromResult(ClockResult.Success());
     }
 
-    public Task<Result<GetTimeResponse, ClockErrorResponse>> GetTime()
+    public Task<ClockResult<GetTimeResponse>> GetTime()
     {
         var currentTime = DateTimeOffset.UtcNow;
 
@@ -25,12 +25,12 @@ public class ClockRealDriver : IClockDriver
             Time = currentTime
         };
 
-        return Task.FromResult(Result<GetTimeResponse, ClockErrorResponse>.Success(response));
+        return Task.FromResult(ClockResult<GetTimeResponse>.Success(response));
     }
 
-    public Task<Result<VoidValue, ClockErrorResponse>> ReturnsTime(ReturnsTimeRequest request)
+    public Task<ClockResult> ReturnsTime(ReturnsTimeRequest request)
     {
         // No-op for real driver - cannot configure system clock
-        return Task.FromResult(Result.Success<ClockErrorResponse>());
+        return Task.FromResult(ClockResult.Success());
     }
 }
