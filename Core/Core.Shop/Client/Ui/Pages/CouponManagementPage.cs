@@ -162,7 +162,7 @@ public class CouponManagementPage : BasePage
 
     private decimal ParseDiscountRate(string? text)
     {
-        var value = Converter.ToBigDecimal(text);
+        var value = Converter.ToDecimal(text);
         return value == null ? 0.0m : value.Value / 100.0m; // Convert percentage to decimal
     }
 

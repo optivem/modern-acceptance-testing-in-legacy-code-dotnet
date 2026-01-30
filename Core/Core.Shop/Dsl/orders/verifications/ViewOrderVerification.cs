@@ -70,7 +70,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification UnitPrice(string expectedUnitPrice)
     {
-        return UnitPrice(Converter.ToBigDecimal(expectedUnitPrice)!.Value);
+        return UnitPrice(Converter.ToDecimal(expectedUnitPrice)!.Value);
     }
 
     public ViewOrderVerification UnitPriceGreaterThanZero()
@@ -89,7 +89,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification SubtotalPrice(string expectedSubtotalPrice)
     {
-        return SubtotalPrice(Converter.ToBigDecimal(expectedSubtotalPrice)!.Value);
+        return SubtotalPrice(Converter.ToDecimal(expectedSubtotalPrice)!.Value);
     }
 
     public ViewOrderVerification SubtotalPriceGreaterThanZero()
@@ -144,7 +144,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification BasePrice(string expectedBasePrice)
     {
-        return BasePrice(Converter.ToBigDecimal(expectedBasePrice)!.Value);
+        return BasePrice(Converter.ToDecimal(expectedBasePrice)!.Value);
     }
 
     public ViewOrderVerification BasePriceGreaterThanZero()
@@ -164,7 +164,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification DiscountRate(string expectedDiscountRate)
     {
-        return DiscountRate(Converter.ToBigDecimal(expectedDiscountRate)!.Value);
+        return DiscountRate(Converter.ToDecimal(expectedDiscountRate)!.Value);
     }
 
     // Discount Amount Methods  
@@ -177,7 +177,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification DiscountAmount(string expectedDiscountAmount)
     {
-        return DiscountAmount(Converter.ToBigDecimal(expectedDiscountAmount)!.Value);
+        return DiscountAmount(Converter.ToDecimal(expectedDiscountAmount)!.Value);
     }
 
     // Tax Rate Methods
@@ -190,7 +190,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification TaxRate(string expectedTaxRate)
     {
-        return TaxRate(Converter.ToBigDecimal(expectedTaxRate)!.Value);
+        return TaxRate(Converter.ToDecimal(expectedTaxRate)!.Value);
     }
 
     // Tax Amount Methods
@@ -203,7 +203,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification TaxAmount(string expectedTaxAmount)
     {
-        return TaxAmount(Converter.ToBigDecimal(expectedTaxAmount)!.Value);
+        return TaxAmount(Converter.ToDecimal(expectedTaxAmount)!.Value);
     }
 
     // Total Price Methods
@@ -216,7 +216,7 @@ public class ViewOrderVerification : ResponseVerification<ViewOrderResponse>
 
     public ViewOrderVerification TotalPrice(string expectedTotalPrice)
     {
-        return TotalPrice(Converter.ToBigDecimal(expectedTotalPrice)!.Value);
+        return TotalPrice(Converter.ToDecimal(expectedTotalPrice)!.Value);
     }
 
     // Applied Coupon Code Methods

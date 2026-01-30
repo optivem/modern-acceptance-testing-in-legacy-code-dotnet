@@ -2,12 +2,12 @@ namespace Commons.Util;
 
 public static class Converter
 {
-    public static decimal? ToBigDecimal(string? value)
+    public static decimal? ToDecimal(string? value)
     {
         return To(value, decimal.Parse);
     }
 
-    public static string? FromBigDecimal(decimal? value)
+    public static string? FromDecimal(decimal? value)
     {
         return From(value, v => v.ToString());
     }
