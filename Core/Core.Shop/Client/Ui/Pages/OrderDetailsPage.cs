@@ -5,8 +5,6 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Client.Ui.Pages;
 
 public class OrderDetailsPage : BasePage
 {
-    // React uses [role='alert'] directly, without #notifications wrapper - matches Java selectors
-    private const string NotificationSelector = "[role='alert']";
     private const string OrderNumberOutputSelector = "[aria-label='Display Order Number']";
     private const string SkuOutputSelector = "[aria-label='Display SKU']";
     private const string CountryOutputSelector = "[aria-label='Display Country']";
@@ -27,6 +25,9 @@ public class OrderDetailsPage : BasePage
     private const string TextNone = "None";
     private const string DollarSymbol = "$";
     private const string PercentSymbol = "%";
+    
+    // Enum parsing constants
+    private const bool IgnoreCase = true;
 
     public OrderDetailsPage(PageClient pageClient) : base(pageClient)
     {
@@ -101,7 +102,7 @@ public class OrderDetailsPage : BasePage
     public async Task<OrderStatus> GetStatusAsync()
     {
         var status = await PageClient.ReadTextContentAsync(StatusOutputSelector);
-        return Enum.Parse<OrderStatus>(status, true); // true = ignore case
+        return Enum.Parse<OrderStatus>(status, IgnoreCase);
     }
 
     public async Task<string?> GetAppliedCouponAsync()
@@ -132,6 +133,6 @@ public class OrderDetailsPage : BasePage
         var textContent = await PageClient.ReadTextContentAsync(selector);
         var cleaned = textContent.Replace(PercentSymbol, "").Trim();
         var value = decimal.Parse(cleaned);
-        return value / 100; // Convert percentage to decimal (e.g., 15% -> 0.15)
+        return value / 100;
     }
 }
