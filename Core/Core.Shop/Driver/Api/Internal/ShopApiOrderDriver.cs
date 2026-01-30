@@ -15,21 +15,15 @@ public class ShopApiOrderDriver : IOrderDriver
         _apiClient = apiClient;
     }
 
-    public async Task<Result<PlaceOrderResponse, SystemError>> PlaceOrder(PlaceOrderRequest request)
-    {
-        var result = await _apiClient.Orders().PlaceOrder(request);
-        return result.MapError(SystemError.From);
-    }
+    public Task<Result<PlaceOrderResponse, SystemError>> PlaceOrder(PlaceOrderRequest request)
+        => _apiClient.Orders().PlaceOrder(request)
+            .MapErrorAsync(SystemError.From);
 
-    public async Task<Result<VoidValue, SystemError>> CancelOrder(string? orderNumber)
-    {
-        var result = await _apiClient.Orders().CancelOrder(orderNumber);
-        return result.MapError(SystemError.From);
-    }
+    public Task<Result<VoidValue, SystemError>> CancelOrder(string? orderNumber)
+        => _apiClient.Orders().CancelOrder(orderNumber)
+            .MapErrorAsync(SystemError.From);
 
-    public async Task<Result<ViewOrderResponse, SystemError>> ViewOrder(string? orderNumber)
-    {
-        var result = await _apiClient.Orders().ViewOrder(orderNumber);
-        return result.MapError(SystemError.From);
-    }
+    public Task<Result<ViewOrderResponse, SystemError>> ViewOrder(string? orderNumber)
+        => _apiClient.Orders().ViewOrder(orderNumber)
+            .MapErrorAsync(SystemError.From);
 }

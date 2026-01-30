@@ -19,23 +19,18 @@ public abstract class BaseTaxDriver<TClient> : ITaxDriver where TClient : BaseTa
         _client?.Dispose();
     }
 
-    public virtual async Task<Result<VoidValue, TaxErrorResponse>> GoToTax()
-    {
-        var result = await _client.CheckHealth();
-        return result.MapError(TaxErrorResponse.From);
-    }
+    public virtual Task<Result<VoidValue, TaxErrorResponse>> GoToTax()
+        => _client.CheckHealth()
+            .MapErrorAsync(TaxErrorResponse.From);
 
-    public virtual async Task<Result<GetTaxResponse, TaxErrorResponse>> GetTaxRate(string? country)
-    {
-        var result = await _client.GetCountry(country);
-        return result
-            .Map(taxRateResponse => new GetTaxResponse
+    public virtual Task<Result<GetTaxResponse, TaxErrorResponse>> GetTaxRate(string? country)
+        => _client.GetCountry(country)
+            .MapAsync(taxRateResponse => new GetTaxResponse
             {
                 Country = taxRateResponse.Id,
                 TaxRate = taxRateResponse.TaxRate
             })
-            .MapError(TaxErrorResponse.From);
-    }
+            .MapErrorAsync(TaxErrorResponse.From);
 
     public abstract Task<Result<VoidValue, TaxErrorResponse>> ReturnsTaxRate(ReturnsTaxRateRequest request);
 }

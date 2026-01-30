@@ -16,12 +16,12 @@ public class ErpStubDriver : BaseErpDriver<ErpStubClient>
     {
     }
 
-    public override async Task<Result<VoidValue, ErpErrorResponse>> ReturnsProduct(ReturnsProductRequest request)
+    public override Task<Result<VoidValue, ErpErrorResponse>> ReturnsProduct(ReturnsProductRequest request)
     {
         // Handle null or empty price
         if (string.IsNullOrEmpty(request.Price))
         {
-            return Result<VoidValue, ErpErrorResponse>.Success(VoidValue.Empty);
+            return Task.FromResult(Result<VoidValue, ErpErrorResponse>.Success(VoidValue.Empty));
         }
 
         var extProductDetailsResponse = new ExtProductDetailsResponse
@@ -30,7 +30,7 @@ public class ErpStubDriver : BaseErpDriver<ErpStubClient>
             Price = decimal.Parse(request.Price)
         };
 
-        var result = await _client.ConfigureGetProduct(extProductDetailsResponse);
-        return result.MapError(ErpErrorResponse.From);
+        return _client.ConfigureGetProduct(extProductDetailsResponse)
+            .MapErrorAsync(ErpErrorResponse.From);
     }
 }

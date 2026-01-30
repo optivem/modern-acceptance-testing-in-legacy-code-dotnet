@@ -29,7 +29,7 @@ public class ClockStubClient : IDisposable
     public Task<Result<ExtGetTimeResponse, ExtClockErrorResponse>> GetTime()
         => _httpClient.Get<ExtGetTimeResponse>("/api/time");
 
-    public async Task<Result<VoidValue, ExtClockErrorResponse>> ConfigureGetTime(ExtGetTimeResponse response)
-        => (await _wireMockClient.StubGetAsync("/clock/api/time", HttpStatus.Ok, response))
-            .MapError(ExtClockErrorResponse.From);
+    public Task<Result<VoidValue, ExtClockErrorResponse>> ConfigureGetTime(ExtGetTimeResponse response)
+        => _wireMockClient.StubGetAsync("/clock/api/time", HttpStatus.Ok, response)
+            .MapErrorAsync(ExtClockErrorResponse.From);
 }
