@@ -20,16 +20,7 @@ namespace Dsl.Gherkin.Then
             _scenario = scenario;
             _lazyExecute = lazyExecute;
         }
-
-        private async Task<ExecutionResult<TSuccessResponse, TSuccessVerification>> GetExecutionResult()
-        {
-            if (_executionResult == null)
-            {
-                _executionResult = await _lazyExecute();
-            }
-            return _executionResult;
-        }
-
+        
         public async Task<ThenSuccessBuilder<TSuccessResponse, TSuccessVerification>> ShouldSucceed()
         {
             var result = await GetExecutionResult();
@@ -87,6 +78,15 @@ namespace Dsl.Gherkin.Then
             }
 
             return await Coupon(couponCode);
+        }
+
+        private async Task<ExecutionResult<TSuccessResponse, TSuccessVerification>> GetExecutionResult()
+        {
+            if (_executionResult == null)
+            {
+                _executionResult = await _lazyExecute();
+            }
+            return _executionResult;
         }
     }
 }
