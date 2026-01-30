@@ -22,7 +22,7 @@ public class GetProduct : BaseErpCommand<GetProductResponse, GetProductVerificat
         return this;
     }
 
-    public override async Task<UseCaseResult<GetProductResponse, ErpErrorResponse, GetProductVerification, ErpErrorVerification>> Execute()
+    public override async Task<ErpUseCaseResult<GetProductResponse, GetProductVerification>> Execute()
     {
         var sku = _context.GetParamValue(_skuParamAlias);
 

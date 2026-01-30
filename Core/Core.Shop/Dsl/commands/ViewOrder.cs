@@ -23,7 +23,7 @@ public class ViewOrder : BaseShopCommand<ViewOrderResponse, ViewOrderVerificatio
         return this;
     }
 
-    public override async Task<UseCaseResult<ViewOrderResponse, SystemError, ViewOrderVerification, ErrorFailureVerification>> Execute()
+    public override async Task<ShopUseCaseResult<ViewOrderResponse, ViewOrderVerification>> Execute()
     {
         var orderNumber = _context.GetResultValue(_orderNumberResultAlias);
 

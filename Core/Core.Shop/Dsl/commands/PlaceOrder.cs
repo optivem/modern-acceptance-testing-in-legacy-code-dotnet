@@ -56,7 +56,7 @@ public class PlaceOrder : BaseShopCommand<PlaceOrderResponse, PlaceOrderVerifica
         return this;
     }
 
-    public override async Task<UseCaseResult<PlaceOrderResponse, SystemError, PlaceOrderVerification, ErrorFailureVerification>> Execute()
+    public override async Task<ShopUseCaseResult<PlaceOrderResponse, PlaceOrderVerification>> Execute()
     {
         var sku = _context.GetParamValue(_skuParamAlias!);
         var country = _context.GetParamValueOrLiteral(_countryAlias!);

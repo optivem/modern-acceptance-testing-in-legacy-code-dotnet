@@ -22,7 +22,7 @@ public class CancelOrder : BaseShopCommand<VoidValue, VoidVerification>
         return this;
     }
 
-    public override async Task<UseCaseResult<VoidValue, SystemError, VoidVerification, ErrorFailureVerification>> Execute()
+    public override async Task<ShopUseCaseResult<VoidValue, VoidVerification>> Execute()
     {
         var orderNumber = _context.GetResultValue(_orderNumberResultAlias!);
         var result = await _driver.Orders().CancelOrder(orderNumber);

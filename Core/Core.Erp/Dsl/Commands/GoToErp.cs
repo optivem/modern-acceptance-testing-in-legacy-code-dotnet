@@ -13,7 +13,7 @@ public class GoToErp : BaseErpCommand<VoidValue, VoidVerification>
     {
     }
 
-    public override async Task<UseCaseResult<VoidValue, ErpErrorResponse, VoidVerification, ErpErrorVerification>> Execute()
+    public override async Task<ErpUseCaseResult<VoidValue, VoidVerification>> Execute()
     {
         var result = await _driver.GoToErp();
 

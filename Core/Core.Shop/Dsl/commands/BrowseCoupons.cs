@@ -15,7 +15,7 @@ public class BrowseCoupons : BaseShopCommand<BrowseCouponsResponse, BrowseCoupon
     {
     }
 
-    public override async Task<UseCaseResult<BrowseCouponsResponse, SystemError, BrowseCouponsVerification, ErrorFailureVerification>> Execute()
+    public override async Task<ShopUseCaseResult<BrowseCouponsResponse, BrowseCouponsVerification>> Execute()
     {
         var request = new BrowseCouponsRequest();
 

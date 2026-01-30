@@ -14,7 +14,7 @@ public class GoToShop : BaseShopCommand<VoidValue, VoidVerification>
     {
     }
 
-    public override async Task<UseCaseResult<VoidValue, SystemError, VoidVerification, ErrorFailureVerification>> Execute()
+    public override async Task<ShopUseCaseResult<VoidValue, VoidVerification>> Execute()
     {
         var result = await _driver.GoToShop();
         

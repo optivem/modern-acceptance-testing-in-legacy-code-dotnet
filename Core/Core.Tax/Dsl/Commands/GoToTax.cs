@@ -13,14 +13,13 @@ public class GoToTax : BaseTaxCommand<VoidValue, VoidVerification>
     {
     }
 
-    public override async Task<UseCaseResult<VoidValue, TaxErrorResponse, VoidVerification, TaxErrorVerification>> Execute()
+    public override async Task<TaxUseCaseResult<VoidValue, VoidVerification>> Execute()
     {
         var result = await _driver.GoToTax();
         
-        return new UseCaseResult<VoidValue, TaxErrorResponse, VoidVerification, TaxErrorVerification>(
+        return new TaxUseCaseResult<VoidValue, VoidVerification>(
             result, 
             _context, 
-            (response, ctx) => new VoidVerification(response, ctx),
-            (error, ctx) => new TaxErrorVerification(error, ctx));
+            (response, ctx) => new VoidVerification(response, ctx));
     }
 }

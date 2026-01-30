@@ -34,7 +34,7 @@ public class ReturnsTaxRate : BaseTaxCommand<VoidValue, VoidVerification>
         return TaxRate(taxRate.ToString());
     }
 
-    public override async Task<UseCaseResult<VoidValue, TaxErrorResponse, VoidVerification, TaxErrorVerification>> Execute()
+    public override async Task<TaxUseCaseResult<VoidValue, VoidVerification>> Execute()
     {
         var country = _context.GetParamValueOrLiteral(countryAlias);
 

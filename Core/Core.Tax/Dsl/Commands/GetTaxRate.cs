@@ -22,7 +22,7 @@ public class GetTaxRate : BaseTaxCommand<GetTaxResponse, GetTaxVerification>
         return this;
     }
 
-    public override async Task<UseCaseResult<GetTaxResponse, TaxErrorResponse, GetTaxVerification, TaxErrorVerification>> Execute()
+    public override async Task<TaxUseCaseResult<GetTaxResponse, GetTaxVerification>> Execute()
     {
         var countryValue = _context.GetParamValueOrLiteral(country);
         

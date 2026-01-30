@@ -4,11 +4,17 @@ using Commons.Dsl;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Commands.Base;
 
-public abstract class BaseTaxCommand<TResponse, TVerification> 
-    : BaseUseCase<ITaxDriver, TResponse, TaxErrorResponse, TVerification, TaxErrorVerification>
+public abstract class BaseTaxCommand<TResponse, TVerification>
+    where TVerification : ResponseVerification<TResponse>
 {
-    protected BaseTaxCommand(ITaxDriver driver, UseCaseContext context) 
-        : base(driver, context)
+    protected readonly ITaxDriver _driver;
+    protected readonly UseCaseContext _context;
+
+    protected BaseTaxCommand(ITaxDriver driver, UseCaseContext context)
     {
+        _driver = driver;
+        _context = context;
     }
+
+    public abstract Task<TaxUseCaseResult<TResponse, TVerification>> Execute();
 }

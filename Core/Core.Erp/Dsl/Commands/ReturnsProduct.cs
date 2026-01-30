@@ -34,9 +34,9 @@ public class ReturnsProduct : BaseErpCommand<VoidValue, VoidVerification>
         return UnitPrice(price.ToString());
     }
 
-    public override async Task<UseCaseResult<VoidValue, ErpErrorResponse, VoidVerification, ErpErrorVerification>> Execute()
+    public override async Task<ErpUseCaseResult<VoidValue, VoidVerification>> Execute()
     {
-        var sku = _context.GetParamValue(_skuParamAlias!);
+        var sku = _context.GetParamValue(_skuParamAlias);
 
         var request = new ReturnsProductRequest
         {
