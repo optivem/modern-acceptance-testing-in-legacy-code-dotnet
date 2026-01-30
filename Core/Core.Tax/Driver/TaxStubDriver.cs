@@ -15,7 +15,7 @@ public class TaxStubDriver : BaseTaxDriver<TaxStubClient>
     public override Task<Result<VoidValue, TaxErrorResponse>> ReturnsTaxRate(ReturnsTaxRateRequest request)
     {
         var country = request.Country!;
-        var taxRate = decimal.Parse(request.TaxRate!);
+        var taxRate = Converter.ToDecimal(request.TaxRate)!.Value;
 
         var response = new ExtCountryDetailsResponse
         {

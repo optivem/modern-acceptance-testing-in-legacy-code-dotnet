@@ -1,5 +1,6 @@
 using Optivem.EShop.SystemTest.Core.Tax.Driver.Dtos;
 using Commons.Dsl;
+using Commons.Util;
 using Shouldly;
 
 namespace Optivem.EShop.SystemTest.Core.Tax.Dsl.Verifications;
@@ -11,22 +12,30 @@ public class GetTaxVerification : ResponseVerification<GetTaxResponse>
     {
     }
 
-    public GetTaxVerification ShouldHaveTaxRate(string taxRate)
+    public GetTaxVerification Country(string expectedCountryAlias)
     {
-        Response.TaxRate.ToString().ShouldBe(taxRate);
+        var expectedCountry = Context.GetParamValueOrLiteral(expectedCountryAlias);
+        var actualCountry = Response.Country;
+        actualCountry.ShouldBe(expectedCountry, $"Expected country to be '{expectedCountry}', but was '{actualCountry}'");
+        return this;
+    }
+    
+    public GetTaxVerification TaxRate(decimal expectedTaxRate)
+    {
+        var actualTaxRate = Response.TaxRate;
+        actualTaxRate.ShouldBe(expectedTaxRate, $"Expected tax rate to be {expectedTaxRate}, but was {actualTaxRate}");
         return this;
     }
 
-    public GetTaxVerification ShouldHaveTaxRate(decimal taxRate)
+    public GetTaxVerification TaxRate(string expectedTaxRate)
     {
-        Response.TaxRate.ShouldBe(taxRate);
-        return this;
+        return TaxRate(Converter.ToDecimal(expectedTaxRate)!.Value);
     }
 
-    public GetTaxVerification ShouldHaveCountry(string country)
+    public GetTaxVerification TaxRateIsPositive()
     {
-        var resolvedCountry = Context.GetParamValue(country) ?? country;
-        Response.Country.ShouldBe(resolvedCountry);
+        var actualTaxRate = Response.TaxRate;
+        actualTaxRate.ShouldBeGreaterThan(0m, $"Expected tax rate to be positive, but was {actualTaxRate}");
         return this;
     }
 }

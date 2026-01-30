@@ -16,7 +16,7 @@ public class GetTaxRate : BaseTaxCommand<GetTaxResponse, GetTaxVerification>
     {
     }
 
-    public GetTaxRate Country(string country)
+    public GetTaxRate Country(string? country)
     {
         this.country = country;
         return this;

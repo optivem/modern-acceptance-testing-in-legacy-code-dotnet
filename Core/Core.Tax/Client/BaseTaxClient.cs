@@ -25,6 +25,6 @@ public abstract class BaseTaxClient : IDisposable
     public Task<Result<VoidValue, ExtTaxErrorResponse>> CheckHealth()
         => _httpClient.Get(HealthEndpoint);
 
-    public Task<Result<ExtCountryDetailsResponse, ExtTaxErrorResponse>> GetCountry(string country)
+    public Task<Result<ExtCountryDetailsResponse, ExtTaxErrorResponse>> GetCountry(string? country)
         => _httpClient.Get<ExtCountryDetailsResponse>($"{CountriesEndpoint}/{country}");
 }
