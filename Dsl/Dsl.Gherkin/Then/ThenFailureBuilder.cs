@@ -10,7 +10,7 @@ namespace Dsl.Gherkin.Then
         : BaseThenBuilder<TSuccessResponse, TSuccessVerification>
         where TSuccessVerification : ResponseVerification<TSuccessResponse>
     {
-        private readonly ErrorFailureVerification _failureVerification;
+        private readonly SystemErrorFailureVerification _failureVerification;
 
         public ThenFailureBuilder(ThenClause<TSuccessResponse, TSuccessVerification> thenClause, ShopUseCaseResult<TSuccessResponse, TSuccessVerification> result) : base(thenClause)
         {

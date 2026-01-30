@@ -4,14 +4,14 @@ using Optivem.EShop.SystemTest.Core.Shop.Commons.Dtos.Errors;
 
 namespace Optivem.EShop.SystemTest.Core.Common.Dsl;
 
-public class ErrorFailureVerification : ResponseVerification<SystemError>
+public class SystemErrorFailureVerification : ResponseVerification<SystemError>
 {
-    public ErrorFailureVerification(SystemError error, UseCaseContext context) 
+    public SystemErrorFailureVerification(SystemError error, UseCaseContext context) 
         : base(error, context)
     {
     }
 
-    public ErrorFailureVerification ErrorMessage(string expectedMessage)
+    public SystemErrorFailureVerification ErrorMessage(string expectedMessage)
     {
         var expandedExpectedMessage = Context.ExpandAliases(expectedMessage);
         var error = Response;
@@ -23,7 +23,7 @@ public class ErrorFailureVerification : ResponseVerification<SystemError>
         return this;
     }
 
-    public ErrorFailureVerification FieldErrorMessage(string expectedField, string expectedMessage)
+    public SystemErrorFailureVerification FieldErrorMessage(string expectedField, string expectedMessage)
     {
         var expandedExpectedField = Context.ExpandAliases(expectedField);
         var expandedExpectedMessage = Context.ExpandAliases(expectedMessage);

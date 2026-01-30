@@ -18,7 +18,7 @@ namespace Dsl.Gherkin
         private string? _orderNumber;
         private string? _couponCode;
 
-        internal ExecutionResultBuilder(UseCaseResult<TSuccessResponse, SystemError, TSuccessVerification, ErrorFailureVerification> result)
+        internal ExecutionResultBuilder(UseCaseResult<TSuccessResponse, SystemError, TSuccessVerification, SystemErrorFailureVerification> result)
         {
             // Cast to derived type - the result is always a ShopUseCaseResult at runtime
             _result = (ShopUseCaseResult<TSuccessResponse, TSuccessVerification>)result;
