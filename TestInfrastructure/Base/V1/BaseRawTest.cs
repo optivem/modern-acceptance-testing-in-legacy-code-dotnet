@@ -8,23 +8,18 @@ namespace Optivem.EShop.SystemTest.Base.V1;
 
 public abstract class BaseRawTest : BaseConfigurableTest
 {
+    protected SystemConfiguration? Configuration;
+
+    protected HttpClient? ShopHttpClient;
     protected HttpClient? ErpHttpClient;
     protected HttpClient? TaxHttpClient;
-    protected HttpClient? ShopHttpClient;
+
     protected IPlaywright? Playwright;
     protected IBrowser? Browser;
     protected IBrowserContext? BrowserContext;
     protected IPage? Page;
-    protected SystemConfiguration? Configuration;
-    protected JsonSerializerOptions? ObjectMapper;
 
-    protected void SetUpExternalHttpClients()
-    {
-        Configuration = LoadConfiguration();
-        ErpHttpClient = new HttpClient();
-        TaxHttpClient = new HttpClient();
-        ObjectMapper = CreateObjectMapper();
-    }
+    protected JsonSerializerOptions? ObjectMapper;
 
     protected void SetUpShopHttpClient()
     {
@@ -65,6 +60,16 @@ public abstract class BaseRawTest : BaseConfigurableTest
         BrowserContext = Browser.NewContextAsync(contextOptions).Result;
         Page = BrowserContext.NewPageAsync().Result;
     }
+
+    protected void SetUpExternalHttpClients()
+    {
+        Configuration = LoadConfiguration();
+        ErpHttpClient = new HttpClient();
+        TaxHttpClient = new HttpClient();
+        ObjectMapper = CreateObjectMapper();
+    }
+
+
 
     protected string GetErpBaseUrl() => Configuration!.ErpBaseUrl;
     protected string GetTaxBaseUrl() => Configuration!.TaxBaseUrl;
