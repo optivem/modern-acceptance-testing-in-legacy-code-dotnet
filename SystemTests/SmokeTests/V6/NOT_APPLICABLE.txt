@@ -1,0 +1,9 @@
+V6 (BaseScenarioDslTest with Gherkin-style Given-When-Then DSL) is not applicable for simple smoke tests.
+
+Smoke tests are basic connectivity checks that verify the system is accessible.
+They don't require the full Given-When-Then scenario structure.
+
+V6 is intended for complex E2E tests with business scenarios, not smoke tests.
+
+For smoke tests, use:
+- V5 (BaseSystemDslTest) - fluent SystemDsl API
