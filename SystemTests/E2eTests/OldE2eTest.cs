@@ -8,7 +8,7 @@ using Commons.Dsl;
 
 namespace E2eTests;
 
-public class E2eTest : BaseSystemTest
+public class OldE2eTest : BaseSystemTest
 {
     private const string SKU = "SKU";
     private const string ORDER_NUMBER = "ORDER_NUMBER";
