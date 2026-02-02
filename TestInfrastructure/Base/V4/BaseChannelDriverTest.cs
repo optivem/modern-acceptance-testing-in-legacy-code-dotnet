@@ -14,29 +14,30 @@ namespace Optivem.EShop.SystemTest.Base.V4;
 
 public abstract class BaseChannelDriverTest : BaseConfigurableTest, IAsyncLifetime
 {
-    protected IShopDriver? ShopDriver { get; private set; }
-    protected ErpRealDriver? ErpDriver { get; private set; }
-    protected TaxRealDriver? TaxDriver { get; private set; }
+    protected IShopDriver? _shopDriver;
+    protected ErpRealDriver? _erpDriver;
+    protected TaxRealDriver? _taxDriver;
 
     public virtual async Task InitializeAsync()
     {
         var configuration = LoadConfiguration();
-        ShopDriver = await CreateShopDriverAsync(configuration);
-        ErpDriver = new ErpRealDriver(configuration.ErpBaseUrl);
-        TaxDriver = new TaxRealDriver(configuration.TaxBaseUrl);
+        _shopDriver = await CreateShopDriverAsync(configuration);
+        _erpDriver = new ErpRealDriver(configuration.ErpBaseUrl);
+        _taxDriver = new TaxRealDriver(configuration.TaxBaseUrl);
     }
 
     public virtual async Task DisposeAsync()
     {
-        if (ShopDriver != null)
-            await ShopDriver.DisposeAsync();
+        if (_shopDriver != null)
+            await _shopDriver.DisposeAsync();
         
-        ErpDriver?.Dispose();
-        TaxDriver?.Dispose();
+        _erpDriver?.Dispose();
+        _taxDriver?.Dispose();
     }
 
     private async Task<IShopDriver?> CreateShopDriverAsync(SystemConfiguration configuration)
     {
+        // TODO: This needs to be removed because channel is dynamic
         var channelType = "API";
         
         if (channelType == ChannelType.UI)

@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base;
 
+[Obsolete("Use BaseScenarioDslTest from V7 namespace instead. This version is deprecated.")]
 public abstract class BaseScenarioDslTest : BaseConfigurableTest, IAsyncLifetime
 {
     private SystemDsl _app = null!;

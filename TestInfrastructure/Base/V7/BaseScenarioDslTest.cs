@@ -10,13 +10,14 @@ namespace Optivem.EShop.SystemTest.Base.V7;
 public abstract class BaseScenarioDslTest : BaseConfigurableTest, IAsyncLifetime
 {
     private SystemDsl _app = null!;
-    protected ScenarioDsl Scenario { get; private set; } = null!;
+    protected ScenarioDsl _scenario = null!;
 
     public virtual async Task InitializeAsync()
     {
         var configuration = LoadConfiguration();
         _app = new SystemDsl(configuration);
-        Scenario = new ScenarioDsl(new Channel("Api"), _app);
+        // TODO: VJ: This needs to be removed because channel is dynamic
+        _scenario = new ScenarioDsl(new Channel("Api"), _app);
         await Task.CompletedTask;
     }
 

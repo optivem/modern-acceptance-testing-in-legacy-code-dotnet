@@ -8,47 +8,45 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base.V2;
 
-public abstract class BaseClientTest : BaseConfigurableTest
+public abstract class BaseClientTest : BaseConfigurableTest, IAsyncLifetime
 {
-    protected ErpRealClient? ErpClient;
-    protected TaxRealClient? TaxClient;
-    protected ShopApiClient? ShopApiClient;
-    protected ShopUiClient? ShopUiClient;
-    protected Commons.Http.JsonHttpClient<Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors.ProblemDetailResponse>? ShopHttpClient;
-    protected SystemConfiguration? Configuration;
+    protected readonly SystemConfiguration _configuration;
+    
+    protected ShopUiClient? _shopUiClient;
+    protected ShopApiClient? _shopApiClient;
 
-    protected void SetUpExternalClients()
+    protected ErpRealClient? _erpClient;
+    protected TaxRealClient? _taxClient;
+
+    protected BaseClientTest() 
     {
-        Configuration = LoadConfiguration();
-        ErpClient = new ErpRealClient(Configuration.ErpBaseUrl);
-        TaxClient = new TaxRealClient(Configuration.TaxBaseUrl);
+        _configuration = LoadConfiguration();
+    }
+
+    public virtual Task InitializeAsync() => Task.CompletedTask;
+
+    protected async Task SetUpShopUiClientAsync()
+    {
+        _shopUiClient = await ShopUiClient.CreateAsync(_configuration.ShopUiBaseUrl);
     }
 
     protected void SetUpShopApiClient()
     {
-        if (Configuration == null)
-        {
-            Configuration = LoadConfiguration();
-        }
-        ShopHttpClient = new Commons.Http.JsonHttpClient<Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors.ProblemDetailResponse>(
-            Configuration.ShopApiBaseUrl);
-        ShopApiClient = new ShopApiClient(ShopHttpClient);
+        _shopApiClient = new ShopApiClient(_configuration.ShopApiBaseUrl);
     }
 
-    protected void SetUpShopUiClient()
+    protected void SetUpExternalClients()
     {
-        if (Configuration == null)
-        {
-            Configuration = LoadConfiguration();
-        }
-        ShopUiClient = ShopUiClient.CreateAsync(Configuration.ShopUiBaseUrl).Result;
+        _erpClient = new ErpRealClient(_configuration.ErpBaseUrl);
+        _taxClient = new TaxRealClient(_configuration.TaxBaseUrl);
     }
 
-    protected virtual void TearDown()
+    public virtual async Task DisposeAsync()
     {
-        ShopUiClient?.DisposeAsync().AsTask().Wait();
-        ErpClient?.Dispose();
-        TaxClient?.Dispose();
-        ShopHttpClient?.Dispose();
+        if (_shopUiClient != null)
+            await _shopUiClient.DisposeAsync();
+        _shopApiClient?.Dispose();    
+        _erpClient?.Dispose();
+        _taxClient?.Dispose();
     }
 }

@@ -9,42 +9,41 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base.V3;
 
-public abstract class BaseDriverTest : BaseConfigurableTest
+public abstract class BaseDriverTest : BaseConfigurableTest, IAsyncLifetime
 {
-    protected ErpRealDriver? ErpDriver;
-    protected TaxRealDriver? TaxDriver;
-    protected IShopDriver? ShopDriver;
-    protected SystemConfiguration? Configuration;
+    protected readonly SystemConfiguration _configuration;
+    protected IShopDriver? _shopDriver;
+    protected ErpRealDriver? _erpDriver;
+    protected TaxRealDriver? _taxDriver;
 
-    protected void SetUpExternalDrivers()
+    protected BaseDriverTest()
     {
-        Configuration = LoadConfiguration();
-        ErpDriver = new ErpRealDriver(Configuration.ErpBaseUrl);
-        TaxDriver = new TaxRealDriver(Configuration.TaxBaseUrl);
+        _configuration = LoadConfiguration();
     }
+
+    public virtual Task InitializeAsync() => Task.CompletedTask;
 
     protected void SetUpShopApiDriver()
     {
-        if (Configuration == null)
-        {
-            Configuration = LoadConfiguration();
-        }
-        ShopDriver = new ShopApiDriver(Configuration.ShopApiBaseUrl);
+        _shopDriver = new ShopApiDriver(_configuration.ShopApiBaseUrl);
     }
 
-    protected void SetUpShopUiDriver()
+    protected async Task SetUpShopUiDriverAsync()
     {
-        if (Configuration == null)
-        {
-            Configuration = LoadConfiguration();
-        }
-        ShopDriver = ShopUiDriver.CreateAsync(Configuration.ShopUiBaseUrl).Result;
+        _shopDriver = await ShopUiDriver.CreateAsync(_configuration.ShopUiBaseUrl);
     }
 
-    protected virtual void TearDown()
+    protected void SetUpExternalDrivers()
     {
-        ShopDriver?.DisposeAsync().AsTask().Wait();
-        ErpDriver?.Dispose();
-        TaxDriver?.Dispose();
+        _erpDriver = new ErpRealDriver(_configuration.ErpBaseUrl);
+        _taxDriver = new TaxRealDriver(_configuration.TaxBaseUrl);
+    }
+
+    public virtual async Task DisposeAsync()
+    {
+        if (_shopDriver != null)
+            await _shopDriver.DisposeAsync();
+        _erpDriver?.Dispose();
+        _taxDriver?.Dispose();
     }
 }

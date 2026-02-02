@@ -9,15 +9,6 @@ public static class SystemConfigurationLoader
 {
     public static SystemConfiguration Load(Environment environment, ExternalSystemMode externalSystemMode)
     {
-        // Only LOCAL and ACCEPTANCE environments can use STUB mode
-        if (externalSystemMode == ExternalSystemMode.Stub &&
-            environment != Environment.Local &&
-            environment != Environment.Acceptance)
-        {
-            throw new ArgumentException(
-                $"STUB mode is only allowed for LOCAL and ACCEPTANCE environments. Cannot use STUB for {environment} environment.");
-        }
-
         var configFile = GetConfigFileName(environment, externalSystemMode);
         var configuration = LoadJsonFile(configFile);
 

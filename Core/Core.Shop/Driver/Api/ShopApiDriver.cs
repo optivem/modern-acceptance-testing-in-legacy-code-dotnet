@@ -10,22 +10,20 @@ namespace Optivem.EShop.SystemTest.Core.Shop.Driver.Api;
 
 public class ShopApiDriver : IShopDriver
 {
-    private readonly JsonHttpClient<ProblemDetailResponse> _httpClient;
     private readonly ShopApiClient _apiClient;
     private readonly IOrderDriver _orderDriver;
     private readonly ICouponDriver _couponDriver;
 
     public ShopApiDriver(string baseUrl)
     {
-        _httpClient = new JsonHttpClient<ProblemDetailResponse>(baseUrl);
-        _apiClient = new ShopApiClient(_httpClient);
+        _apiClient = new ShopApiClient(baseUrl);
         _orderDriver = new ShopApiOrderDriver(_apiClient);
         _couponDriver = new ShopApiCouponDriver(_apiClient);
     }
 
     public ValueTask DisposeAsync()
     {
-        _httpClient?.Dispose();
+        _apiClient?.Dispose();
         return ValueTask.CompletedTask;
     }
 

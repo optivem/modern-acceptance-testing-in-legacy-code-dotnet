@@ -6,39 +6,31 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base.V1;
 
-public abstract class BaseRawTest : BaseConfigurableTest
+public abstract class BaseRawTest : BaseConfigurableTest, IAsyncLifetime
 {
-    protected HttpClient? ErpHttpClient;
-    protected HttpClient? TaxHttpClient;
-    protected HttpClient? ShopHttpClient;
-    protected IPlaywright? Playwright;
-    protected IBrowser? Browser;
-    protected IBrowserContext? BrowserContext;
-    protected IPage? Page;
-    protected SystemConfiguration? Configuration;
-    protected JsonSerializerOptions? ObjectMapper;
+    protected readonly SystemConfiguration _configuration;
+    
+    protected IPlaywright? shopUiPlaywright;
+    protected IBrowser? shopUiBrowser;
+    protected IBrowserContext? shopUiBrowserContext;
+    protected IPage? shopUiPage;
+    protected HttpClient? _shopApiHttpClient;
+    
+    protected HttpClient? _erpHttpClient;
+    protected HttpClient? _taxHttpClient;
 
-    protected void SetUpShopHttpClient()
+    protected JsonSerializerOptions? _httpObjectMapper;
+
+    protected BaseRawTest() 
     {
-        if (Configuration == null)
-        {
-            Configuration = LoadConfiguration();
-        }
-        ShopHttpClient = new HttpClient();
-        if (ObjectMapper == null)
-        {
-            ObjectMapper = CreateObjectMapper();
-        }
+        _configuration = LoadConfiguration();
     }
 
-    protected void SetUpShopBrowser()
-    {
-        if (Configuration == null)
-        {
-            Configuration = LoadConfiguration();
-        }
+    public virtual Task InitializeAsync() => Task.CompletedTask;
 
-        Playwright = Microsoft.Playwright.Playwright.CreateAsync().Result;
+    protected async Task SetUpShopBrowserAsync()
+    {
+        shopUiPlaywright = await Playwright.CreateAsync();
 
         var launchOptions = new BrowserTypeLaunchOptions
         {
@@ -46,7 +38,7 @@ public abstract class BaseRawTest : BaseConfigurableTest
             SlowMo = 100
         };
 
-        Browser = Playwright.Chromium.LaunchAsync(launchOptions).Result;
+        shopUiBrowser = await shopUiPlaywright.Chromium.LaunchAsync(launchOptions);
 
         var contextOptions = new BrowserNewContextOptions
         {
@@ -54,24 +46,25 @@ public abstract class BaseRawTest : BaseConfigurableTest
             StorageStatePath = null
         };
 
-        BrowserContext = Browser.NewContextAsync(contextOptions).Result;
-        Page = BrowserContext.NewPageAsync().Result;
+        shopUiBrowserContext = await shopUiBrowser.NewContextAsync(contextOptions);
+        shopUiPage = await shopUiBrowserContext.NewPageAsync();
+    }
+
+    protected void SetUpShopHttpClient()
+    {
+        _shopApiHttpClient = new HttpClient();
+        if (_httpObjectMapper == null)
+        {
+            _httpObjectMapper = CreateObjectMapper();
+        }
     }
 
     protected void SetUpExternalHttpClients()
     {
-        Configuration = LoadConfiguration();
-        ErpHttpClient = new HttpClient();
-        TaxHttpClient = new HttpClient();
-        ObjectMapper = CreateObjectMapper();
+        _erpHttpClient = new HttpClient();
+        _taxHttpClient = new HttpClient();
+        _httpObjectMapper = CreateObjectMapper();
     }
-
-
-
-    protected string GetErpBaseUrl() => Configuration!.ErpBaseUrl;
-    protected string GetTaxBaseUrl() => Configuration!.TaxBaseUrl;
-    protected string GetShopApiBaseUrl() => Configuration!.ShopApiBaseUrl;
-    protected string GetShopUiBaseUrl() => Configuration!.ShopUiBaseUrl;
 
     private JsonSerializerOptions CreateObjectMapper()
     {
@@ -81,14 +74,19 @@ public abstract class BaseRawTest : BaseConfigurableTest
         };
     }
 
-    protected virtual void TearDown()
+    public virtual async Task DisposeAsync()
     {
-        Page?.CloseAsync().Wait();
-        BrowserContext?.CloseAsync().Wait();
-        Browser?.CloseAsync().Wait();
-        Playwright?.Dispose();
-        ErpHttpClient?.Dispose();
-        TaxHttpClient?.Dispose();
-        ShopHttpClient?.Dispose();
+        if (shopUiPage != null)
+            await shopUiPage.CloseAsync();
+        if (shopUiBrowserContext != null)
+            await shopUiBrowserContext.CloseAsync();
+        if (shopUiBrowser != null)
+            await shopUiBrowser.CloseAsync();
+        shopUiPlaywright?.Dispose();
+
+        _shopApiHttpClient?.Dispose();
+
+        _erpHttpClient?.Dispose();
+        _taxHttpClient?.Dispose();
     }
 }

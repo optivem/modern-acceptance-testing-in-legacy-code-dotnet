@@ -8,6 +8,7 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base;
 
+[Obsolete("Use BaseScenarioTest or BaseSystemDslTest instead")]
 public abstract class BaseSystemTest : BaseConfigurableTest, IAsyncDisposable
 {
     protected SystemDsl App { get; private set; } = null!;
