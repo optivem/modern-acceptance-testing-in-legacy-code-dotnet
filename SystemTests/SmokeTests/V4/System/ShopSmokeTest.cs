@@ -22,14 +22,7 @@ public class ShopSmokeTest : BaseChannelDriverTest
         // Now initialize with the channel context set
         await base.InitializeAsync();
 
-        try
-        {
-            var result = await _shopDriver!.GoToShop();
-            result.ShouldBeSuccess();
-        }
-        finally
-        {
-            await DisposeAsync();
-        }
+        var result = await _shopDriver!.GoToShop();
+        result.ShouldBeSuccess();
     }
 }

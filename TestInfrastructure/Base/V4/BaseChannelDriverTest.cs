@@ -20,22 +20,9 @@ public abstract class BaseChannelDriverTest : BaseConfigurableTest, IAsyncLifeti
 
     public virtual async Task InitializeAsync()
     {
-        // For non-channel tests (like Erp and Tax), initialize normally
-        // For channel-parameterized tests, they will call this manually after setting ChannelContext
         var configuration = LoadConfiguration();
         
-        // Only create shop driver if channel context is set (for channel-parameterized tests)
-        // Otherwise skip it (for non-channel tests like Erp/Tax)
-        try
-        {
-            _shopDriver = await CreateShopDriverAsync(configuration);
-        }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("Channel type is not set"))
-        {
-            // This is expected for non-channel tests - they don't need shop driver
-            _shopDriver = null;
-        }
-        
+        _shopDriver = await CreateShopDriverAsync(configuration);   
         _erpDriver = new ErpRealDriver(configuration.ErpBaseUrl);
         _taxDriver = new TaxRealDriver(configuration.TaxBaseUrl);
     }
@@ -51,6 +38,7 @@ public abstract class BaseChannelDriverTest : BaseConfigurableTest, IAsyncLifeti
 
     private async Task<IShopDriver?> CreateShopDriverAsync(SystemConfiguration configuration)
     {
+        // TODO: VJ: Should be dynamic
         var channelType = ChannelContext.Get();
         
         if (channelType == ChannelType.UI)
