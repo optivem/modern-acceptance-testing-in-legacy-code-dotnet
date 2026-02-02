@@ -9,7 +9,7 @@ public class ErpSmokeTest : BaseSystemTest
     [Fact]
     public async Task ShouldBeAbleToGoToErp()
     {
-        (await App.Erp().GoToErp()
+        (await _app.Erp().GoToErp()
             .Execute())
             .ShouldSucceed();
     }

@@ -11,7 +11,7 @@ public class ClockSmokeTest : BaseSystemTest
     [Fact]
     public async Task ShouldBeAbleToGoToClock()
     {
-        (await App.Clock().GoToClock()
+        (await _app.Clock().GoToClock()
             .Execute())
             .ShouldSucceed();
     }
@@ -19,7 +19,7 @@ public class ClockSmokeTest : BaseSystemTest
     [Fact]
     public async Task ShouldBeAbleToGetTime()
     {
-        (await App.Clock().GetTime()
+        (await _app.Clock().GetTime()
             .Execute())
             .ShouldSucceed()
             .TimeIsNotNull();

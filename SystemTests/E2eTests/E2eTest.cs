@@ -17,13 +17,13 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldPlaceOrderWithCorrectSubtotalPrice(Channel channel)
     {
-        (await App.Erp().ReturnsProduct()
+        (await _app.Erp().ReturnsProduct()
             .Sku("ABC")
             .UnitPrice(20.00m)
             .Execute())
             .ShouldSucceed();
 
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .OrderNumber("ORDER-1001")
             .Sku("ABC")
@@ -46,13 +46,13 @@ public class E2eTest : BaseSystemTest
     [ChannelInlineData("15.50", "2", "31.00")]
     public async Task ShouldPlaceOrderWithCorrectSubtotalPriceParameterized(Channel channel, string unitPrice, string quantity, string subtotalPrice)
     {
-        (await App.Erp().ReturnsProduct()
+        (await _app.Erp().ReturnsProduct()
             .Sku("ABC")
             .UnitPrice(unitPrice)
             .Execute())
             .ShouldSucceed();
 
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .OrderNumber("ORDER-1001")
             .Sku("ABC")
@@ -72,7 +72,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldRejectOrderWithInvalidQuantity(Channel channel)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Sku(SKU)
             .Quantity("invalid-quantity")
@@ -87,13 +87,13 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldPlaceOrder(Channel channel)
     {
-        (await App.Erp().ReturnsProduct()
+        (await _app.Erp().ReturnsProduct()
             .Sku(SKU)
             .UnitPrice(20.00m)
             .Execute())
             .ShouldSucceed();
 
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .OrderNumber(ORDER_NUMBER)
             .Sku(SKU)
@@ -127,13 +127,13 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldCancelOrder(Channel channel)
     {
-        (await App.Erp().ReturnsProduct()
+        (await _app.Erp().ReturnsProduct()
             .Sku(SKU)
             .UnitPrice(20.00m)
             .Execute())
             .ShouldSucceed();
 
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .OrderNumber(ORDER_NUMBER)
             .Sku(SKU)
@@ -160,7 +160,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldRejectOrderWithNonExistentSku(Channel channel)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Sku("NON-EXISTENT-SKU-12345")
             .Quantity(5)
@@ -183,7 +183,7 @@ public class E2eTest : BaseSystemTest
     [ChannelMemberData(nameof(ShouldNotBeAbleToViewNonExistentOrderData))]
     public async Task ShouldNotBeAbleToViewNonExistentOrder(Channel channel, string orderNumber, string expectedErrorMessage)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.ViewOrder()
             .OrderNumber(orderNumber)
             .Execute())
@@ -195,7 +195,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldRejectOrderWithNegativeQuantity(Channel channel)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Sku(SKU)
             .Quantity("-3")
@@ -210,7 +210,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldRejectOrderWithZeroQuantity(Channel channel)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Sku(SKU)
             .Quantity("0")
@@ -226,7 +226,7 @@ public class E2eTest : BaseSystemTest
     [ChannelClassData(typeof(EmptyArgumentsProvider))]
     public async Task ShouldRejectOrderWithEmptySku(Channel channel, string sku)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Sku(sku)
             .Quantity(5)
@@ -242,7 +242,7 @@ public class E2eTest : BaseSystemTest
     [ChannelClassData(typeof(EmptyArgumentsProvider))]
     public async Task ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Sku(SKU)
             .Quantity(emptyQuantity)
@@ -259,7 +259,7 @@ public class E2eTest : BaseSystemTest
     [ChannelInlineData("lala")]
     public async Task ShouldRejectOrderWithNonIntegerQuantity(Channel channel, string nonIntegerQuantity)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Sku(SKU)
             .Quantity(nonIntegerQuantity)
@@ -275,7 +275,7 @@ public class E2eTest : BaseSystemTest
     [ChannelClassData(typeof(EmptyArgumentsProvider))]
     public async Task ShouldRejectOrderWithEmptyCountry(Channel channel, string emptyCountry)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Sku(SKU)
             .Quantity(5)
@@ -290,12 +290,12 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldRejectOrderWithUnsupportedCountry(Channel channel)
     {
-        (await App.Erp().ReturnsProduct()
+        (await _app.Erp().ReturnsProduct()
             .Sku(SKU)
             .Execute())
             .ShouldSucceed();
 
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Sku(SKU)
             .Quantity(5)
@@ -310,7 +310,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.API)]
     public async Task ShouldRejectOrderWithNullQuantity(Channel channel)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Quantity(null!)
             .Execute())
@@ -323,7 +323,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.API)]
     public async Task ShouldRejectOrderWithNullSku(Channel channel)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Sku(null!)
             .Execute())
@@ -336,7 +336,7 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.API)]
     public async Task ShouldRejectOrderWithNullCountry(Channel channel)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .Country(null!)
             .Execute())
@@ -352,7 +352,7 @@ public class E2eTest : BaseSystemTest
     [ChannelInlineData("NON-EXISTENT-ORDER-77777", "Order NON-EXISTENT-ORDER-77777 does not exist.")]
     public async Task ShouldNotCancelNonExistentOrder(Channel channel, string orderNumber, string expectedMessage)
     {
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.CancelOrder()
             .OrderNumber(orderNumber)
             .Execute())
@@ -364,13 +364,13 @@ public class E2eTest : BaseSystemTest
     [ChannelData(ChannelType.API)]
     public async Task ShouldNotCancelAlreadyCancelledOrder(Channel channel)
     {
-        (await App.Erp().ReturnsProduct()
+        (await _app.Erp().ReturnsProduct()
             .Sku(SKU)
             .UnitPrice(20.00m)
             .Execute())
             .ShouldSucceed();
 
-        var shop = await App.Shop(channel);
+        var shop = await _app.Shop(channel);
         (await shop.PlaceOrder()
             .OrderNumber(ORDER_NUMBER)
             .Sku(SKU)

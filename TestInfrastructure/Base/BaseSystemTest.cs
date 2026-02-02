@@ -11,21 +11,21 @@ namespace Optivem.EShop.SystemTest.Base;
 [Obsolete("Use BaseScenarioTest or BaseSystemDslTest instead")]
 public abstract class BaseSystemTest : BaseConfigurableTest, IAsyncDisposable
 {
-    protected SystemDsl App { get; private set; } = null!;
+    protected SystemDsl _app { get; private set; } = null!;
     private readonly ScenarioDslFactory _scenarioFactory;
 
     protected BaseSystemTest()
     {
         var configuration = LoadConfiguration();
-        App = new SystemDsl(configuration);
-        _scenarioFactory = new ScenarioDslFactory(App);
+        _app = new SystemDsl(configuration);
+        _scenarioFactory = new ScenarioDslFactory(_app);
     }
 
     protected ScenarioDsl Scenario(Channel channel) => _scenarioFactory.Create(channel);
 
     public async ValueTask DisposeAsync()
     {
-        if (App != null)
-            await App.DisposeAsync();
+        if (_app != null)
+            await _app.DisposeAsync();
     }
 }
