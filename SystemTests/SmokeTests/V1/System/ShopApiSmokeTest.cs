@@ -1,0 +1,26 @@
+using Optivem.EShop.SystemTest.Base.V1;
+using Xunit;
+
+namespace SystemTests.SmokeTests.V1.System;
+
+public class ShopApiSmokeTest : BaseRawTest
+{
+    private const string HealthEndpoint = "/health";
+
+    public override Task InitializeAsync()
+    {
+        SetUpShopHttpClient();
+        return Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task ShouldBeAbleToGoToShop()
+    {
+        var uri = new Uri(_configuration.ShopApiBaseUrl + HealthEndpoint);
+        var request = new HttpRequestMessage(HttpMethod.Get, uri);
+
+        var response = await _shopApiHttpClient!.SendAsync(request);
+
+        Assert.Equal(200, (int)response.StatusCode);
+    }
+}

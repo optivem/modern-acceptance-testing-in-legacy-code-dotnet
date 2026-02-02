@@ -85,7 +85,6 @@ public abstract class BaseRawTest : BaseConfigurableTest, IAsyncLifetime
         shopUiPlaywright?.Dispose();
 
         _shopApiHttpClient?.Dispose();
-
         _erpHttpClient?.Dispose();
         _taxHttpClient?.Dispose();
     }

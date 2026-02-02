@@ -1,0 +1,26 @@
+using Optivem.EShop.SystemTest.Base.V1;
+using Xunit;
+
+namespace SystemTests.SmokeTests.V1.External;
+
+public class TaxSmokeTest : BaseRawTest
+{
+    private const string HealthEndpoint = "/health";
+
+    public override Task InitializeAsync()
+    {
+        SetUpExternalHttpClients();
+        return Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task ShouldBeAbleToGoToTax()
+    {
+        var uri = new Uri(_configuration.TaxBaseUrl + HealthEndpoint);
+        var request = new HttpRequestMessage(HttpMethod.Get, uri);
+
+        var response = await _taxHttpClient!.SendAsync(request);
+
+        Assert.Equal(200, (int)response.StatusCode);
+    }
+}
