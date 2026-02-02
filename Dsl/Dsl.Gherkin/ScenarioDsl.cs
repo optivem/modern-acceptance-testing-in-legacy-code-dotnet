@@ -6,7 +6,7 @@ using System;
 
 namespace Dsl.Gherkin;
 
-public class ScenarioDsl : IAsyncDisposable
+public class ScenarioDsl
 {
     private readonly Channel _channel;
     private readonly SystemDsl _app;
@@ -46,11 +46,5 @@ public class ScenarioDsl : IAsyncDisposable
                 "Each test method should contain only ONE scenario execution (Given-When-Then). " +
                 "Split multiple scenarios into separate test methods.");
         }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_app != null)
-            await _app.DisposeAsync();
     }
 }
