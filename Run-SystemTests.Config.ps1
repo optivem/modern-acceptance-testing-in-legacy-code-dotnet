@@ -10,19 +10,34 @@ $Config = @{
     )
 
     Tests = @(
-        @{  Id = "smoke";
-            Name = "Smoke Tests";
-            Command = "dotnet test --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+
+        # Smoke Tests
+        @{  Id = "smoke-stub";
+            Name = "Smoke Tests - Stubbed External Systems";
+            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=stub --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
             Path = "SystemTests/SmokeTests";
             TestReportPath = "SystemTests\SmokeTests\TestResults\testResults.html"
             TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; },
-        @{ 
-            Id = "e2e";
-            Name = "E2E Tests";
-            Command = "dotnet test --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+        @{  Id = "smoke-real";
+            Name = "Smoke Tests - Real External Systems";
+            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=real --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+            Path = "SystemTests/SmokeTests";
+            TestReportPath = "SystemTests\SmokeTests\TestResults\testResults.html"
+            TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; },
+
+        # E2E Tests
+        @{  Id = "e2e-api";
+            Name = "E2E Tests - Channel: API";
+            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=real -e CHANNEL=API --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
             Path = "SystemTests/E2eTests";
             TestReportPath = "SystemTests\E2eTests\TestResults\testResults.html";
-            TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install";  }
+            TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; },
+        @{  Id = "e2e-ui";
+            Name = "E2E Tests - Channel: UI";
+            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=real -e CHANNEL=UI --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+            Path = "SystemTests/E2eTests";
+            TestReportPath = "SystemTests\E2eTests\TestResults\testResults.html";
+            TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; }
     )
 }
 

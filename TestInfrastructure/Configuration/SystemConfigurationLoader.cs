@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Commons.Dsl;
 using Optivem.EShop.SystemTest.Core;
-using Optivem.EShop.SystemTest.Core.Common;
 
 namespace Optivem.EShop.SystemTest.Configuration;
 
