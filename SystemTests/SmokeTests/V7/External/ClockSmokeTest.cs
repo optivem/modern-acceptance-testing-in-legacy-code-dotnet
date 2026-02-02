@@ -10,6 +10,8 @@ public class ClockSmokeTest : BaseSystemDslTest
     [Fact]
     public async Task ShouldBeAbleToGoToClock()
     {
-        (await _app.Clock().GoToClock().Execute()).ShouldSucceed();
+        (await _app.Clock().GoToClock()
+            .Execute())
+            .ShouldSucceed();
     }
 }
