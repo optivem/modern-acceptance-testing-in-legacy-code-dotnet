@@ -32,11 +32,6 @@ public static class Converter
         return From(value, v => v.ToString());
     }
 
-    public static double? ToDouble(string? value)
-    {
-        return To(value, double.Parse);
-    }
-
     public static DateTime? ToInstant(string? value)
     {
         return To(value, DateTime.Parse);

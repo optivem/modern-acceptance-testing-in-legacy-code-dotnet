@@ -7,30 +7,54 @@ namespace Optivem.EShop.SystemTest.Configuration;
 
 public static class SystemConfigurationLoader
 {
-    private static readonly IConfiguration Configuration;
-
-    static SystemConfigurationLoader()
+    public static SystemConfiguration Load(Environment environment, ExternalSystemMode externalSystemMode)
     {
-        Configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-            .Build();
-    }
+        // Only LOCAL and ACCEPTANCE environments can use STUB mode
+        if (externalSystemMode == ExternalSystemMode.Stub &&
+            environment != Environment.Local &&
+            environment != Environment.Acceptance)
+        {
+            throw new ArgumentException(
+                $"STUB mode is only allowed for LOCAL and ACCEPTANCE environments. Cannot use STUB for {environment} environment.");
+        }
 
-    public static SystemConfiguration Load(ExternalSystemMode externalSystemMode)
-    {
-        var shopUiBaseUrl = GetValue("Shop:UiBaseUrl");
-        var shopApiBaseUrl = GetValue("Shop:ApiBaseUrl");
-        var erpBaseUrl = GetValue("Erp:ApiBaseUrl");
-        var taxBaseUrl = GetValue("Tax:ApiBaseUrl");
-        var clockBaseUrl = GetValue("Clock:ApiBaseUrl");
+        var configFile = GetConfigFileName(environment, externalSystemMode);
+        var configuration = LoadJsonFile(configFile);
+
+        var shopUiBaseUrl = GetValue(configuration, "Shop:UiBaseUrl");
+        var shopApiBaseUrl = GetValue(configuration, "Shop:ApiBaseUrl");
+        var erpBaseUrl = GetValue(configuration, "Erp:ApiBaseUrl");
+        var taxBaseUrl = GetValue(configuration, "Tax:ApiBaseUrl");
+        var clockBaseUrl = GetValue(configuration, "Clock:ApiBaseUrl");
 
         return new SystemConfiguration(shopUiBaseUrl, shopApiBaseUrl, erpBaseUrl, taxBaseUrl, clockBaseUrl, externalSystemMode);
     }
 
-    private static string GetValue(string key)
+    private static string GetConfigFileName(Environment environment, ExternalSystemMode externalSystemMode)
     {
-        var value = Configuration[key];
+        var env = environment.ToString().ToLower();
+        var mode = externalSystemMode.ToString().ToLower();
+        return $"appsettings.{env}.{mode}.json";
+    }
+
+    private static IConfiguration LoadJsonFile(string fileName)
+    {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile(fileName, optional: false, reloadOnChange: false)
+            .Build();
+
+        if (configuration == null)
+        {
+            throw new InvalidOperationException($"Configuration file not found: {fileName}");
+        }
+
+        return configuration;
+    }
+
+    private static string GetValue(IConfiguration configuration, string key)
+    {
+        var value = configuration[key];
 
         if (string.IsNullOrEmpty(value))
         {

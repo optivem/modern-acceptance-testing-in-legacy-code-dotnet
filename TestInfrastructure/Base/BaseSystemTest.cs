@@ -8,27 +8,23 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base;
 
-public abstract class BaseSystemTest : IAsyncDisposable
+public abstract class BaseSystemTest : BaseConfigurableTest, IAsyncDisposable
 {
+    protected SystemDsl App { get; private set; } = null!;
     private readonly ScenarioDslFactory _scenarioFactory;
-
-    protected SystemDsl App { get; }
 
     protected BaseSystemTest()
     {
-        var externalSystemMode = ExternalSystemMode.Real; // TODO: VJ: Make dynamic
-        var configuration = SystemConfigurationLoader.Load(externalSystemMode);
+        var configuration = LoadConfiguration();
         App = new SystemDsl(configuration);
         _scenarioFactory = new ScenarioDslFactory(App);
     }
+
+    protected ScenarioDsl Scenario(Channel channel) => _scenarioFactory.Create(channel);
 
     public async ValueTask DisposeAsync()
     {
         if (App != null)
             await App.DisposeAsync();
-        
-        GC.SuppressFinalize(this);
     }
-
-    protected ScenarioDsl Scenario(Channel channel) { return _scenarioFactory.Create(channel); }
 }
