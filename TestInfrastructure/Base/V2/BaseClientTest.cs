@@ -10,34 +10,38 @@ namespace Optivem.EShop.SystemTest.Base.V2;
 
 public abstract class BaseClientTest : BaseConfigurableTest
 {
-    protected SystemConfiguration? Configuration;
-
-    protected ShopUiClient? ShopUiClient;
-    protected ShopApiClient? ShopApiClient;
     protected ErpRealClient? ErpClient;
     protected TaxRealClient? TaxClient;
+    protected ShopApiClient? ShopApiClient;
+    protected ShopUiClient? ShopUiClient;
+    protected Commons.Http.JsonHttpClient<Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors.ProblemDetailResponse>? ShopHttpClient;
+    protected SystemConfiguration? Configuration;
 
-    protected void SetUpConfiguration()
+    protected void SetUpExternalClients()
     {
         Configuration = LoadConfiguration();
-    }
-
-    protected void SetUpShopUiClient()
-    {
-        ShopUiClient = ShopUiClient.CreateAsync(Configuration!.ShopUiBaseUrl).Result;
+        ErpClient = new ErpRealClient(Configuration.ErpBaseUrl);
+        TaxClient = new TaxRealClient(Configuration.TaxBaseUrl);
     }
 
     protected void SetUpShopApiClient()
     {
-        var httpClient = new Commons.Http.JsonHttpClient<Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors.ProblemDetailResponse>(
-            Configuration!.ShopApiBaseUrl);
-        ShopApiClient = new ShopApiClient(httpClient);
+        if (Configuration == null)
+        {
+            Configuration = LoadConfiguration();
+        }
+        ShopHttpClient = new Commons.Http.JsonHttpClient<Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors.ProblemDetailResponse>(
+            Configuration.ShopApiBaseUrl);
+        ShopApiClient = new ShopApiClient(ShopHttpClient);
     }
 
-    protected void SetUpExternalClients()
+    protected void SetUpShopUiClient()
     {
-        ErpClient = new ErpRealClient(Configuration!.ErpBaseUrl);
-        TaxClient = new TaxRealClient(Configuration!.TaxBaseUrl);
+        if (Configuration == null)
+        {
+            Configuration = LoadConfiguration();
+        }
+        ShopUiClient = ShopUiClient.CreateAsync(Configuration.ShopUiBaseUrl).Result;
     }
 
     protected virtual void TearDown()
@@ -45,5 +49,6 @@ public abstract class BaseClientTest : BaseConfigurableTest
         ShopUiClient?.DisposeAsync().AsTask().Wait();
         ErpClient?.Dispose();
         TaxClient?.Dispose();
+        ShopHttpClient?.Dispose();
     }
 }

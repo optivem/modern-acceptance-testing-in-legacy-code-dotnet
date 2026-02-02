@@ -8,17 +8,14 @@ namespace Optivem.EShop.SystemTest.Base.V1;
 
 public abstract class BaseRawTest : BaseConfigurableTest
 {
-    protected SystemConfiguration? Configuration;
-
-    protected HttpClient? ShopHttpClient;
     protected HttpClient? ErpHttpClient;
     protected HttpClient? TaxHttpClient;
-
+    protected HttpClient? ShopHttpClient;
     protected IPlaywright? Playwright;
     protected IBrowser? Browser;
     protected IBrowserContext? BrowserContext;
     protected IPage? Page;
-
+    protected SystemConfiguration? Configuration;
     protected JsonSerializerOptions? ObjectMapper;
 
     protected void SetUpShopHttpClient()

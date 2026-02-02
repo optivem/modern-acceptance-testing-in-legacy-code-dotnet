@@ -11,31 +11,34 @@ namespace Optivem.EShop.SystemTest.Base.V3;
 
 public abstract class BaseDriverTest : BaseConfigurableTest
 {
-    protected SystemConfiguration? Configuration;
-
-    protected IShopDriver? ShopDriver;
     protected ErpRealDriver? ErpDriver;
     protected TaxRealDriver? TaxDriver;
+    protected IShopDriver? ShopDriver;
+    protected SystemConfiguration? Configuration;
 
-    protected void SetUpConfiguration()
+    protected void SetUpExternalDrivers()
     {
         Configuration = LoadConfiguration();
-    }
-
-    protected void SetUpShopUiDriver()
-    {
-        ShopDriver = ShopUiDriver.CreateAsync(Configuration!.ShopUiBaseUrl).Result;
+        ErpDriver = new ErpRealDriver(Configuration.ErpBaseUrl);
+        TaxDriver = new TaxRealDriver(Configuration.TaxBaseUrl);
     }
 
     protected void SetUpShopApiDriver()
     {
-        ShopDriver = new ShopApiDriver(Configuration!.ShopApiBaseUrl);
+        if (Configuration == null)
+        {
+            Configuration = LoadConfiguration();
+        }
+        ShopDriver = new ShopApiDriver(Configuration.ShopApiBaseUrl);
     }
 
-    protected void SetUpExternalDrivers()
+    protected void SetUpShopUiDriver()
     {
-        ErpDriver = new ErpRealDriver(Configuration!.ErpBaseUrl);
-        TaxDriver = new TaxRealDriver(Configuration!.TaxBaseUrl);
+        if (Configuration == null)
+        {
+            Configuration = LoadConfiguration();
+        }
+        ShopDriver = ShopUiDriver.CreateAsync(Configuration.ShopUiBaseUrl).Result;
     }
 
     protected virtual void TearDown()
