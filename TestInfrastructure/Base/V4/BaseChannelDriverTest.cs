@@ -22,7 +22,17 @@ public abstract class BaseChannelDriverTest : BaseConfigurableTest, IAsyncLifeti
     {
         var configuration = LoadConfiguration();
         
-        _shopDriver = await CreateShopDriverAsync(configuration);   
+        // Only create shop driver if channel context is set (for channel-parameterized tests)
+        // For non-channel tests (like Erp/Tax), skip shop driver creation
+        try
+        {
+            _shopDriver = await CreateShopDriverAsync(configuration);
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("Channel type is not set"))
+        {
+            _shopDriver = null;
+        }
+        
         _erpDriver = new ErpRealDriver(configuration.ErpBaseUrl);
         _taxDriver = new TaxRealDriver(configuration.TaxBaseUrl);
     }
@@ -38,7 +48,6 @@ public abstract class BaseChannelDriverTest : BaseConfigurableTest, IAsyncLifeti
 
     private async Task<IShopDriver?> CreateShopDriverAsync(SystemConfiguration configuration)
     {
-        // TODO: VJ: Should be dynamic
         var channelType = ChannelContext.Get();
         
         if (channelType == ChannelType.UI)
@@ -54,4 +63,29 @@ public abstract class BaseChannelDriverTest : BaseConfigurableTest, IAsyncLifeti
             throw new InvalidOperationException($"Unknown channel: {channelType}");
         }
     }
+
+
+    /*
+
+    protected SystemDsl _app { get; private set; } = null!;
+    private readonly ScenarioDslFactory _scenarioFactory;
+
+    protected BaseSystemTest()
+    {
+        var configuration = LoadConfiguration();
+        _app = new SystemDsl(configuration);
+        _scenarioFactory = new ScenarioDslFactory(_app);
+    }
+
+    protected ScenarioDsl Scenario(Channel channel) => _scenarioFactory.Create(channel);
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_app != null)
+            await _app.DisposeAsync();
+    }
+
+
+    */
+
 }
