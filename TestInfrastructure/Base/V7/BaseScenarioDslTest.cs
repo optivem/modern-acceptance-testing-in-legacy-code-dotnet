@@ -7,11 +7,6 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base.V7;
 
-/// <summary>
-/// V7: Complete ScenarioDsl test infrastructure (with Browser lifecycle).
-/// Most advanced version with full Playwright lifecycle management.
-/// Recommended for new tests.
-/// </summary>
 public abstract class BaseScenarioDslTest : BaseConfigurableTest, IAsyncLifetime
 {
     private SystemDsl _app = null!;

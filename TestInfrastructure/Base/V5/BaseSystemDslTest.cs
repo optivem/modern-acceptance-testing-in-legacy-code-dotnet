@@ -4,10 +4,6 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base.V5;
 
-/// <summary>
-/// V5: SystemDsl test infrastructure.
-/// Introduces SystemDsl facade that manages all subsystems.
-/// </summary>
 public abstract class BaseSystemDslTest : BaseConfigurableTest, IAsyncLifetime
 {
     protected SystemDsl App { get; private set; } = null!;

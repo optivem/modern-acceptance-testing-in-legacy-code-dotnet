@@ -11,10 +11,7 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base.V4;
 
-/// <summary>
-/// V4: Channel-aware driver test infrastructure.
-/// Automatically creates the appropriate driver (API/UI) based on channel context.
-/// </summary>
+
 public abstract class BaseChannelDriverTest : BaseConfigurableTest, IAsyncLifetime
 {
     protected IShopDriver? ShopDriver { get; private set; }
@@ -40,9 +37,7 @@ public abstract class BaseChannelDriverTest : BaseConfigurableTest, IAsyncLifeti
 
     private async Task<IShopDriver?> CreateShopDriverAsync(SystemConfiguration configuration)
     {
-        // Note: In real implementation, get channel from test context
-        // For V4 educational purposes, this shows the pattern
-        var channelType = "API"; // Would come from ChannelContext in full implementation
+        var channelType = "API";
         
         if (channelType == ChannelType.UI)
         {

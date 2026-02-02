@@ -6,56 +6,64 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base.V1;
 
-/// <summary>
-/// V1: Raw test infrastructure with manual HTTP clients and Playwright setup.
-/// Tests directly interact with HttpClient and Playwright APIs.
-/// </summary>
-public abstract class BaseRawTest : BaseConfigurableTest, IAsyncLifetime
+public abstract class BaseRawTest : BaseConfigurableTest
 {
-    protected HttpClient? ErpHttpClient { get; private set; }
-    protected HttpClient? TaxHttpClient { get; private set; }
-    protected HttpClient? ShopHttpClient { get; private set; }
-    protected IPlaywright? Playwright { get; private set; }
-    protected IBrowser? Browser { get; private set; }
-    protected IBrowserContext? BrowserContext { get; private set; }
-    protected IPage? Page { get; private set; }
-    protected SystemConfiguration? Configuration { get; private set; }
-    protected JsonSerializerOptions? JsonOptions { get; private set; }
-
-    public virtual Task InitializeAsync() => Task.CompletedTask;
+    protected HttpClient? ErpHttpClient;
+    protected HttpClient? TaxHttpClient;
+    protected HttpClient? ShopHttpClient;
+    protected IPlaywright? Playwright;
+    protected IBrowser? Browser;
+    protected IBrowserContext? BrowserContext;
+    protected IPage? Page;
+    protected SystemConfiguration? Configuration;
+    protected JsonSerializerOptions? ObjectMapper;
 
     protected void SetUpExternalHttpClients()
     {
         Configuration = LoadConfiguration();
-        ErpHttpClient = new HttpClient { BaseAddress = new Uri(Configuration.ErpBaseUrl) };
-        TaxHttpClient = new HttpClient { BaseAddress = new Uri(Configuration.TaxBaseUrl) };
-        JsonOptions = CreateJsonOptions();
+        ErpHttpClient = new HttpClient();
+        TaxHttpClient = new HttpClient();
+        ObjectMapper = CreateObjectMapper();
     }
 
     protected void SetUpShopHttpClient()
     {
-        Configuration ??= LoadConfiguration();
-        ShopHttpClient = new HttpClient { BaseAddress = new Uri(Configuration.ShopApiBaseUrl) };
-        JsonOptions ??= CreateJsonOptions();
+        if (Configuration == null)
+        {
+            Configuration = LoadConfiguration();
+        }
+        ShopHttpClient = new HttpClient();
+        if (ObjectMapper == null)
+        {
+            ObjectMapper = CreateObjectMapper();
+        }
     }
 
-    protected async Task SetUpShopBrowserAsync()
+    protected void SetUpShopBrowser()
     {
-        Configuration ??= LoadConfiguration();
+        if (Configuration == null)
+        {
+            Configuration = LoadConfiguration();
+        }
 
-        Playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-        Browser = await Playwright.Chromium.LaunchAsync(new()
+        Playwright = Microsoft.Playwright.Playwright.CreateAsync().Result;
+
+        var launchOptions = new BrowserTypeLaunchOptions
         {
             Headless = true,
             SlowMo = 100
-        });
+        };
 
-        BrowserContext = await Browser.NewContextAsync(new()
+        Browser = Playwright.Chromium.LaunchAsync(launchOptions).Result;
+
+        var contextOptions = new BrowserNewContextOptions
         {
-            ViewportSize = new ViewportSize { Width = 1920, Height = 1080 }
-        });
+            ViewportSize = new ViewportSize { Width = 1920, Height = 1080 },
+            StorageStatePath = null
+        };
 
-        Page = await BrowserContext.NewPageAsync();
+        BrowserContext = Browser.NewContextAsync(contextOptions).Result;
+        Page = BrowserContext.NewPageAsync().Result;
     }
 
     protected string GetErpBaseUrl() => Configuration!.ErpBaseUrl;
@@ -63,7 +71,7 @@ public abstract class BaseRawTest : BaseConfigurableTest, IAsyncLifetime
     protected string GetShopApiBaseUrl() => Configuration!.ShopApiBaseUrl;
     protected string GetShopUiBaseUrl() => Configuration!.ShopUiBaseUrl;
 
-    private JsonSerializerOptions CreateJsonOptions()
+    private JsonSerializerOptions CreateObjectMapper()
     {
         return new JsonSerializerOptions
         {
@@ -71,11 +79,11 @@ public abstract class BaseRawTest : BaseConfigurableTest, IAsyncLifetime
         };
     }
 
-    public virtual async Task DisposeAsync()
+    protected virtual void TearDown()
     {
         Page?.CloseAsync().Wait();
-        await (BrowserContext?.CloseAsync() ?? Task.CompletedTask);
-        await (Browser?.CloseAsync() ?? Task.CompletedTask);
+        BrowserContext?.CloseAsync().Wait();
+        Browser?.CloseAsync().Wait();
         Playwright?.Dispose();
         ErpHttpClient?.Dispose();
         TaxHttpClient?.Dispose();

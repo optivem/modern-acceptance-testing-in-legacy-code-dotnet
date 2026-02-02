@@ -9,43 +9,38 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base.V3;
 
-/// <summary>
-/// V3: Driver-based test infrastructure.
-/// Introduces Driver pattern with higher-level abstractions.
-/// </summary>
-public abstract class BaseDriverTest : BaseConfigurableTest, IAsyncLifetime
+public abstract class BaseDriverTest : BaseConfigurableTest
 {
-    protected ErpRealDriver? ErpDriver { get; private set; }
-    protected TaxRealDriver? TaxDriver { get; private set; }
-    protected IShopDriver? ShopDriver { get; private set; }
-    protected SystemConfiguration? Configuration { get; private set; }
+    protected SystemConfiguration? Configuration;
 
-    public virtual Task InitializeAsync() => Task.CompletedTask;
+    protected IShopDriver? ShopDriver;
+    protected ErpRealDriver? ErpDriver;
+    protected TaxRealDriver? TaxDriver;
 
-    protected void SetUpExternalDrivers()
+    protected void SetUpConfiguration()
     {
         Configuration = LoadConfiguration();
-        ErpDriver = new ErpRealDriver(Configuration.ErpBaseUrl);
-        TaxDriver = new TaxRealDriver(Configuration.TaxBaseUrl);
+    }
+
+    protected void SetUpShopUiDriver()
+    {
+        ShopDriver = ShopUiDriver.CreateAsync(Configuration!.ShopUiBaseUrl).Result;
     }
 
     protected void SetUpShopApiDriver()
     {
-        Configuration ??= LoadConfiguration();
-        ShopDriver = new ShopApiDriver(Configuration.ShopApiBaseUrl);
+        ShopDriver = new ShopApiDriver(Configuration!.ShopApiBaseUrl);
     }
 
-    protected async Task SetUpShopUiDriverAsync()
+    protected void SetUpExternalDrivers()
     {
-        Configuration ??= LoadConfiguration();
-        ShopDriver = await ShopUiDriver.CreateAsync(Configuration.ShopUiBaseUrl);
+        ErpDriver = new ErpRealDriver(Configuration!.ErpBaseUrl);
+        TaxDriver = new TaxRealDriver(Configuration!.TaxBaseUrl);
     }
 
-    public virtual async Task DisposeAsync()
+    protected virtual void TearDown()
     {
-        if (ShopDriver != null)
-            await ShopDriver.DisposeAsync();
-        
+        ShopDriver?.DisposeAsync().AsTask().Wait();
         ErpDriver?.Dispose();
         TaxDriver?.Dispose();
     }

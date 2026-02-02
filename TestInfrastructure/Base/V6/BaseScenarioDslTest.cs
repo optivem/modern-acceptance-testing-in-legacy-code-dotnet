@@ -6,10 +6,6 @@ using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base.V6;
 
-/// <summary>
-/// V6: ScenarioDsl test infrastructure (without Browser lifecycle).
-/// Introduces Gherkin-style scenario DSL for test readability.
-/// </summary>
 public abstract class BaseScenarioDslTest : BaseConfigurableTest, IAsyncLifetime
 {
     private SystemDsl _app = null!;

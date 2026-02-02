@@ -1,35 +1,49 @@
 using Optivem.EShop.SystemTest.Configuration;
 using Optivem.EShop.SystemTest.Core;
 using Optivem.EShop.SystemTest.Core.Erp.Client;
+using Optivem.EShop.SystemTest.Core.Shop.Client.Api;
+using Optivem.EShop.SystemTest.Core.Shop.Client.Ui;
 using Optivem.EShop.SystemTest.Core.Tax.Client;
 using Xunit;
 
 namespace Optivem.EShop.SystemTest.Base.V2;
 
-/// <summary>
-/// V2: Client-based test infrastructure.
-/// Introduces typed clients that wrap HTTP and Playwright logic.
-/// NOTE: Simplified version for educational purposes - shows the pattern evolution.
-/// </summary>
-public abstract class BaseClientTest : BaseConfigurableTest, IAsyncLifetime
+public abstract class BaseClientTest : BaseConfigurableTest
 {
-    protected ErpRealClient? ErpClient { get; private set; }
-    protected TaxRealClient? TaxClient { get; private set; }
-    protected SystemConfiguration? Configuration { get; private set; }
+    protected SystemConfiguration? Configuration;
 
-    public virtual Task InitializeAsync() => Task.CompletedTask;
+    protected ShopUiClient? ShopUiClient;
+    protected ShopApiClient? ShopApiClient;
+    protected ErpRealClient? ErpClient;
+    protected TaxRealClient? TaxClient;
+
+    protected void SetUpConfiguration()
+    {
+        Configuration = LoadConfiguration();
+    }
+
+    protected void SetUpShopUiClient()
+    {
+        ShopUiClient = ShopUiClient.CreateAsync(Configuration!.ShopUiBaseUrl).Result;
+    }
+
+    protected void SetUpShopApiClient()
+    {
+        var httpClient = new Commons.Http.JsonHttpClient<Optivem.EShop.SystemTest.Core.Shop.Client.Api.Dtos.Errors.ProblemDetailResponse>(
+            Configuration!.ShopApiBaseUrl);
+        ShopApiClient = new ShopApiClient(httpClient);
+    }
 
     protected void SetUpExternalClients()
     {
-        Configuration = LoadConfiguration();
-        ErpClient = new ErpRealClient(Configuration.ErpBaseUrl);
-        TaxClient = new TaxRealClient(Configuration.TaxBaseUrl);
+        ErpClient = new ErpRealClient(Configuration!.ErpBaseUrl);
+        TaxClient = new TaxRealClient(Configuration!.TaxBaseUrl);
     }
 
-    public virtual async Task DisposeAsync()
+    protected virtual void TearDown()
     {
+        ShopUiClient?.DisposeAsync().AsTask().Wait();
         ErpClient?.Dispose();
         TaxClient?.Dispose();
-        await Task.CompletedTask;
     }
 }
