@@ -10,8 +10,6 @@ public class ErpSmokeTest : BaseSystemDslTest
     [Fact]
     public async Task ShouldBeAbleToGoToErp()
     {
-        var erp = _app.Erp();
-        var result = await erp.GoToErp().Execute();
-        result.ShouldSucceed();
+        (await _app.Erp().GoToErp().Execute()).ShouldSucceed();
     }
 }

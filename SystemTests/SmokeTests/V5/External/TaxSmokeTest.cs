@@ -10,8 +10,6 @@ public class TaxSmokeTest : BaseSystemDslTest
     [Fact]
     public async Task ShouldBeAbleToGoToTax()
     {
-        var tax = _app.Tax();
-        var result = await tax.GoToTax().Execute();
-        result.ShouldSucceed();
+        (await _app.Tax().GoToTax().Execute()).ShouldSucceed();
     }
 }
