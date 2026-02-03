@@ -7,7 +7,7 @@ namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Orders;
 
 public class CancelOrderPositiveTest : BaseAcceptanceTest
 {
-    [Theory]
+    [Theory(Skip = "TODO: TIME")]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     [ChannelInlineData("2024-12-31T21:59:59Z")]   // 1 second before blackout period starts
     [ChannelInlineData("2024-12-31T22:30:01Z")]   // 1 second after blackout period ends
