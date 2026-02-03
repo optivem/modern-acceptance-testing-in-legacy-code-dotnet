@@ -11,6 +11,7 @@ namespace Dsl.Gherkin.Then
         private readonly SystemDsl _app;
         private readonly Func<Task<ExecutionResult<TSuccessResponse, TSuccessVerification>>> _lazyExecute;
         private ExecutionResult<TSuccessResponse, TSuccessVerification>? _executionResult;
+        private bool _executionCompleted = false;
 
         public ThenClause(Channel channel, SystemDsl app, Func<Task<ExecutionResult<TSuccessResponse, TSuccessVerification>>> lazyExecute)
             : base(channel)
@@ -72,13 +73,14 @@ namespace Dsl.Gherkin.Then
             return Coupon(couponCode);
         }
 
-        private async Task<ExecutionResult<TSuccessResponse, TSuccessVerification>> GetExecutionResult()
+        internal async Task<ExecutionResult<TSuccessResponse, TSuccessVerification>> GetExecutionResult()
         {
-            if (_executionResult == null)
+            if (!_executionCompleted)
             {
                 _executionResult = await _lazyExecute();
+                _executionCompleted = true;
             }
-            return _executionResult;
+            return _executionResult!;
         }
     }
 }

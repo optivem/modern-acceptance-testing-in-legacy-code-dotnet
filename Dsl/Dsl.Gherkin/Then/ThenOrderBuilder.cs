@@ -15,7 +15,8 @@ namespace Dsl.Gherkin.Then
         private readonly SystemDsl _app;
         private readonly string _orderNumber;
         private ViewOrderVerification? _orderVerification;
-        private readonly Func<Task<ExecutionResult<TSuccessResponse, TSuccessVerification>>> _lazyExecute;
+        private readonly ThenClause<TSuccessResponse, TSuccessVerification> _thenClause;
+        private bool _lazyExecuteCompleted = false;
 
         public ThenOrderBuilder(
             ThenClause<TSuccessResponse, TSuccessVerification> thenClause, 
@@ -26,16 +27,21 @@ namespace Dsl.Gherkin.Then
         {
             _app = app;
             _orderNumber = orderNumber;
-            _lazyExecute = lazyExecute;
+            _thenClause = thenClause;
         }
 
         private async Task<ViewOrderVerification> GetOrderVerification()
         {
+            if (!_lazyExecuteCompleted)
+            {
+                // Get the execution result from the parent ThenClause (which handles caching)
+                // This ensures the When clause is only executed once
+                await _thenClause.GetExecutionResult();
+                _lazyExecuteCompleted = true;
+            }
+
             if (_orderVerification == null)
             {
-                // Execute the When clause first
-                await _lazyExecute();
-                
                 // Then get order verification
                 var shop = await _app.Shop(Channel);
                 var result = await shop.ViewOrder()
