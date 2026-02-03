@@ -4,7 +4,6 @@ using Optivem.Testing;
 
 namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Orders;
 
-#if false // Entire test file disabled
 public class ViewOrderNegativeTest : BaseAcceptanceTest
 {
     public static IEnumerable<object[]> NonExistentOrderValues()
@@ -27,4 +26,3 @@ public class ViewOrderNegativeTest : BaseAcceptanceTest
             .ErrorMessage(expectedErrorMessage);
     }
 }
-#endif

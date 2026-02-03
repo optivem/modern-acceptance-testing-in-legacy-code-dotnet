@@ -4,7 +4,6 @@ using Optivem.Testing;
 
 namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Coupons;
 
-#if false // Entire test file disabled
 public class BrowseCouponsPositiveTest : BaseAcceptanceTest
 {
     [Theory]
@@ -16,4 +15,3 @@ public class BrowseCouponsPositiveTest : BaseAcceptanceTest
             .Then().ShouldSucceed();
     }
 }
-#endif

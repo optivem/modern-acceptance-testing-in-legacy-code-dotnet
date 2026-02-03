@@ -5,7 +5,6 @@ using Optivem.Testing;
 
 namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Orders;
 
-#if false // Entire test file disabled
 public class CancelOrderNegativeTest : BaseAcceptanceTest
 {
     [Theory]
@@ -81,4 +80,3 @@ public class CancelOrderNegativeTest : BaseAcceptanceTest
         await orderBuilder.HasStatus(OrderStatus.Placed);
     }
 }
-#endif

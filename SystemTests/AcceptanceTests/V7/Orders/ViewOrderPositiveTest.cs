@@ -4,7 +4,6 @@ using Optivem.Testing;
 
 namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Orders;
 
-#if false // Entire test file disabled
 public class ViewOrderPositiveTest : BaseAcceptanceTest
 {
     [Theory]
@@ -17,4 +16,3 @@ public class ViewOrderPositiveTest : BaseAcceptanceTest
             .Then().ShouldSucceed();
     }
 }
-#endif

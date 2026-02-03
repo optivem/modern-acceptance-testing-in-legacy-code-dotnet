@@ -5,7 +5,6 @@ using Optivem.Testing;
 
 namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Orders;
 
-#if false // Entire test file disabled
 public class PlaceOrderNegativeTest : BaseAcceptanceTest
 {
     [Theory]
@@ -169,4 +168,3 @@ public class PlaceOrderNegativeTest : BaseAcceptanceTest
             .FieldErrorMessage("country", "Country must not be empty");
     }
 }
-#endif

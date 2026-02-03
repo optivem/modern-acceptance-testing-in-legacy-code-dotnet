@@ -4,7 +4,6 @@ using Optivem.Testing;
 
 namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Coupons;
 
-#if false // Entire test file disabled
 public class PublishCouponPositiveTest : BaseAcceptanceTest
 {
     [Theory]
@@ -14,7 +13,7 @@ public class PublishCouponPositiveTest : BaseAcceptanceTest
         await Scenario(channel)
             .When().PublishCoupon()
                 .WithCouponCode("SUMMER2025")
-                .WithDiscountRate(0.15)
+                .WithDiscountRate(0.15m)
                 .WithValidFrom("2024-06-01T00:00:00Z")
                 .WithValidTo("2024-08-31T23:59:59Z")
                 .WithUsageLimit(100)
@@ -28,7 +27,7 @@ public class PublishCouponPositiveTest : BaseAcceptanceTest
         await Scenario(channel)
             .When().PublishCoupon()
                 .WithCouponCode("SUMMER2025")
-                .WithDiscountRate(0.15)
+                .WithDiscountRate(0.15m)
                 .WithValidFrom("")
                 .WithValidTo("")
                 .WithUsageLimit("")
@@ -39,18 +38,18 @@ public class PublishCouponPositiveTest : BaseAcceptanceTest
     [ChannelData(ChannelType.API)]
     public async Task ShouldBeAbleToCorrectlySaveCoupon(Channel channel)
     {
-        await Scenario(channel)
+        var couponBuilder = Scenario(channel)
             .When().PublishCoupon()
                 .WithCouponCode("SUMMER2025")
-                .WithDiscountRate(0.15)
+                .WithDiscountRate(0.15m)
                 .WithValidFrom("2024-06-01T00:00:00Z")
                 .WithValidTo("2024-08-31T23:59:59Z")
                 .WithUsageLimit(100)
-            .Then().Coupon("SUMMER2025")
-                .HasDiscountRate(0.15)
-                .IsValidFrom("2024-06-01T00:00:00Z")
-                .HasUsageLimit(100)
-                .HasUsedCount(0);
+            .Then().Coupon("SUMMER2025");
+
+        await couponBuilder.HasDiscountRate(0.15m);
+        await couponBuilder.IsValidFrom("2024-06-01T00:00:00Z");
+        await couponBuilder.HasUsageLimit(100);
+        await couponBuilder.HasUsedCount(0);
     }
 }
-#endif
