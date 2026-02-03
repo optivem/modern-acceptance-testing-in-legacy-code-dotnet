@@ -137,3 +137,5 @@ runs:
       run: dotnet test --no-build --configuration Release --verbosity normal
       shell: bash
       working-directory: SystemTests/SmokeTests
+      env:
+        ENVIRONMENT: ${{ inputs.environment }}

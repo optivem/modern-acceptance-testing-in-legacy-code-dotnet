@@ -117,3 +117,5 @@ jobs:
       - name: Run E2E Tests
         run: dotnet test --no-build --configuration Release --verbosity normal
         working-directory: ./SystemTests/E2eTests
+        env:
+          ENVIRONMENT: acceptance
