@@ -1,96 +1,87 @@
-using Optivem.EShop.SystemTest.AcceptanceTests.Commons.Providers;
 using Optivem.EShop.SystemTest.AcceptanceTests.V7.Base;
 using Optivem.EShop.SystemTest.Core.Shop;
 using Optivem.Testing;
 
 namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Coupons;
 
-#if false // Entire test file disabled
 public class PublishCouponNegativeTest : BaseAcceptanceTest
 {
     [Theory]
-    [ChannelData(ChannelType.UI, ChannelType.API)]
-    [ChannelInlineData("-0.10")]  // Negative discount rate
-    [ChannelInlineData("1.10")]   // Discount rate > 1
-    public async Task ShouldRejectCouponWithInvalidDiscountRate(Channel channel, string invalidDiscountRate)
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "0.0")]
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "-0.01")]
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "-0.15")]
+    public async Task CannotPublishCouponWithZeroOrNegativeDiscount(Channel channel, string discountRate)
     {
-        var then = Scenario(channel)
-            .When().PublishCoupon().WithDiscountRate(invalidDiscountRate)
-            .Then();
-
-        (await then.ShouldFail())
-            .ErrorMessage("The request contains one or more validation errors")
-            .FieldErrorMessage("discountRate", "Discount rate must be between 0 and 1");
-    }
-
-    [Theory]
-    [ChannelData(ChannelType.UI, ChannelType.API)]
-    [ChannelClassData(typeof(EmptyArgumentsProvider))]
-    public async Task ShouldRejectCouponWithEmptyCouponCode(Channel channel, string emptyCouponCode)
-    {
-        var then = Scenario(channel)
-            .When().PublishCoupon().WithCouponCode(emptyCouponCode).WithDiscountRate("0.15")
-            .Then();
-
-        (await then.ShouldFail())
-            .ErrorMessage("The request contains one or more validation errors")
-            .FieldErrorMessage("couponCode", "Coupon code must not be empty");
-    }
-
-    [Theory]
-    [ChannelData(ChannelType.API)]
-    public async Task ShouldRejectCouponWithNullCouponCode(Channel channel)
-    {
-        var then = Scenario(channel)
-            .When().PublishCoupon().WithCouponCode(null).WithDiscountRate("0.15")
-            .Then();
-
-        (await then.ShouldFail())
-            .ErrorMessage("The request contains one or more validation errors")
-            .FieldErrorMessage("couponCode", "Coupon code must not be empty");
-    }
-
-    [Theory]
-    [ChannelData(ChannelType.UI, ChannelType.API)]
-    public async Task ShouldRejectDuplicateCouponCode(Channel channel)
-    {
-        var then = Scenario(channel)
-            .Given().Coupon().WithCouponCode("DUPLICATE2025")
-            .When().PublishCoupon().WithCouponCode("DUPLICATE2025").WithDiscountRate("0.15")
-            .Then();
-
-        (await then.ShouldFail())
-            .ErrorMessage("Coupon code already exists: DUPLICATE2025");
-    }
-
-    [Theory]
-    [ChannelData(ChannelType.UI, ChannelType.API)]
-    [ChannelInlineData(-10)]
-    [ChannelInlineData(0)]
-    public async Task ShouldRejectCouponWithInvalidUsageLimit(Channel channel, int invalidUsageLimit)
-    {
-        var then = Scenario(channel)
-            .When().PublishCoupon().WithUsageLimit(invalidUsageLimit)
-            .Then();
-
-        (await then.ShouldFail())
-            .ErrorMessage("The request contains one or more validation errors")
-            .FieldErrorMessage("usageLimit", "Usage limit must be positive");
-    }
-
-    [Theory]
-    [ChannelData(ChannelType.UI, ChannelType.API)]
-    public async Task ShouldRejectCouponWithValidToBeforeValidFrom(Channel channel)
-    {
-        var then = Scenario(channel)
+        await Scenario(channel)
             .When().PublishCoupon()
-                .WithValidFrom("2025-03-31")
-                .WithValidTo("2025-01-01")
-            .Then();
+                .WithCouponCode("INVALID-COUPON")
+                .WithDiscountRate(discountRate)
+            .Then().ShouldFail()
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("discountRate", "Discount rate must be greater than 0.00");
+    }
 
-        (await then.ShouldFail())
-            .ErrorMessage("The request contains one or more validation errors")
-            .FieldErrorMessage("validTo", "Valid to date must be after valid from date");
+    [Theory]
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "1.01")]
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "2.00")]
+    public async Task CannotPublishCouponWithDiscountGreaterThan100Percent(Channel channel, string discountRate)
+    {
+        await Scenario(channel)
+            .When().PublishCoupon()
+                .WithCouponCode("INVALID-COUPON")
+                .WithDiscountRate(discountRate)
+            .Then().ShouldFail()
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("discountRate", "Discount rate must be at most 1.00");
+    }
+
+    [Theory(Skip = "Disabled until bug is fixed")]
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "2023-12-31T23:59:59Z")]
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "2024-01-01T00:00:00Z")]
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "2025-06-01T12:00:00Z")]
+    public async Task CannotPublishCouponWithValidToInThePast(Channel channel, string validTo)
+    {
+        await Scenario(channel)
+            .Given().Clock().WithTime("2026-01-01T12:00:00Z")
+            .When().PublishCoupon()
+                .WithCouponCode("PAST-COUPON")
+                .WithDiscountRate(0.15)
+                .WithValidTo(validTo)
+            .Then().ShouldFail()
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("validTo", "Valid to date cannot be in the past");
+    }
+
+    [Theory]
+    [ChannelData(ChannelType.UI, ChannelType.API)]
+    public async Task CannotPublishCouponWithDuplicateCouponCode(Channel channel)
+    {
+        await Scenario(channel)
+            .Given().Coupon()
+                .WithCouponCode("EXISTING-COUPON")
+                .WithDiscountRate(0.10)
+            .When().PublishCoupon()
+                .WithCouponCode("EXISTING-COUPON")
+                .WithDiscountRate(0.20)
+            .Then().ShouldFail()
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("couponCode", "Coupon code EXISTING-COUPON already exists");
+    }
+
+
+    [Theory]
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "0")]
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "-1")]
+    [ChannelInlineData(ChannelType.UI, ChannelType.API, "-100")]
+    public async Task CannotPublishCouponWithZeroOrNegativeUsageLimit(Channel channel, string usageLimit)
+    {
+        await Scenario(channel)
+            .When().PublishCoupon()
+                .WithCouponCode("INVALID-LIMIT")
+                .WithDiscountRate(0.15)
+                .WithUsageLimit(usageLimit)
+            .Then().ShouldFail()
+                .ErrorMessage("The request contains one or more validation errors")
+                .FieldErrorMessage("usageLimit", "Usage limit must be positive");
     }
 }
-#endif
