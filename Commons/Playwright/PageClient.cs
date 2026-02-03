@@ -24,6 +24,11 @@ public class PageClient
     {
     }
 
+    public ILocator GetLocator(string selector)
+    {
+        return _page.Locator(selector);
+    }
+
     public async Task FillAsync(string selector, string? text)
     {
         var locator = await GetLocatorAsync(selector);
@@ -43,6 +48,12 @@ public class PageClient
         return await locator.TextContentAsync() ?? string.Empty;
     }
 
+    public async Task<string> ReadTextContentImmediatelyAsync(string selector)
+    {
+        var locator = GetLocator(selector);
+        return await locator.TextContentAsync() ?? string.Empty;
+    }
+
     public async Task<List<string>> ReadAllTextContentsAsync(string selector)
     {
         var locator = _page.Locator(selector);
@@ -58,9 +69,10 @@ public class PageClient
         try
         {
             var locator = await GetLocatorAsync(selector);
-            return await locator.CountAsync() > 0;
+            var count = await locator.CountAsync();
+            return count > 0;
         }
-        catch
+        catch (Exception)
         {
             return false;
         }
@@ -77,7 +89,9 @@ public class PageClient
         var locator = _page.Locator(selector);
         await locator.WaitForAsync(waitForOptions);
 
-        if (await locator.CountAsync() == 0)
+        var count = await locator.CountAsync();
+        
+        if (count == 0)
         {
             throw new Exception($"No elements found for selector: {selector}");
         }

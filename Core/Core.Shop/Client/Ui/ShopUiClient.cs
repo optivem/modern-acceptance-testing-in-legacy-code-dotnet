@@ -10,8 +10,7 @@ public class ShopUiClient : IAsyncDisposable
 {
     // Default: headless mode (browser not visible)
     // To see browser during debugging, set: HEADED=true or PLAYWRIGHT_HEADED=true
-    private static readonly bool IsHeadless = Environment.GetEnvironmentVariable("HEADED") != "true" 
-        && Environment.GetEnvironmentVariable("PLAYWRIGHT_HEADED") != "true";
+    private static readonly bool IsHeadless = Environment.GetEnvironmentVariable("HEADED") != "true";
 
     private const string ContentType = "content-type";
     private const string TextHtml = "text/html";

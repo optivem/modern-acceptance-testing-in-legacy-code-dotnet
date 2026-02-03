@@ -23,63 +23,67 @@ public abstract class BasePage
         PageClient = pageClient;
     }
 
-    private async Task<bool> HasSuccessNotificationAsync()
-    {
-        var hasNotification = await PageClient.IsVisibleAsync(NotificationSelector);
+    private record NotificationResult(bool IsSuccess, string? SuccessMessage, string? ErrorMessage, List<string>? FieldErrors);
 
-        if (!hasNotification)
+    private async Task<NotificationResult> DetectAndReadNotificationAsync()
+    {
+        // First wait for ANY notification to appear
+        var isNotification = await PageClient.IsVisibleAsync(NotificationSelector);
+
+        if (!isNotification)
         {
             throw new InvalidOperationException(NoNotificationErrorMessage);
         }
 
-        var isSuccess = await PageClient.IsVisibleAsync(NotificationSuccessSelector);
+        // Small wait to ensure we're checking the latest notification state,
+        // not a stale one from a previous action
+        await Task.Delay(150);
+
+        // Now check immediately what type it is (don't wait again)
+        var isSuccess = await IsImmediatelyVisibleAsync(NotificationSuccessSelector);
 
         if (isSuccess)
         {
-            return true;
+            // Read immediately while notification is still visible
+            var successMessage = await PageClient.ReadTextContentImmediatelyAsync(NotificationSuccessSelector);
+            return new NotificationResult(true, successMessage, null, null);
         }
 
-        var isError = await PageClient.IsVisibleAsync(NotificationErrorSelector);
+        var isError = await IsImmediatelyVisibleAsync(NotificationErrorSelector);
 
         if (isError)
         {
-            return false;
+            // Read all error content immediately while notification is still visible
+            var errorMessage = await PageClient.ReadTextContentImmediatelyAsync(NotificationErrorMessageSelector);
+            var fieldErrors = new List<string>();
+            if (await IsImmediatelyVisibleAsync(NotificationErrorFieldSelector))
+            {
+                fieldErrors = await PageClient.ReadAllTextContentsAsync(NotificationErrorFieldSelector);
+            }
+            return new NotificationResult(false, null, errorMessage, fieldErrors);
         }
 
         throw new InvalidOperationException(UnrecognizedNotificationErrorMessage);
     }
 
-    private async Task<string> ReadSuccessNotificationAsync()
+    private async Task<bool> IsImmediatelyVisibleAsync(string selector)
     {
-        return await PageClient.ReadTextContentAsync(NotificationSuccessSelector);
-    }
-
-    private async Task<string> ReadGeneralErrorMessageAsync()
-    {
-        return await PageClient.ReadTextContentAsync(NotificationErrorMessageSelector);
-    }
-
-    private async Task<List<string>> ReadFieldErrorsAsync()
-    {
-        if (!await PageClient.IsVisibleAsync(NotificationErrorFieldSelector))
-        {
-            return new List<string>();
-        }
-        return await PageClient.ReadAllTextContentsAsync(NotificationErrorFieldSelector);
+        var locator = PageClient.GetLocator(selector);
+        var count = await locator.CountAsync();
+        return count > 0;
     }
 
     public async Task<Result<string, SystemError>> GetResultAsync()
     {
-        var isSuccess = await HasSuccessNotificationAsync();
+        var notification = await DetectAndReadNotificationAsync();
 
-        if (isSuccess)
+        if (notification.IsSuccess)
         {
-            var successMessage = await ReadSuccessNotificationAsync();
-            return SystemResults.Success(successMessage);
+            return SystemResults.Success(notification.SuccessMessage!);
         }
 
-        var generalMessage = await ReadGeneralErrorMessageAsync();
-        var fieldErrorTexts = await ReadFieldErrorsAsync();
+        var generalMessage = notification.ErrorMessage!;
+        var fieldErrorTexts = notification.FieldErrors!;
 
         if (!fieldErrorTexts.Any())
         {
