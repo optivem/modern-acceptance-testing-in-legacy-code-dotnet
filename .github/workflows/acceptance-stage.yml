@@ -119,3 +119,4 @@ jobs:
         working-directory: ./SystemTests/E2eTests
         env:
           ENVIRONMENT: acceptance
+          EXTERNAL_SYSTEM_MODE: real
