@@ -7,9 +7,10 @@ namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Coupons;
 public class PublishCouponNegativeTest : BaseAcceptanceTest
 {
     [Theory]
-    [ChannelInlineData(ChannelType.UI, ChannelType.API, "0.0")]
-    [ChannelInlineData(ChannelType.UI, ChannelType.API, "-0.01")]
-    [ChannelInlineData(ChannelType.UI, ChannelType.API, "-0.15")]
+    [ChannelData(ChannelType.UI, ChannelType.API)]
+    [ChannelInlineData("0.0")]
+    [ChannelInlineData("-0.01")]
+    [ChannelInlineData("-0.15")]
     public async Task CannotPublishCouponWithZeroOrNegativeDiscount(Channel channel, string discountRate)
     {
         var then = Scenario(channel)
@@ -24,8 +25,9 @@ public class PublishCouponNegativeTest : BaseAcceptanceTest
     }
 
     [Theory]
-    [ChannelInlineData(ChannelType.UI, ChannelType.API, "1.01")]
-    [ChannelInlineData(ChannelType.UI, ChannelType.API, "2.00")]
+    [ChannelData(ChannelType.UI, ChannelType.API)]
+    [ChannelInlineData("1.01")]
+    [ChannelInlineData("2.00")]
     public async Task CannotPublishCouponWithDiscountGreaterThan100Percent(Channel channel, string discountRate)
     {
         var then = Scenario(channel)
@@ -78,9 +80,10 @@ public class PublishCouponNegativeTest : BaseAcceptanceTest
 
 
     [Theory]
-    [ChannelInlineData(ChannelType.UI, ChannelType.API, "0")]
-    [ChannelInlineData(ChannelType.UI, ChannelType.API, "-1")]
-    [ChannelInlineData(ChannelType.UI, ChannelType.API, "-100")]
+    [ChannelData(ChannelType.UI, ChannelType.API)]
+    [ChannelInlineData("0")]
+    [ChannelInlineData("-1")]
+    [ChannelInlineData("-100")]
     public async Task CannotPublishCouponWithZeroOrNegativeUsageLimit(Channel channel, string usageLimit)
     {
         var then = Scenario(channel)
