@@ -1,0 +1,30 @@
+using Optivem.EShop.SystemTest.AcceptanceTests.V7.Base;
+using Optivem.EShop.SystemTest.Core.Shop;
+using Optivem.Testing;
+
+namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Orders;
+
+#if false // Entire test file disabled
+public class ViewOrderNegativeTest : BaseAcceptanceTest
+{
+    public static IEnumerable<object[]> NonExistentOrderValues()
+    {
+        yield return new object[] { "NON-EXISTENT-ORDER-99999", "Order NON-EXISTENT-ORDER-99999 does not exist." };
+        yield return new object[] { "NON-EXISTENT-ORDER-88888", "Order NON-EXISTENT-ORDER-88888 does not exist." };
+        yield return new object[] { "NON-EXISTENT-ORDER-77777", "Order NON-EXISTENT-ORDER-77777 does not exist." };
+    }
+
+    [Theory]
+    [ChannelData(ChannelType.UI, ChannelType.API)]
+    [ChannelMemberData(nameof(NonExistentOrderValues))]
+    public async Task ShouldNotBeAbleToViewNonExistentOrder(Channel channel, string orderNumber, string expectedErrorMessage)
+    {
+        var then = Scenario(channel)
+            .When().ViewOrder().WithOrderNumber(orderNumber)
+            .Then();
+
+        (await then.ShouldFail())
+            .ErrorMessage(expectedErrorMessage);
+    }
+}
+#endif

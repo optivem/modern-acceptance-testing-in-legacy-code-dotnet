@@ -25,6 +25,19 @@ $Config = @{
             TestReportPath = "SystemTests\SmokeTests\TestResults\testResults.html"
             TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; },
 
+        # Acceptance Tests
+        @{  Id = "acceptance-api";
+            Name = "Acceptance Tests - Channel: API";
+            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=stub -e CHANNEL=API --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+            Path = "SystemTests/AcceptanceTests";
+            TestReportPath = "SystemTests\AcceptanceTests\TestResults\testResults.html" },
+        @{  Id = "acceptance-ui";
+            Name = "Acceptance Tests - Channel: UI";
+            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=stub -e CHANNEL=UI --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+            Path = "SystemTests/AcceptanceTests";
+            TestReportPath = "SystemTests\AcceptanceTests\TestResults\testResults.html";
+            TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; },
+
         # E2E Tests
         @{  Id = "e2e-api";
             Name = "E2E Tests - Channel: API";
@@ -38,6 +51,8 @@ $Config = @{
             Path = "SystemTests/E2eTests";
             TestReportPath = "SystemTests\E2eTests\TestResults\testResults.html";
             TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; }
+
+
     )
 }
 
