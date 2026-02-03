@@ -139,3 +139,4 @@ runs:
       working-directory: SystemTests/SmokeTests
       env:
         ENVIRONMENT: ${{ inputs.environment }}
+        EXTERNAL_SYSTEM_MODE: ${{ inputs.external-system-mode }}
