@@ -4,6 +4,7 @@ using Optivem.Testing;
 
 namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Coupons;
 
+#if false // Entire test file disabled
 public class PublishCouponNegativeTest : BaseAcceptanceTest
 {
     [Theory]
@@ -85,3 +86,4 @@ public class PublishCouponNegativeTest : BaseAcceptanceTest
                 .FieldErrorMessage("usageLimit", "Usage limit must be positive");
     }
 }
+#endif

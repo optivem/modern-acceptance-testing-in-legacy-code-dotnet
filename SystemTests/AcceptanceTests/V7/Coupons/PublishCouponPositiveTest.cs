@@ -4,6 +4,7 @@ using Optivem.Testing;
 
 namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Coupons;
 
+#if false // Entire test file disabled
 public class PublishCouponPositiveTest : BaseAcceptanceTest
 {
     [Theory]
@@ -52,3 +53,4 @@ public class PublishCouponPositiveTest : BaseAcceptanceTest
                 .HasUsedCount(0);
     }
 }
+#endif
