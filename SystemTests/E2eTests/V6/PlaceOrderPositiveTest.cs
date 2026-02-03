@@ -9,7 +9,7 @@ namespace Optivem.EShop.SystemTest.E2eTests.V6;
 public class PlaceOrderPositiveTest : BaseE2eTest
 {
     [Theory]
-    [ChannelData(ChannelType.API)]
+    [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldCalculateSubtotalPrice(Channel channel)
     {
         var then = Scenario(channel)
@@ -23,7 +23,7 @@ public class PlaceOrderPositiveTest : BaseE2eTest
     }
 
     [Theory]
-    [ChannelData(ChannelType.API)]
+    [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldPlaceOrderWithCorrectSubtotalPrice(Channel channel)
     {
         var then = Scenario(channel)
