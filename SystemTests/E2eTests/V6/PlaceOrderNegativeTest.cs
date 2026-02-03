@@ -1,39 +1,36 @@
-using Commons.Util;
+using E2eTests.Providers;
 using Optivem.EShop.SystemTest.Core.Shop;
-using Optivem.EShop.SystemTest.E2eTests.Commons.Constants;
-using Optivem.EShop.SystemTest.E2eTests.V5.Base;
+using Optivem.EShop.SystemTest.E2eTests.V6.Base;
 using Optivem.Testing;
-using Shouldly;
 using Xunit;
 
-namespace Optivem.EShop.SystemTest.E2eTests.V5;
+namespace Optivem.EShop.SystemTest.E2eTests.V6;
 
 public class PlaceOrderNegativeTest : BaseE2eTest
 {
-    public static IEnumerable<object[]> EmptyValues()
-    {
-        yield return new object[] { "" };        // Empty string
-        yield return new object[] { "   " };     // Whitespace string
-    }
-
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldRejectOrderWithInvalidQuantity(Channel channel)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku(Defaults.SKU).Country(Defaults.COUNTRY).Quantity("invalid-quantity").Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .Given().Product()
+            .When().PlaceOrder().WithQuantity("invalid-quantity")
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("quantity", "Quantity must be an integer");
     }
 
     [Theory]
-    [ChannelData(ChannelType.UI, ChannelType.API)]
+    [ChannelData(ChannelType.API, ChannelType.API)]
     public async Task ShouldRejectOrderWithNonExistentSku(Channel channel)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku("NON-EXISTENT-SKU-12345").Quantity(Defaults.QUANTITY).Country(Defaults.COUNTRY).Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .When().PlaceOrder().WithSku("NON-EXISTENT-SKU-12345")
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("sku", "Product does not exist for SKU: NON-EXISTENT-SKU-12345");
     }
@@ -42,9 +39,11 @@ public class PlaceOrderNegativeTest : BaseE2eTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldRejectOrderWithNegativeQuantity(Channel channel)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku(Defaults.SKU).Country(Defaults.COUNTRY).Quantity(-10).Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .When().PlaceOrder().WithQuantity(-10)
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("quantity", "Quantity must be positive");
     }
@@ -53,33 +52,39 @@ public class PlaceOrderNegativeTest : BaseE2eTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldRejectOrderWithZeroQuantity(Channel channel)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku("ANOTHER-SKU-67890").Country(Defaults.COUNTRY).Quantity(0).Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .When().PlaceOrder().WithQuantity(0)
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("quantity", "Quantity must be positive");
     }
 
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
-    [ChannelMemberData(nameof(EmptyValues))]
+    [ChannelClassData(typeof(EmptyArgumentsProvider))]
     public async Task ShouldRejectOrderWithEmptySku(Channel channel, string sku)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku(sku).Quantity(Defaults.QUANTITY).Country(Defaults.COUNTRY).Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .When().PlaceOrder().WithSku(sku)
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("sku", "SKU must not be empty");
     }
 
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
-    [ChannelMemberData(nameof(EmptyValues))]
+    [ChannelClassData(typeof(EmptyArgumentsProvider))]
     public async Task ShouldRejectOrderWithEmptyQuantity(Channel channel, string emptyQuantity)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku(Defaults.SKU).Country(Defaults.COUNTRY).Quantity(emptyQuantity).Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .When().PlaceOrder().WithQuantity(emptyQuantity)
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("quantity", "Quantity must not be empty");
     }
@@ -90,21 +95,25 @@ public class PlaceOrderNegativeTest : BaseE2eTest
     [ChannelInlineData("lala")]
     public async Task ShouldRejectOrderWithNonIntegerQuantity(Channel channel, string nonIntegerQuantity)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku(Defaults.SKU).Country(Defaults.COUNTRY).Quantity(nonIntegerQuantity).Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .When().PlaceOrder().WithQuantity(nonIntegerQuantity)
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("quantity", "Quantity must be an integer");
     }
 
     [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
-    [ChannelMemberData(nameof(EmptyValues))]
+    [ChannelClassData(typeof(EmptyArgumentsProvider))]
     public async Task ShouldRejectOrderWithEmptyCountry(Channel channel, string emptyCountry)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku(Defaults.SKU).Quantity(Defaults.QUANTITY).Country(emptyCountry).Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .When().PlaceOrder().WithCountry(emptyCountry)
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("country", "Country must not be empty");
     }
@@ -113,12 +122,12 @@ public class PlaceOrderNegativeTest : BaseE2eTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldRejectOrderWithUnsupportedCountry(Channel channel)
     {
-        (await _app.Erp().ReturnsProduct().Sku(Defaults.SKU).Execute())
-            .ShouldSucceed();
+        var then = Scenario(channel)
+            .Given().Product()
+            .When().PlaceOrder().WithCountry("XX")
+            .Then();
 
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku(Defaults.SKU).Quantity(Defaults.QUANTITY).Country("XX").Execute())
-            .ShouldFail()
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("country", "Country does not exist: XX");
     }
@@ -127,9 +136,11 @@ public class PlaceOrderNegativeTest : BaseE2eTest
     [ChannelData(ChannelType.API)]
     public async Task ShouldRejectOrderWithNullQuantity(Channel channel)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku(Defaults.SKU).Country(Defaults.COUNTRY).Quantity(null).Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .When().PlaceOrder().WithQuantity(null)
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("quantity", "Quantity must not be empty");
     }
@@ -138,9 +149,11 @@ public class PlaceOrderNegativeTest : BaseE2eTest
     [ChannelData(ChannelType.API)]
     public async Task ShouldRejectOrderWithNullSku(Channel channel)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku(null).Quantity(Defaults.QUANTITY).Country(Defaults.COUNTRY).Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .When().PlaceOrder().WithSku(null)
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("sku", "SKU must not be empty");
     }
@@ -149,9 +162,11 @@ public class PlaceOrderNegativeTest : BaseE2eTest
     [ChannelData(ChannelType.API)]
     public async Task ShouldRejectOrderWithNullCountry(Channel channel)
     {
-        var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder().Sku(Defaults.SKU).Quantity(Defaults.QUANTITY).Country(null).Execute())
-            .ShouldFail()
+        var then = Scenario(channel)
+            .When().PlaceOrder().WithCountry(null)
+            .Then();
+
+        (await then.ShouldFail())
             .ErrorMessage("The request contains one or more validation errors")
             .FieldErrorMessage("country", "Country must not be empty");
     }

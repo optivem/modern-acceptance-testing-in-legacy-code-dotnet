@@ -15,24 +15,14 @@ public class ViewOrderPositiveTest : BaseE2eTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldViewPlacedOrder(Channel channel)
     {
-        (await _app.Erp().ReturnsProduct()
-            .Sku(Defaults.SKU)
-            .UnitPrice(25.00m)
-            .Execute())
+        (await _app.Erp().ReturnsProduct().Sku(Defaults.SKU).UnitPrice(25.00m).Execute())
             .ShouldSucceed();
 
         var shop = await _app.Shop(channel);
-        (await shop.PlaceOrder()
-            .OrderNumber(Defaults.ORDER_NUMBER)
-            .Sku(Defaults.SKU)
-            .Country(Defaults.COUNTRY)
-            .Quantity(4)
-            .Execute())
+        (await shop.PlaceOrder().OrderNumber(Defaults.ORDER_NUMBER).Sku(Defaults.SKU).Country(Defaults.COUNTRY).Quantity(4).Execute())
             .ShouldSucceed();
 
-        (await shop.ViewOrder()
-            .OrderNumber(Defaults.ORDER_NUMBER)
-            .Execute())
+        (await shop.ViewOrder().OrderNumber(Defaults.ORDER_NUMBER).Execute())
             .ShouldSucceed()
             .OrderNumber(Defaults.ORDER_NUMBER)
             .Sku(Defaults.SKU)

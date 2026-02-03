@@ -1,9 +1,9 @@
 using Optivem.EShop.SystemTest.Core.Shop;
-using Optivem.EShop.SystemTest.E2eTests.V5.Base;
+using Optivem.EShop.SystemTest.E2eTests.V6.Base;
 using Optivem.Testing;
 using Xunit;
 
-namespace Optivem.EShop.SystemTest.E2eTests.V5;
+namespace Optivem.EShop.SystemTest.E2eTests.V6;
 
 public class ViewOrderNegativeTest : BaseE2eTest
 {
@@ -19,10 +19,11 @@ public class ViewOrderNegativeTest : BaseE2eTest
     [ChannelMemberData(nameof(NonExistentOrderValues))]
     public async Task ShouldNotBeAbleToViewNonExistentOrder(Channel channel, string orderNumber, string expectedErrorMessage)
     {
-        var shop = await _app.Shop(channel);
+        var then = Scenario(channel)
+            .When().ViewOrder().WithOrderNumber(orderNumber)
+            .Then();
 
-        (await shop.ViewOrder().OrderNumber(orderNumber).Execute())
-            .ShouldFail()
+        (await then.ShouldFail())
             .ErrorMessage(expectedErrorMessage);
     }
 }
