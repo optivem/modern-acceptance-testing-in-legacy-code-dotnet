@@ -35,6 +35,15 @@ public class BrowseCouponsVerification : ResponseVerification<BrowseCouponsRespo
         return this;
     }
 
+    public BrowseCouponsVerification CouponHasValidTo(string couponCodeAlias, string? expectedValidTo)
+    {
+        var coupon = FindCouponByCode(couponCodeAlias);
+
+        DateTime? expectedValidToDateTime = Converter.ParseDateTime(expectedValidTo);
+        coupon.ValidTo.ShouldBe(expectedValidToDateTime, $"Expected coupon '{couponCodeAlias}' to have validTo '{expectedValidTo}'");
+        return this;
+    }
+
     public BrowseCouponsVerification CouponHasUsageLimit(string couponCodeAlias, int expectedUsageLimit)
     {
         var coupon = FindCouponByCode(couponCodeAlias);

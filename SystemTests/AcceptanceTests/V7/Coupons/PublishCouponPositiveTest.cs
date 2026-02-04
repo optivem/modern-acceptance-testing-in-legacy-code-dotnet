@@ -35,7 +35,7 @@ public class PublishCouponPositiveTest : BaseAcceptanceTest
             .Then().ShouldSucceed();
     }
 
-    [Theory(Skip = "TODO: FIX")]
+    [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldBeAbleToCorrectlySaveCoupon(Channel channel)
     {
@@ -44,12 +44,13 @@ public class PublishCouponPositiveTest : BaseAcceptanceTest
                 .WithCouponCode("SUMMER2025")
                 .WithDiscountRate(0.15m)
                 .WithValidFrom("2024-06-01T00:00:00Z")
-                .WithValidTo("2024-08-31T23:59:59Z")
+                .WithValidTo("2024-08-31T23:59:00Z")
                 .WithUsageLimit(100)
             .Then().Coupon("SUMMER2025");
 
         await couponBuilder.HasDiscountRate(0.15m);
         await couponBuilder.IsValidFrom("2024-06-01T00:00:00Z");
+        await couponBuilder.IsValidTo("2024-08-31T23:59:00Z");
         await couponBuilder.HasUsageLimit(100);
         await couponBuilder.HasUsedCount(0);
     }

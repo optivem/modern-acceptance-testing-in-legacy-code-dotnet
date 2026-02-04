@@ -45,6 +45,13 @@ namespace Dsl.Gherkin.Then
             return this;
         }
 
+        public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> IsValidTo(string validTo)
+        {
+            var verification = await GetVerification();
+            verification.CouponHasValidTo(_couponCode, validTo);
+            return this;
+        }
+
         public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> HasUsageLimit(int usageLimit)
         {
             var verification = await GetVerification();
