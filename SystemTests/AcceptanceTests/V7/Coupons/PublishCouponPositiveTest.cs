@@ -7,7 +7,7 @@ namespace Optivem.EShop.SystemTest.AcceptanceTests.V7.Coupons;
 
 public class PublishCouponPositiveTest : BaseAcceptanceTest
 {
-    [Theory(Skip = "TODO: FIX")]
+    [Theory]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldBeAbleToPublishValidCoupon(Channel channel)
     {
