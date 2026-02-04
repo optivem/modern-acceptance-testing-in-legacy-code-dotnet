@@ -33,7 +33,7 @@ namespace Dsl.Gherkin.When
         {
         }
 
-        private async Task EnsureDefaults()
+        private async Task EnsureGiven()
         {
             if (_givenSetup != null)
             {
@@ -63,27 +63,27 @@ namespace Dsl.Gherkin.When
 
         public PlaceOrderBuilder PlaceOrder()
         {
-            return new PlaceOrderBuilder(_app, _scenario, () => EnsureDefaults());
+            return new PlaceOrderBuilder(_app, _scenario, () => EnsureGiven());
         }
 
         public CancelOrderBuilder CancelOrder()
         {
-            return new CancelOrderBuilder(_app, _scenario, () => EnsureDefaults());
+            return new CancelOrderBuilder(_app, _scenario, () => EnsureGiven());
         }
 
         public ViewOrderBuilder ViewOrder()
         {
-            return new ViewOrderBuilder(_app, _scenario, () => EnsureDefaults());
+            return new ViewOrderBuilder(_app, _scenario, () => EnsureGiven());
         }
 
         public PublishCouponBuilder PublishCoupon()
         {
-            return new PublishCouponBuilder(_app, _scenario, () => EnsureDefaults());
+            return new PublishCouponBuilder(_app, _scenario, () => EnsureGiven());
         }
 
         public BrowseCouponsBuilder BrowseCoupons()
         {
-            return new BrowseCouponsBuilder(_app, _scenario, () => EnsureDefaults());
+            return new BrowseCouponsBuilder(_app, _scenario, () => EnsureGiven());
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Dsl.Gherkin.When;
 
 public class BrowseCouponsBuilder : BaseWhenBuilder<BrowseCouponsResponse, BrowseCouponsVerification>
 {
-    public BrowseCouponsBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task> ensureDefaults) : base(app, scenario, ensureDefaults)
+    public BrowseCouponsBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task> ensureGiven) : base(app, scenario, ensureGiven)
     {
     }
 

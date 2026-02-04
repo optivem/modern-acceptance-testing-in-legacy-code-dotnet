@@ -18,7 +18,7 @@ public class PublishCouponBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
     private string? _validTo;
     private string? _usageLimit;
 
-    public PublishCouponBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task> ensureDefaults) : base(app, scenario, ensureDefaults)
+    public PublishCouponBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task> ensureGiven) : base(app, scenario, ensureGiven)
     {
         WithCouponCode(DefaultCouponCode);
         WithDiscountRate(DefaultDiscountRate);

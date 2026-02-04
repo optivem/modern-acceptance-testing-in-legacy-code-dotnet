@@ -10,20 +10,20 @@ public abstract class BaseWhenBuilder<TSuccessResponse, TSuccessVerification>
 {
     private readonly SystemDsl _app;
     private readonly ScenarioDsl _scenario;
-    private readonly Func<Task> _ensureDefaults;
+    private readonly Func<Task> _ensureGiven;
 
-    protected BaseWhenBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task> ensureDefaults)
+    protected BaseWhenBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task> ensureGiven)
     {
         _app = app;
         _scenario = scenario;
-        _ensureDefaults = ensureDefaults;
+        _ensureGiven = ensureGiven;
     }
 
     public ThenClause<TSuccessResponse, TSuccessVerification> Then()
     {
         return new ThenClause<TSuccessResponse, TSuccessVerification>(Channel, _app, async () =>
         {
-            await _ensureDefaults();
+            await _ensureGiven();
             return await Execute(_app);
         });
     }
