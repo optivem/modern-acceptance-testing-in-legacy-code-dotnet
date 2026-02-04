@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Optivem.EShop.SystemTest.ContractTests</RootNamespace>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.57.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Commons\Commons.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Clock\Core.Clock.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Erp\Core.Erp.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Shop\Core.Shop.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Tax\Core.Tax.csproj" />
+    <ProjectReference Include="..\..\Dsl\Dsl.Gherkin\Dsl.Gherkin.csproj" />
+    <ProjectReference Include="..\..\Dsl\Dsl.System\Dsl.System.csproj" />
+    <ProjectReference Include="..\..\TestInfrastructure\TestInfrastructure.csproj" />
+    <ProjectReference Include="..\..\Optivem.Testing\Optivem.Testing.csproj" />
+  </ItemGroup>
+
+</Project>
