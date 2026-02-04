@@ -1,4 +1,4 @@
-namespace Optivem.EShop.SystemTest.ContractTests.Tax;
+namespace Optivem.EShop.SystemTest.ExternalSystemContractTests.Tax;
 
 public class TaxStubContractTest : BaseTaxContractTest
 {

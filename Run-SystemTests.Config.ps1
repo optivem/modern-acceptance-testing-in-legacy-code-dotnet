@@ -42,14 +42,14 @@ $Config = @{
         @{  Id = "contract-stub";
             Name = "Contract Tests - Stubbed External Systems";
             Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=stub --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
-            Path = "SystemTests/ContractTests";
-            TestReportPath = "SystemTests\ContractTests\TestResults\testResults.html";
+            Path = "SystemTests/ExternalSystemContractTests";
+            TestReportPath = "SystemTests\ExternalSystemContractTests\TestResults\testResults.html";
             TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; },
         @{  Id = "contract-real";
             Name = "Contract Tests - Real External Systems";
             Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=real --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
-            Path = "SystemTests/ContractTests";
-            TestReportPath = "SystemTests\ContractTests\TestResults\testResults.html";
+            Path = "SystemTests/ExternalSystemContractTests";
+            TestReportPath = "SystemTests\ExternalSystemContractTests\TestResults\testResults.html";
             TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; },
 
         # E2E Tests

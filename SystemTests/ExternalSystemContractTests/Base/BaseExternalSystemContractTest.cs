@@ -2,7 +2,7 @@ using Commons.Dsl;
 using Optivem.EShop.SystemTest.Base.V5;
 using Optivem.EShop.SystemTest.Core;
 
-namespace Optivem.EShop.SystemTest.ContractTests.Base;
+namespace Optivem.EShop.SystemTest.ExternalSystemContractTests.Base;
 
 public abstract class BaseExternalSystemContractTest : BaseSystemDslTest
 {

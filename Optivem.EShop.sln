@@ -58,7 +58,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optivem.Testing", "Optivem.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcceptanceTests", "SystemTests\AcceptanceTests\AcceptanceTests.csproj", "{DA623666-2F02-F2FE-31DB-B9FB5C7FA2F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractTests", "SystemTests\ContractTests\ContractTests.csproj", "{C0471AC7-89B3-4F5E-92D1-E43F8A2C6B91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalSystemContractTests", "SystemTests\ExternalSystemContractTests\ExternalSystemContractTests.csproj", "{C0471AC7-89B3-4F5E-92D1-E43F8A2C6B91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
