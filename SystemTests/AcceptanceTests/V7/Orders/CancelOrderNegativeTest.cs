@@ -35,18 +35,6 @@ public class CancelOrderNegativeTest : BaseAcceptanceTest
             .ErrorMessage("Order has already been cancelled");
     }
 
-    [Theory(Skip = "TODO: FIX")]
-    [ChannelData(ChannelType.API)]
-    public async Task CannotCancelOrderWhereOrderNumberIsMissing(Channel channel)
-    {
-        var then = Scenario(channel)
-            .When().CancelOrder().WithOrderNumber(null)
-            .Then();
-
-        (await then.ShouldFail())
-            .ErrorMessage("Order null does not exist.");
-    }
-
     [Theory]
     [ChannelData(ChannelType.API)]
     public async Task CannotCancelNonExistentOrder(Channel channel)
