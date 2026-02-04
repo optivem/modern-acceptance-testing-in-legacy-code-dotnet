@@ -41,6 +41,7 @@ namespace Dsl.Gherkin.Then
         {
             // Ensure the When clause (e.g., PlaceOrder) has executed before verification
             await GetExecutionResult();
+            await ShouldSucceed();
             return new ThenOrderBuilder<TSuccessResponse, TSuccessVerification>(this, _app, orderNumber);
         }
 
@@ -61,6 +62,7 @@ namespace Dsl.Gherkin.Then
         {
             // Ensure the When clause (e.g., PublishCoupon) has executed before verification
             await GetExecutionResult();
+            await ShouldSucceed();
             return new ThenCouponBuilder<TSuccessResponse, TSuccessVerification>(this, _app, couponCode);
         }
 

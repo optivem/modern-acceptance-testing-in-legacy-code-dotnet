@@ -61,8 +61,9 @@ public class PublishCouponNegativeTest : BaseAcceptanceTest
             .FieldErrorMessage("validTo", "Valid to date cannot be in the past");
     }
 
-    [Theory(Skip = "FAIL")]
-    [ChannelData(ChannelType.UI, ChannelType.API)]
+    [Theory]
+    // [ChannelData(ChannelType.UI, ChannelType.API)]
+    [ChannelData(ChannelType.API)]
     public async Task CannotPublishCouponWithDuplicateCouponCode(Channel channel)
     {
         var then = Scenario(channel)

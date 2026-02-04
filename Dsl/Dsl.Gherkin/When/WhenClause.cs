@@ -78,7 +78,7 @@ namespace Dsl.Gherkin.When
 
         public PublishCouponBuilder PublishCoupon()
         {
-            return new PublishCouponBuilder(_app, _scenario);
+            return new PublishCouponBuilder(_app, _scenario, () => EnsureDefaults());
         }
 
         public BrowseCouponsBuilder BrowseCoupons()

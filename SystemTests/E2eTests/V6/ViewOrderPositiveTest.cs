@@ -20,7 +20,7 @@ public class ViewOrderPositiveTest : BaseE2eTest
             .Then();
 
         var successBuilder = await then.ShouldSucceed();
-        var orderBuilder = successBuilder.And().Order(Defaults.ORDER_NUMBER);
+        var orderBuilder = await successBuilder.And().Order(Defaults.ORDER_NUMBER);
         orderBuilder = await orderBuilder.HasSku(Defaults.SKU);
         orderBuilder = await orderBuilder.HasQuantity(4);
         orderBuilder = await orderBuilder.HasCountry(Defaults.COUNTRY);
