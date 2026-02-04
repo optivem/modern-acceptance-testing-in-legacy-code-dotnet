@@ -192,7 +192,8 @@ public class PlaceOrderPositiveTest : BaseAcceptanceTest
         failureBuilder.FieldErrorMessage("couponCode", "Coupon code INVALIDCOUPON does not exist");
     }
 
-    [Theory(Skip = "TODO: TIME")]
+    [Theory]
+    [Time]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task CannotPlaceOrderWithExpiredCoupon(Channel channel)
     {
@@ -206,9 +207,8 @@ public class PlaceOrderPositiveTest : BaseAcceptanceTest
         failureBuilder.FieldErrorMessage("couponCode", "Coupon code SUMMER2023 has expired");
     }
 
-    [Theory(Skip = "FAIL")]
-    // [ChannelData(ChannelType.UI, ChannelType.API)]
-    [ChannelData(ChannelType.UI)]
+    [Theory]
+    [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task CannotPlaceOrderWithCouponThatHasExceededUsageLimit(Channel channel)
     {
         var failureBuilder = await Scenario(channel)

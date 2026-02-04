@@ -1,4 +1,6 @@
-using Xunit;
+using System.Reflection;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace Optivem.Testing;
 
@@ -33,10 +35,9 @@ namespace Optivem.Testing;
 /// <para><b>IDE Support:</b></para>
 /// <para>Visual Studio and other test runners will recognize this trait automatically.</para>
 /// </summary>
-[TraitAttribute("Category", "time")]
-[Isolated("Time-dependent test")]
+[TraitDiscoverer("Optivem.Testing.TimeTraitDiscoverer", "Optivem.Testing")]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-public class TimeAttribute : Attribute
+public class TimeAttribute : Attribute, ITraitAttribute
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TimeAttribute"/> class.
@@ -60,4 +61,19 @@ public class TimeAttribute : Attribute
     /// Gets the specific time value for this test (ISO-8601 format).
     /// </summary>
     public string Value { get; }
+}
+
+/// <summary>
+/// Trait discoverer for TimeAttribute that adds both 'time' and 'isolated' traits.
+/// </summary>
+public class TimeTraitDiscoverer : ITraitDiscoverer
+{
+    /// <summary>
+    /// Gets the traits for a test decorated with TimeAttribute.
+    /// </summary>
+    public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
+    {
+        yield return new KeyValuePair<string, string>("Category", "time");
+        yield return new KeyValuePair<string, string>("Category", "isolated");
+    }
 }

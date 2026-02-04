@@ -113,7 +113,7 @@ jobs:
         working-directory: ./SystemTests/AcceptanceTests
 
       - name: Run Acceptance Tests - API Channel
-        run: dotnet test --no-build --configuration Release --verbosity normal
+        run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category!=isolated"
         working-directory: ./SystemTests/AcceptanceTests
         env:
           ENVIRONMENT: acceptance
@@ -121,7 +121,23 @@ jobs:
           CHANNEL: API
 
       - name: Run Acceptance Tests - UI Channel
-        run: dotnet test --no-build --configuration Release --verbosity normal
+        run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category!=isolated"
+        working-directory: ./SystemTests/AcceptanceTests
+        env:
+          ENVIRONMENT: acceptance
+          EXTERNAL_SYSTEM_MODE: stub
+          CHANNEL: UI
+
+      - name: Run Acceptance Tests (Isolated) - API Channel
+        run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=isolated"
+        working-directory: ./SystemTests/AcceptanceTests
+        env:
+          ENVIRONMENT: acceptance
+          EXTERNAL_SYSTEM_MODE: stub
+          CHANNEL: API
+
+      - name: Run Acceptance Tests (Isolated) - UI Channel
+        run: dotnet test --no-build --configuration Release --verbosity normal --filter "Category=isolated"
         working-directory: ./SystemTests/AcceptanceTests
         env:
           ENVIRONMENT: acceptance

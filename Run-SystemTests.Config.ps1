@@ -28,12 +28,25 @@ $Config = @{
         # Acceptance Tests
         @{  Id = "acceptance-api";
             Name = "Acceptance Tests - Channel: API";
-            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=stub -e CHANNEL=API --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=stub -e CHANNEL=API --filter 'Category!=isolated' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
             Path = "SystemTests/AcceptanceTests";
             TestReportPath = "SystemTests\AcceptanceTests\TestResults\testResults.html" },
         @{  Id = "acceptance-ui";
             Name = "Acceptance Tests - Channel: UI";
-            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=stub -e CHANNEL=UI --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=stub -e CHANNEL=UI --filter 'Category!=isolated' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+            Path = "SystemTests/AcceptanceTests";
+            TestReportPath = "SystemTests\AcceptanceTests\TestResults\testResults.html";
+            TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; },
+
+        # Acceptance Tests (Isolated)
+        @{  Id = "acceptance-isolated-api";
+            Name = "Acceptance Tests (Isolated) - Channel: API";
+            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=stub -e CHANNEL=API --filter 'Category=isolated' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
+            Path = "SystemTests/AcceptanceTests";
+            TestReportPath = "SystemTests\AcceptanceTests\TestResults\testResults.html" },
+        @{  Id = "acceptance-isolated-ui";
+            Name = "Acceptance Tests (Isolated) - Channel: UI";
+            Command = "dotnet test -e ENVIRONMENT=local -e EXTERNAL_SYSTEM_MODE=stub -e CHANNEL=UI --filter 'Category=isolated' --logger 'trx;LogFileName=testResults.trx' --logger 'html;LogFileName=testResults.html' --logger 'console;verbosity=detailed'";
             Path = "SystemTests/AcceptanceTests";
             TestReportPath = "SystemTests\AcceptanceTests\TestResults\testResults.html";
             TestInstallCommands = "pwsh bin/Debug/net8.0/playwright.ps1 install"; },

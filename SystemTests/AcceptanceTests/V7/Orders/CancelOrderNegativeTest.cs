@@ -59,7 +59,8 @@ public class CancelOrderNegativeTest : BaseAcceptanceTest
             .ErrorMessage("Order non-existent-order-12345 does not exist.");
     }
 
-    [Theory(Skip = "TODO: TIME")]
+    [Theory]
+    [Time]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     [ChannelInlineData("2024-12-31T22:00:00Z")]   // Start of blackout period
     [ChannelInlineData("2026-12-31T22:00:01Z")]   // Just after start
