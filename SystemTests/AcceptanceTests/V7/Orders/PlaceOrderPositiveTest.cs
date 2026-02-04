@@ -173,7 +173,7 @@ public class PlaceOrderPositiveTest : BaseAcceptanceTest
             .When().PlaceOrder().WithCouponCode("SUMMER2025")
             .Then().ShouldSucceed();
 
-        var couponBuilder = Scenario(channel)
+        var couponBuilder = await Scenario(channel)
             .When().BrowseCoupons()
             .Then().Coupon("SUMMER2025");
         

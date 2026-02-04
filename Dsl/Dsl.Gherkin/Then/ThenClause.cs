@@ -37,9 +37,11 @@ namespace Dsl.Gherkin.Then
             return new ThenFailureBuilder<TSuccessResponse, TSuccessVerification>(this, result.Result);
         }
 
-        public ThenOrderBuilder<TSuccessResponse, TSuccessVerification> Order(string orderNumber)
+        public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> Order(string orderNumber)
         {
-            return new ThenOrderBuilder<TSuccessResponse, TSuccessVerification>(this, _app, orderNumber, _lazyExecute);
+            // Ensure the When clause (e.g., PlaceOrder) has executed before verification
+            await GetExecutionResult();
+            return new ThenOrderBuilder<TSuccessResponse, TSuccessVerification>(this, _app, orderNumber);
         }
 
         public async Task<ThenOrderBuilder<TSuccessResponse, TSuccessVerification>> Order()
@@ -52,11 +54,13 @@ namespace Dsl.Gherkin.Then
                 throw new InvalidOperationException("Cannot verify order: no order number available from the executed operation");
             }
 
-            return Order(orderNumber);
+            return await Order(orderNumber);
         }
 
-        public ThenCouponBuilder<TSuccessResponse, TSuccessVerification> Coupon(string couponCode)
+        public async Task<ThenCouponBuilder<TSuccessResponse, TSuccessVerification>> Coupon(string couponCode)
         {
+            // Ensure the When clause (e.g., PublishCoupon) has executed before verification
+            await GetExecutionResult();
             return new ThenCouponBuilder<TSuccessResponse, TSuccessVerification>(this, _app, couponCode);
         }
 
@@ -70,7 +74,7 @@ namespace Dsl.Gherkin.Then
                 throw new InvalidOperationException("Cannot verify coupon: no coupon code available from the executed operation");
             }
 
-            return Coupon(couponCode);
+            return await Coupon(couponCode);
         }
 
         internal async Task<ExecutionResult<TSuccessResponse, TSuccessVerification>> GetExecutionResult()

@@ -38,7 +38,7 @@ public class PublishCouponPositiveTest : BaseAcceptanceTest
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldBeAbleToCorrectlySaveCoupon(Channel channel)
     {
-        var couponBuilder = Scenario(channel)
+        var couponBuilder = await Scenario(channel)
             .When().PublishCoupon()
                 .WithCouponCode("SUMMER2025")
                 .WithDiscountRate(0.15m)
