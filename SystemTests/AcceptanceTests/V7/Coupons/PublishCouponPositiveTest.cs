@@ -34,8 +34,8 @@ public class PublishCouponPositiveTest : BaseAcceptanceTest
             .Then().ShouldSucceed();
     }
 
-    [Theory(Skip = "TODO: FIX")]
-    [ChannelData(ChannelType.API)]
+    [Theory]
+    [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task ShouldBeAbleToCorrectlySaveCoupon(Channel channel)
     {
         var couponBuilder = Scenario(channel)

@@ -23,6 +23,9 @@ namespace Dsl.Gherkin.Then
         {
             if (_verification == null)
             {
+                // Ensure the When clause (e.g., PublishCoupon) has executed before browsing
+                await _thenClause.GetExecutionResult();
+                
                 var shop = await _app.Shop(Channel);
                 var result = await shop.BrowseCoupons().Execute();
                 _verification = result.ShouldSucceed();
