@@ -191,8 +191,8 @@ public class PlaceOrderPositiveTest : BaseAcceptanceTest
         failureBuilder.ErrorMessage("The request contains one or more validation errors");
         failureBuilder.FieldErrorMessage("couponCode", "Coupon code INVALIDCOUPON does not exist");
     }
-
-    [Theory(Skip = "TODO: FIX")]
+    
+    [Theory]
     [Time]
     [ChannelData(ChannelType.UI, ChannelType.API)]
     public async Task CannotPlaceOrderWithExpiredCoupon(Channel channel)
