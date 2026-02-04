@@ -16,7 +16,7 @@ public class CancelOrderBuilder : BaseWhenBuilder<VoidValue, VoidVerification>
 {
     private string? _orderNumber;
 
-    public CancelOrderBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task>? ensureDefaults = null) : base(app, scenario, ensureDefaults)
+    public CancelOrderBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task> ensureDefaults) : base(app, scenario, ensureDefaults)
     {
         WithOrderNumber(DefaultOrderNumber);
     }

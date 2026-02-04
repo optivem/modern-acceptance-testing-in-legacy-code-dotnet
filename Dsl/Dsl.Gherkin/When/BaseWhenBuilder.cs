@@ -10,9 +10,9 @@ public abstract class BaseWhenBuilder<TSuccessResponse, TSuccessVerification>
 {
     private readonly SystemDsl _app;
     private readonly ScenarioDsl _scenario;
-    private readonly Func<Task>? _ensureDefaults;
+    private readonly Func<Task> _ensureDefaults;
 
-    protected BaseWhenBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task>? ensureDefaults = null)
+    protected BaseWhenBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task> ensureDefaults)
     {
         _app = app;
         _scenario = scenario;
@@ -23,10 +23,7 @@ public abstract class BaseWhenBuilder<TSuccessResponse, TSuccessVerification>
     {
         return new ThenClause<TSuccessResponse, TSuccessVerification>(Channel, _app, async () =>
         {
-            if (_ensureDefaults != null)
-            {
-                await _ensureDefaults();
-            }
+            await _ensureDefaults();
             return await Execute(_app);
         });
     }

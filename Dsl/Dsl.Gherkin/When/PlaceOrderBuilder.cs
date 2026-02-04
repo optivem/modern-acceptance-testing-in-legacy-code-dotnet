@@ -18,7 +18,7 @@ public class PlaceOrderBuilder : BaseWhenBuilder<PlaceOrderResponse, PlaceOrderV
     private string? _country;
     private string? _couponCode;
 
-    public PlaceOrderBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task>? ensureDefaults = null) : base(app, scenario, ensureDefaults)
+    public PlaceOrderBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task> ensureDefaults) : base(app, scenario, ensureDefaults)
     {
         WithOrderNumber(DefaultOrderNumber);
         WithSku(DefaultSku);

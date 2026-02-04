@@ -11,7 +11,7 @@ public class ViewOrderBuilder : BaseWhenBuilder<ViewOrderResponse, ViewOrderVeri
 {
     private string? _orderNumber;
 
-    public ViewOrderBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task>? ensureDefaults = null) : base(app, scenario, ensureDefaults)
+    public ViewOrderBuilder(SystemDsl app, ScenarioDsl scenario, Func<Task> ensureDefaults) : base(app, scenario, ensureDefaults)
     {
         WithOrderNumber(DefaultOrderNumber);
     }

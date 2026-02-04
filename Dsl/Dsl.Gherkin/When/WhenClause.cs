@@ -83,7 +83,7 @@ namespace Dsl.Gherkin.When
 
         public BrowseCouponsBuilder BrowseCoupons()
         {
-            return new BrowseCouponsBuilder(_app, _scenario);
+            return new BrowseCouponsBuilder(_app, _scenario, () => EnsureDefaults());
         }
     }
 }
