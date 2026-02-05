@@ -25,6 +25,6 @@ namespace Optivem.Testing
             return obj is Channel other && _channelType == other._channelType;
         }
 
-        public override int GetHashCode() => _channelType.GetHashCode();
+        public override int GetHashCode() => StringComparer.Ordinal.GetHashCode(_channelType);
     }
 }

@@ -5,22 +5,20 @@ namespace Commons.Playwright;
 public class PageClient
 {
     private readonly IPage _page;
-    private readonly string _baseUrl;
     private readonly float _timeoutMilliseconds;
 
     // Increase timeout to match Java's 30 seconds for better stability
     private const int DefaultTimeoutSeconds = 30;
     private const int DefaultTimeoutMilliseconds = DefaultTimeoutSeconds * 1000;
 
-    private PageClient(IPage page, string baseUrl, float timeoutMilliseconds)
+    private PageClient(IPage page, float timeoutMilliseconds)
     {
         _page = page;
-        _baseUrl = baseUrl;
         _timeoutMilliseconds = timeoutMilliseconds;
     }
 
     public PageClient(IPage page, string baseUrl) 
-        : this(page, baseUrl, DefaultTimeoutMilliseconds)
+        : this(page, DefaultTimeoutMilliseconds)
     {
     }
 
@@ -50,7 +48,7 @@ public class PageClient
 
     public async Task<string> ReadTextContentImmediatelyAsync(string selector)
     {
-        var locator = GetLocator(selector);
+        var locator = _page.Locator(selector);
         return await locator.TextContentAsync() ?? string.Empty;
     }
 

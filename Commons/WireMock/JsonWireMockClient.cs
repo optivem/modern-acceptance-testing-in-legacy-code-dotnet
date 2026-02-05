@@ -12,6 +12,7 @@ public class JsonWireMockClient : IDisposable
     private readonly HttpClient _httpClient;
     private readonly string _wireMockBaseUrl;
     private readonly JsonSerializerOptions _jsonOptions;
+    private bool _disposed;
 
     public JsonWireMockClient(string baseUrl)
         : this(baseUrl, CreateDefaultJsonOptions())
@@ -20,7 +21,20 @@ public class JsonWireMockClient : IDisposable
 
     public void Dispose()
     {
-        _httpClient?.Dispose();
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _httpClient?.Dispose();
+            }
+            _disposed = true;
+        }
     }
 
     private JsonWireMockClient(string baseUrl, JsonSerializerOptions jsonOptions)

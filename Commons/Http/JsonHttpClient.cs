@@ -10,7 +10,7 @@ public class JsonHttpClient<E> : IDisposable
 {
     private const string ApplicationJson = "application/json";
 
-    private static readonly JsonSerializerOptions JsonOptions = new()
+    private readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -20,6 +20,7 @@ public class JsonHttpClient<E> : IDisposable
 
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
+    private bool _disposed;
 
     public JsonHttpClient(string baseUrl)
     {
@@ -29,7 +30,20 @@ public class JsonHttpClient<E> : IDisposable
 
     public void Dispose()
     {
-        _httpClient?.Dispose();
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _httpClient?.Dispose();
+            }
+            _disposed = true;
+        }
     }
 
     public async Task<Result<T, E>> Get<T>(string path)
@@ -115,22 +129,22 @@ public class JsonHttpClient<E> : IDisposable
     private Task<HttpResponseMessage> SendRequest(HttpRequestMessage httpRequest)
         => _httpClient.SendAsync(httpRequest);
 
-    private static string SerializeRequest(object request)
+    private string SerializeRequest(object request)
     {
-        return JsonSerializer.Serialize(request, JsonOptions);
+        return JsonSerializer.Serialize(request, _jsonOptions);
     }
 
-    private async Task<T> ReadResponse<T>(HttpResponseMessage httpResponse)
+    private static async Task<T> ReadResponse<T>(HttpResponseMessage httpResponse, JsonSerializerOptions jsonOptions)
     {
         var responseBody = await httpResponse.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<T>(responseBody, JsonOptions)!;
+        return JsonSerializer.Deserialize<T>(responseBody, jsonOptions)!;
     }
 
     private async Task<Result<T, E>> GetResultOrFailure<T>(HttpResponseMessage httpResponse)
     {
         if (!httpResponse.IsSuccessStatusCode)
         {
-            var error = await ReadResponse<E>(httpResponse);
+            var error = await ReadResponse<E>(httpResponse, _jsonOptions);
             return Result<T, E>.Failure(error);
         }
 
@@ -139,7 +153,7 @@ public class JsonHttpClient<E> : IDisposable
             return Result<T, E>.Success(default!);
         }
 
-        var response = await ReadResponse<T>(httpResponse);
+        var response = await ReadResponse<T>(httpResponse, _jsonOptions);
         return Result<T, E>.Success(response);
     }
 

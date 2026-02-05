@@ -2,7 +2,7 @@ namespace Commons.Util;
 
 public class Result<T, E>
 {
-    private bool _success;
+    private readonly bool _success;
     private readonly T? _value;
     private readonly E? _error;
 

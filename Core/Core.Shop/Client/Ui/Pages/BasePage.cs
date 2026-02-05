@@ -15,6 +15,7 @@ public abstract class BasePage
     private const string NotificationErrorFieldSelector = "[role='alert'].notification.error .field-error";
     private const string NoNotificationErrorMessage = "No notification appeared";
     private const string UnrecognizedNotificationErrorMessage = "Notification type is not recognized";
+    private const int NotificationStabilizationDelayMilliseconds = 150;
 
     protected readonly PageClient PageClient;
 
@@ -37,7 +38,7 @@ public abstract class BasePage
 
         // Small wait to ensure we're checking the latest notification state,
         // not a stale one from a previous action
-        await Task.Delay(150);
+        await Task.Delay(NotificationStabilizationDelayMilliseconds);
 
         // Now check immediately what type it is (don't wait again)
         var isSuccess = await IsImmediatelyVisibleAsync(NotificationSuccessSelector);

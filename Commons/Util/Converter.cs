@@ -54,7 +54,7 @@ public static class Converter
 
     public static DateTime? ParseDateTime(string? text, params string[] nullValues)
     {
-        if (text == null || string.IsNullOrEmpty(text))
+        if (string.IsNullOrEmpty(text))
         {
             return null;
         }
