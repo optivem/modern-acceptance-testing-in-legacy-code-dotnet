@@ -26,9 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Optivem.Testing" Version="1.0.4" />
     <ProjectReference Include="..\..\TestInfrastructure\TestInfrastructure.csproj" />
     <ProjectReference Include="..\..\Commons\Commons.csproj" />
-    <ProjectReference Include="..\..\Optivem.Testing\Optivem.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

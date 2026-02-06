@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Optivem.Testing" Version="1.0.4" />
     <ProjectReference Include="..\..\Core\Core.Shop\Core.Shop.csproj" />
-    <ProjectReference Include="..\..\Optivem.Testing\Optivem.Testing.csproj" />
     <ProjectReference Include="..\Dsl.System\Dsl.System.csproj" />
   </ItemGroup>
 

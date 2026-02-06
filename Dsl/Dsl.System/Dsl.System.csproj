@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -16,7 +16,7 @@
     <ProjectReference Include="..\..\Core\Core.Erp\Core.Erp.csproj" />
     <ProjectReference Include="..\..\Core\Core.Shop\Core.Shop.csproj" />
     <ProjectReference Include="..\..\Core\Core.Tax\Core.Tax.csproj" />
-    <ProjectReference Include="..\..\Optivem.Testing\Optivem.Testing.csproj" />
+    <PackageReference Include="Optivem.Testing" Version="1.0.4" />
     <ProjectReference Include="..\..\Commons\Commons.csproj" />
   </ItemGroup>
 

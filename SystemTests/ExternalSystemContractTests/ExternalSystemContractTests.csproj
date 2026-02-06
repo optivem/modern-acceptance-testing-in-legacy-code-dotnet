@@ -37,7 +37,7 @@
     <ProjectReference Include="..\..\Dsl\Dsl.Gherkin\Dsl.Gherkin.csproj" />
     <ProjectReference Include="..\..\Dsl\Dsl.System\Dsl.System.csproj" />
     <ProjectReference Include="..\..\TestInfrastructure\TestInfrastructure.csproj" />
-    <ProjectReference Include="..\..\Optivem.Testing\Optivem.Testing.csproj" />
+    <PackageReference Include="Optivem.Testing" Version="1.0.4" />
   </ItemGroup>
 
 </Project>
